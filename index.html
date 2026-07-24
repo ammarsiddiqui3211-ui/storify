@@ -4,63 +4,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Storify Shop | Online Marketplace in Pakistan</title>
+    <title>Storify | Pakistan's Trusted Online Marketplace | Buy & Sell Online</title>
     <meta name="description"
-        content="Shop a wide range of products at Storify Shop, your trusted online marketplace in Pakistan for fashion, electronics, home essentials, and more with cash on delivery and easy returns.">
+        content="Shop electronics, fashion, beauty, home appliances, groceries, and thousands of products from trusted sellers across Pakistan. Become a seller and grow your business with Storify Marketplace.">
     <meta name="keywords"
-        content="Storify Shop, online marketplace Pakistan, fashion Pakistan, electronics Pakistan, home essentials Pakistan, cash on delivery Pakistan, online shopping Pakistan">
-    <meta name="author" content="Storify Shop">
+        content="Storify, Storify Marketplace, Online Shopping Pakistan, Online Marketplace Pakistan, Buy Online Pakistan, Sell Online Pakistan, Ecommerce Pakistan, Multi Vendor Marketplace, Shopping Website Pakistan, Verified Sellers Pakistan">
+    <meta name="author" content="Storify Marketplace">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#1a1a2e">
+    <link rel="canonical" href="https://storify-shop.vercel.app/">
     <link rel="manifest" href="/manifest.json">
-    <meta name="application-name" content="Storify Shop">
-    <meta name="apple-mobile-web-app-title" content="Storify Shop">
+    <meta name="application-name" content="Storify Marketplace">
+    <meta name="apple-mobile-web-app-title" content="Storify Marketplace">
     <meta name="format-detection" content="telephone=no">
     <meta name="p:domain_verify" content="bb3a759ee3bc5322c65da49365b43630" />
 
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Storify Shop">
-    <meta property="og:title" content="Storify Shop | Online Marketplace in Pakistan">
+    <meta property="og:url" content="https://storify-shop.vercel.app/">
+    <meta property="og:site_name" content="Storify Marketplace">
+    <meta property="og:title" content="Storify | Pakistan's Trusted Online Marketplace | Buy & Sell Online">
     <meta property="og:description"
-        content="Explore a diverse collection of fashion, electronics, home essentials, and more at Storify Shop with cash on delivery and easy returns across Pakistan.">
+        content="Shop electronics, fashion, beauty, home essentials, and thousands of quality products from verified sellers across Pakistan. Shop with confidence. Sell with success.">
     <meta property="og:image" content="images/cover/banner%20cover.png">
-    <meta property="og:image:alt" content="Storify Store premium shirt collection banner">
+    <meta property="og:image:alt" content="Storify Marketplace - Pakistan's Trusted Online Marketplace">
     <meta property="og:locale" content="en_PK">
 
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Storify Shop | Online Marketplace in Pakistan">
+    <meta name="twitter:url" content="https://storify-shop.vercel.app/">
+    <meta name="twitter:title" content="Storify | Pakistan's Trusted Online Marketplace | Buy & Sell Online">
     <meta name="twitter:description"
-        content="Shop fashion, electronics, home essentials, and more at Storify Shop with cash on delivery and easy returns across Pakistan.">
+        content="Shop electronics, fashion, beauty, home essentials, and thousands of quality products from verified sellers across Pakistan. Shop with confidence. Sell with success.">
     <meta name="twitter:image" content="images/cover/banner%20cover.png">
-    <meta name="twitter:image:alt" content="Storify Store premium shirt collection banner">
+    <meta name="twitter:image:alt" content="Storify Marketplace - Pakistan's Trusted Online Marketplace">
 
     <link rel="manifest" href="manifest.json?v=9">
     <link rel="icon" type="image/png" href="images/favicon/favicon.png">
     <link rel="shortcut icon" type="image/png" href="images/favicon/favicon.png">
     <link rel="apple-touch-icon" href="images/favicon/favicon.png">
+
+    <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Store",
-            "name": "Storify Store",
-            "description": "Storify Store sells premium cotton shirts and curated fashion essentials online in Pakistan with cash on delivery and easy returns.",
-            "image": "images/cover/banner%20cover.png",
-            "logo": "images/logo/header.png",
-            "priceRange": "Rs 600 - Rs 2200",
-            "paymentAccepted": "Cash on Delivery",
-            "areaServed": {
-                "@type": "Country",
-                "name": "Pakistan"
-            },
-            "makesOffer": {
-                "@type": "Offer",
-                "itemOffered": {
-                    "@type": "Product",
-                    "name": "Premium Cotton Shirts",
-                    "category": "Shirts"
+        [
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Storify Marketplace",
+                "alternateName": ["Storify", "Storify Pakistan"],
+                "url": "https://storify-shop.vercel.app/",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                        "@type": "EntryPoint",
+                        "urlTemplate": "https://storify-shop.vercel.app/?search={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
                 }
+            },
+            {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "Storify Marketplace",
+                "url": "https://storify-shop.vercel.app/",
+                "logo": "https://storify-shop.vercel.app/images/logo/header.png",
+                "slogan": "Shop with Confidence. Sell with Success.",
+                "description": "Storify is Pakistan's most trusted multi-vendor marketplace, connecting customers with verified sellers and quality products through a secure, fast, and transparent shopping experience.",
+                "areaServed": {
+                    "@type": "Country",
+                    "name": "Pakistan"
+                },
+                "knowsAbout": ["Ecommerce", "Multi-Vendor Marketplace", "Online Shopping Pakistan", "Verified Sellers"]
             }
-        }
+        ]
     </script>
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -5806,6 +5822,46 @@
     <main class="container">
         <!-- Home View -->
         <div id="home-view" class="fade-in">
+            <!-- Brand Pillars / Value Proposition Bar -->
+            <div class="storify-trust-bar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 24px 0 32px; padding: 20px 24px; background: #ffffff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(74,144,226,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 14px; color: var(--primary);">Verified Sellers</div>
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 2px;">Identity checked & reliable</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(16,185,129,0.1); color: #10b981; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 14px; color: var(--primary);">100% Escrow Security</div>
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 2px;">Safe payment guarantee</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(245,158,11,0.1); color: #f59e0b; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 14px; color: var(--primary);">Quality Assurance</div>
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 2px;">Authentic listings only</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(139,92,246,0.1); color: #8b5cf6; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 14px; color: var(--primary);">Fast Delivery</div>
+                        <div style="font-size: 12px; color: var(--text-light); margin-top: 2px;">Across all cities in Pakistan</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Shop By Category Cards Section -->
             <div class="graphic-categories-section" id="graphicCategoriesSection">
                 <h2 class="section-title">Categories</h2>
