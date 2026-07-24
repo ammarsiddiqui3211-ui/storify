@@ -1867,35 +1867,129 @@
             }
         }
 
-        @media (max-width: 576px) {
+        @media (max-width: 900px) {
+            .landing-hero-section {
+                padding: 60px 24px 40px 24px;
+            }
+            .landing-hero-section h1 {
+                font-size: 38px;
+            }
+            .hero-stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding-top: 28px;
+            }
+            .hero-stat-number {
+                font-size: 32px;
+            }
+            .landing-features-section,
+            .landing-steps-section,
+            .landing-final-cta-section {
+                padding: 60px 20px;
+            }
+            .landing-steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            .footer {
+                padding: 40px 24px 24px 24px;
+            }
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .landing-hero-section {
+                padding: 45px 16px 30px 16px;
+            }
+            .landing-hero-badge {
+                font-size: 11px;
+                padding: 6px 14px;
+                margin-bottom: 18px;
+            }
+            .landing-hero-section h1 {
+                font-size: 28px;
+                margin-bottom: 14px;
+                letter-spacing: -0.5px;
+            }
+            .landing-hero-section p {
+                font-size: 14.5px;
+                margin-bottom: 24px;
+            }
+            .landing-hero-cta-group {
+                flex-direction: column;
+                width: 100%;
+                gap: 12px;
+                margin-bottom: 30px;
+            }
+            .btn-hero-cta-primary,
+            .btn-hero-cta-secondary {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+            .hero-stats-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+                padding-top: 20px;
+            }
+            .hero-stat-number {
+                font-size: 26px;
+            }
+            .hero-stat-label {
+                font-size: 11px;
+            }
+            .landing-features-section,
+            .landing-steps-section,
+            .landing-final-cta-section {
+                padding: 40px 16px;
+            }
+            .landing-section-title {
+                font-size: 24px;
+            }
+            .landing-section-subtitle {
+                font-size: 14px;
+            }
+            .landing-features-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .landing-feature-card {
+                padding: 24px 18px;
+                border-radius: 16px;
+            }
+            .landing-steps-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .landing-step-card {
+                padding: 24px 18px;
+                border-radius: 16px;
+            }
+            .landing-final-cta-section h2 {
+                font-size: 26px;
+            }
+            .landing-final-cta-section p {
+                font-size: 14.5px;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
             .auth-container {
-                padding: 20px;
+                padding: 24px 16px;
                 border-radius: 12px;
             }
-
             .card-panel {
                 padding: 20px;
                 border-radius: 12px;
             }
-
             .holding-container {
                 padding: 20px;
                 border-radius: 12px;
-            }
-
-            .landing-hero-card {
-                padding: 30px 20px;
-                margin-bottom: 25px;
-                border-radius: 16px;
-            }
-
-            .landing-hero-card h1 {
-                font-size: 24px !important;
-            }
-
-            .landing-hero-card p {
-                font-size: 14px;
-                margin-bottom: 20px;
             }
         }
 
@@ -2301,33 +2395,23 @@
             if (user) {
                 const displayName = profile?.shop_name || profile?.name || user.email;
                 nav.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 16px;">
-                        <a href="index.html" class="nav-link-storefront" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #2563eb; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); padding: 9px 20px; border-radius: 100px; text-decoration: none; transition: all 0.2s ease;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            Main Storefront
-                        </a>
-                        <div class="seller-profile-container">
-                            <div class="seller-profile-avatar">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="12" cy="7" r="4"/>
-                                </svg>
+                    <div class="seller-profile-container">
+                        <div class="seller-profile-avatar">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="seller-profile-dropdown">
+                            <div class="profile-dropdown-info">
+                                <div class="profile-shop-name">${escapeHtml(displayName)}</div>
+                                <div class="profile-email">${escapeHtml(user.email)}</div>
                             </div>
-                            <div class="seller-profile-dropdown">
-                                <div class="profile-dropdown-info">
-                                    <div class="profile-shop-name">${escapeHtml(displayName)}</div>
-                                    <div class="profile-email">${escapeHtml(user.email)}</div>
-                                </div>
-                                <div style="border-top: 1px solid var(--border); margin: 6px 0;"></div>
-                                <a href="index.html" style="margin-bottom: 4px;">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                                    Main Storefront
-                                </a>
-                                <a href="#" onclick="signOutUser(); event.preventDefault();">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                                    Logout
-                                </a>
-                            </div>
+                            <div style="border-top: 1px solid var(--border); margin: 6px 0;"></div>
+                            <a href="#" onclick="signOutUser(); event.preventDefault();">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                Logout
+                            </a>
                         </div>
                     </div>
                     <button class="hamburger-mobile" onclick="toggleMobileMenu()" aria-label="Open seller menu mobile">
@@ -2339,7 +2423,6 @@
 
                 if (mobileLinks) {
                     mobileLinks.innerHTML = `
-                        <li><a href="index.html" onclick="toggleMobileMenu()">Main Storefront</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); switchTab('overview'); event.preventDefault();">Dashboard</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); switchTab('add-product'); event.preventDefault();">Add Product</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); switchTab('manage'); event.preventDefault();">Manage Listing</a></li>
@@ -2351,16 +2434,9 @@
                     `;
                 }
             } else {
-                nav.innerHTML = `
-                    <a href="index.html" class="nav-link-storefront" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #2563eb; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); padding: 9px 22px; border-radius: 100px; text-decoration: none; transition: all 0.2s ease;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        Main Storefront
-                    </a>
-                `;
+                nav.innerHTML = ``;
                 if (mobileLinks) {
-                    mobileLinks.innerHTML = `
-                        <li><a href="index.html" onclick="toggleMobileMenu()">Main Storefront</a></li>
-                    `;
+                    mobileLinks.innerHTML = ``;
                 }
             }
         }
