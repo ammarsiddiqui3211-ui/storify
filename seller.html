@@ -2803,10 +2803,18 @@
                 return;
             }
             try {
+                localStorage.setItem('storify_oauth_redirect_target', 'seller');
+                const origin = window.location.origin;
+                const path = window.location.pathname;
+                let targetUrl = origin + path;
+                if (!path.includes('seller')) {
+                    targetUrl = origin + '/seller';
+                }
+
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin + window.location.pathname
+                        redirectTo: targetUrl
                     }
                 });
                 if (error) throw error;

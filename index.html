@@ -6558,6 +6558,17 @@
         if (supabaseClient) {
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
                 if (event === 'SIGNED_IN' && session && session.user) {
+                    const target = localStorage.getItem('storify_oauth_redirect_target');
+                    if (target === 'seller') {
+                        localStorage.removeItem('storify_oauth_redirect_target');
+                        window.location.href = 'seller';
+                        return;
+                    } else if (target === 'admin') {
+                        localStorage.removeItem('storify_oauth_redirect_target');
+                        window.location.href = 'admin';
+                        return;
+                    }
+
                     await fetchUserProfile(session.user);
                     closeAccountModal();
                     showView('account');
@@ -8865,6 +8876,7 @@
             }
 
             try {
+                localStorage.setItem('storify_oauth_redirect_target', 'index');
                 const { data, error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {

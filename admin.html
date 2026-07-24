@@ -1868,10 +1868,18 @@
             }
 
             try {
+                localStorage.setItem('storify_oauth_redirect_target', 'admin');
+                const origin = window.location.origin;
+                const path = window.location.pathname;
+                let targetUrl = origin + path;
+                if (!path.includes('admin')) {
+                    targetUrl = origin + '/admin';
+                }
+
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin + window.location.pathname
+                        redirectTo: targetUrl
                     }
                 });
 
