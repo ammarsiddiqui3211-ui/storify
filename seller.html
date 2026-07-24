@@ -157,21 +157,25 @@
         }
 
         .seller-profile-avatar {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: var(--secondary);
-            border: 1.5px solid var(--border);
+            background: #2563eb;
+            border: 2px solid #2563eb;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
 
         .seller-profile-avatar:hover {
-            border-color: var(--accent);
-            background: var(--white);
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
         }
 
         .seller-profile-dropdown {
@@ -2038,7 +2042,7 @@
     </div>
     <header class="header">
         <div class="header-container">
-            <a href="seller.html" class="logo" onclick="handleLogoClick(event)">
+            <a href="seller" class="logo" onclick="handleLogoClick(event)">
                 <img src="images/logo/seller header.png" alt="Storify Logo">
             </a>
             <div class="user-nav" id="userNav">
@@ -2057,6 +2061,12 @@
     </main>
 
     <script>
+        // Clean URL: Remove .html extension from browser address bar
+        if (window.location.pathname.endsWith('.html')) {
+            const cleanPath = window.location.pathname.replace(/\.html$/, '');
+            window.history.replaceState(null, '', cleanPath + window.location.search + window.location.hash);
+        }
+
         // Supabase Client Initialization
         const SUPABASE_URL = "https://goguiruuirltoiofmvuj.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3VpcnV1aXJsdG9pb2ZtdnVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMDU4MTYsImV4cCI6MjA5ODY4MTgxNn0.N8BCHCsDet0Bpxhe7P9iK0U6vs6NbsChdgNEI8OAFzc";
@@ -2399,7 +2409,7 @@
                 nav.innerHTML = `
                     <div class="seller-profile-container">
                         <div class="seller-profile-avatar">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                 <circle cx="12" cy="7" r="4"/>
                             </svg>
@@ -2700,7 +2710,7 @@
                                 <h3>Company</h3>
                                 <ul class="footer-links">
                                     <li><a href="index.html">About Us</a></li>
-                                    <li><a href="seller.html">Become a Seller</a></li>
+                                    <li><a href="seller">Become a Seller</a></li>
                                     <li><a href="index.html">Privacy Policy</a></li>
                                     <li><a href="index.html">Terms of Service</a></li>
                                 </ul>

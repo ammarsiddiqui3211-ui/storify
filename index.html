@@ -5412,7 +5412,7 @@
                     data-translate="home">Home</a></li>
             <li><a href="#" data-category="categories" onclick="toggleMobileMenu(); goToAllCategories(event)"
                     data-translate="all_categories">All Categories</a></li>
-            <li><a href="seller.html" target="_blank" onclick="toggleMobileMenu();" data-translate="sell">Sell</a></li>
+            <li><a href="seller" target="_blank" onclick="toggleMobileMenu();" data-translate="sell">Sell</a></li>
             <li><a href="#" id="mobileWishlistBtn" onclick="toggleMobileMenu(); showView('wishlist', null, event)"><span
                         data-translate="wishlist">Wishlist</span></a></li>
             <li><a href="#" id="mobileCartBtn"
@@ -5754,7 +5754,7 @@
                         onclick="filterCategory('sales', event)">Sales</a>
                     <a href="#" class="category-link" data-category="new-arrivals"
                         onclick="filterCategory('new-arrivals', event)">New Arrivals</a>
-                    <a href="seller.html" target="_blank" class="category-link">Sell</a>
+                    <a href="seller" target="_blank" class="category-link">Sell</a>
                 </div>
                 <button class="categories-scroll-btn scroll-right" id="catScrollRight" onclick="scrollCategories(200)"
                     aria-label="Scroll categories right">›</button>
@@ -7655,7 +7655,7 @@
                     <a href="#" class="category-link" data-category="deals" onclick="filterCategory('deals', event)">Deals</a>
                     <a href="#" class="category-link" data-category="sales" onclick="filterCategory('sales', event)">Sales</a>
                     <a href="#" class="category-link" data-category="new-arrivals" onclick="filterCategory('new-arrivals', event)">New Arrivals</a>
-                    <a href="seller.html" target="_blank" class="category-link">Sell</a>
+                    <a href="seller" target="_blank" class="category-link">Sell</a>
                 `;
                 updateCategoryScrollArrows();
             }
@@ -7683,7 +7683,7 @@
                 mobileNav.innerHTML = `
                     <li><a href="#" data-category="all" onclick="toggleMobileMenu(); filterCategory('all', event)">Home</a></li>
                     <li><a href="#" data-category="categories" onclick="toggleMobileMenu(); goToAllCategories(event)">All Categories</a></li>
-                    <li><a href="seller.html" target="_blank" onclick="toggleMobileMenu();">Sell</a></li>
+                    <li><a href="seller" target="_blank" onclick="toggleMobileMenu();">Sell</a></li>
                     <li><a href="#" id="mobileWishlistBtn" onclick="toggleMobileMenu(); showView('wishlist', null, event)">Wishlist</a></li>
                     <li><a href="#" id="mobileCartBtn" onclick="toggleMobileMenu(); toggleCart(); if(event)event.preventDefault();">Cart <span class="cart-count" id="mobileCartCount" style="margin-left: 6px; display: inline-block; position: static; background: var(--accent); color: var(--white); font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 9999px; vertical-align: middle;">0</span></a></li>
                     ${accountMenuHtml}
@@ -8200,7 +8200,7 @@
                 <a href="#" class="category-link" data-category="deals" onclick="filterCategory('deals', event)" data-translate="deals">Deals</a>
                 <a href="#" class="category-link" data-category="sales" onclick="filterCategory('sales', event)" data-translate="sales">Sales</a>
                 <a href="#" class="category-link" data-category="new-arrivals" onclick="filterCategory('new-arrivals', event)" data-translate="new_arrivals">New Arrivals</a>
-                <a href="seller.html" target="_blank" class="category-link" data-translate="sell">Sell</a>
+                <a href="seller" target="_blank" class="category-link" data-translate="sell">Sell</a>
             `;
             // Re-sync category navigation active states
             const category = urlParams.get('category') || 'all';
