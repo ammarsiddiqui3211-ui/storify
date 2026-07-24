@@ -1718,7 +1718,13 @@
                 if (typeof window.supabase === 'undefined') {
                     throw new Error("Supabase SDK script failed to load. Please verify connection.");
                 }
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                    auth: {
+                        storageKey: 'storify_admin_auth_token',
+                        persistSession: true,
+                        autoRefreshToken: true
+                    }
+                });
                 await checkAdminAuth();
             } catch (err) {
                 console.error("Initialization error:", err);

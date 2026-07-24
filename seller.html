@@ -2074,7 +2074,13 @@
         let supabaseClient = null;
 
         if (window.supabase) {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                auth: {
+                    storageKey: 'storify_seller_auth_token',
+                    persistSession: true,
+                    autoRefreshToken: true
+                }
+            });
         }
 
         // State variables
