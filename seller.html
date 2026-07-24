@@ -416,7 +416,8 @@
 
         .mobile-nav-links a:hover,
         .mobile-nav-links a.active {
-            color: var(--accent);
+            color: #2563eb !important;
+            font-weight: 700;
         }
 
         /* Views Layout */
@@ -2435,13 +2436,13 @@
 
                 if (mobileLinks) {
                     mobileLinks.innerHTML = `
-                        <li><a href="#" onclick="toggleMobileMenu(); switchTab('overview'); event.preventDefault();">Dashboard</a></li>
-                        <li><a href="#" onclick="toggleMobileMenu(); switchTab('add-product'); event.preventDefault();">Add Product</a></li>
-                        <li><a href="#" onclick="toggleMobileMenu(); switchTab('manage'); event.preventDefault();">Manage Listing</a></li>
-                        <li><a href="#" onclick="toggleMobileMenu(); switchTab('orders'); event.preventDefault();">Customer Orders</a></li>
-                        <li><a href="#" onclick="toggleMobileMenu(); switchTab('earnings'); event.preventDefault();">Earnings</a></li>
-                        <li><a href="#" onclick="toggleMobileMenu(); switchTab('reviews'); event.preventDefault();">Customer Reviews</a></li>
-                        <li><a href="#" onclick="toggleMobileMenu(); switchTab('settings'); event.preventDefault();">Shop Settings</a></li>
+                        <li><a href="#" class="${currentTab === 'overview' ? 'active' : ''}" onclick="toggleMobileMenu(); switchTab('overview'); event.preventDefault();">Dashboard</a></li>
+                        <li><a href="#" class="${currentTab === 'add-product' ? 'active' : ''}" onclick="toggleMobileMenu(); switchTab('add-product'); event.preventDefault();">Add Product</a></li>
+                        <li><a href="#" class="${currentTab === 'manage' ? 'active' : ''}" onclick="toggleMobileMenu(); switchTab('manage'); event.preventDefault();">Manage Listing</a></li>
+                        <li><a href="#" class="${currentTab === 'orders' ? 'active' : ''}" onclick="toggleMobileMenu(); switchTab('orders'); event.preventDefault();">Customer Orders</a></li>
+                        <li><a href="#" class="${currentTab === 'earnings' ? 'active' : ''}" onclick="toggleMobileMenu(); switchTab('earnings'); event.preventDefault();">Earnings</a></li>
+                        <li><a href="#" class="${currentTab === 'reviews' ? 'active' : ''}" onclick="toggleMobileMenu(); switchTab('reviews'); event.preventDefault();">Customer Reviews</a></li>
+                        <li><a href="#" class="${currentTab === 'settings' ? 'active' : ''}" onclick="toggleMobileMenu(); switchTab('settings'); event.preventDefault();">Shop Settings</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); signOutUser(); event.preventDefault();" style="color: #ef4444;">Logout</a></li>
                     `;
                 }
