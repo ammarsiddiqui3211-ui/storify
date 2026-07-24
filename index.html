@@ -6356,7 +6356,9 @@
             });
 
             localStorage.setItem('selectedCountry', countryCode);
-            showToast(`Delivery country set to ${countryName}`);
+            if (event) {
+                showToast(`Delivery country set to ${countryName}`);
+            }
         }
 
         function selectLanguage(langCode, langName, event) {
@@ -6380,7 +6382,9 @@
 
             localStorage.setItem('selectedLang', langCode);
             applyTranslations(langCode);
-            showToast(`Language changed to ${langName}`);
+            if (event) {
+                showToast(`Language changed to ${langName}`);
+            }
         }
 
         // Close dropdowns when clicking anywhere outside
