@@ -204,6 +204,13 @@
             display: flex;
         }
 
+        .nav-link-storefront:hover {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
+        }
+
         .profile-dropdown-info {
             padding: 4px 16px 8px;
         }
@@ -418,6 +425,558 @@
             justify-content: flex-start;
         }
 
+        /* 0. Seller Landing View - Clean White SaaS Design */
+        .landing-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section - White Background SaaS Style */
+        .landing-hero-section {
+            position: relative;
+            width: 100%;
+            background: #ffffff;
+            padding: 80px 40px 60px 40px;
+            color: #0f172a;
+            text-align: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .landing-hero-bg-glow1 {
+            position: absolute;
+            top: -250px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, rgba(59, 130, 246, 0.02) 50%, transparent 70%);
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .landing-hero-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .landing-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 22px;
+            background: rgba(37, 99, 235, 0.06);
+            border: 1px solid rgba(37, 99, 235, 0.18);
+            border-radius: 100px;
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 24px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .landing-hero-badge .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2563eb;
+            box-shadow: 0 0 10px #2563eb;
+        }
+
+        .landing-hero-section h1 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 18px;
+            letter-spacing: -1.5px;
+            color: #0f172a;
+            max-width: 950px;
+        }
+
+        .landing-hero-section h1 span.blue-text {
+            color: #2563eb;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .landing-hero-section p {
+            font-size: 18px;
+            color: #475569;
+            max-width: 680px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .landing-hero-cta-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .btn-hero-cta-primary {
+            background: #2563eb;
+            color: #ffffff;
+            border: 1px solid #2563eb;
+            padding: 16px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -3px rgba(37, 99, 235, 0.4);
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: inherit;
+        }
+
+        .btn-hero-cta-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px -3px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-hero-cta-secondary {
+            background: transparent;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            padding: 16px 36px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn-hero-cta-secondary:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Bottom Stats Row Compact Positioned inside Hero */
+        .hero-stats-row {
+            width: 100%;
+            max-width: 950px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding-top: 32px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .hero-stat-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-stat-number {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .hero-stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Full Width Stats Bar */
+        .landing-stats-section {
+            width: 100%;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 36px 40px;
+        }
+
+        .landing-stats-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .landing-stat-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px;
+        }
+
+        .landing-stat-icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .landing-stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .landing-stat-num {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+        }
+
+        .landing-stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        /* Features Section */
+        .landing-features-section {
+            width: 100%;
+            padding: 90px 40px;
+            background: #f8fafc;
+        }
+
+        .landing-section-header {
+            max-width: 850px;
+            margin: 0 auto 60px auto;
+            text-align: center;
+        }
+
+        .landing-section-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.18);
+            color: var(--accent);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 14px;
+        }
+
+        .landing-section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+        }
+
+        .landing-section-subtitle {
+            font-size: 16.5px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .landing-features-grid {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .landing-feature-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 36px 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .landing-feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .landing-feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563eb;
+        }
+
+        .landing-feature-card h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .landing-feature-card p {
+            font-size: 14.5px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            flex-grow: 1;
+        }
+
+        .landing-feature-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 100px;
+            background: rgba(37, 99, 235, 0.06);
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            font-size: 11px;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            width: fit-content;
+        }
+
+        /* How It Works Full Width Section */
+        .landing-steps-section {
+            width: 100%;
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 90px 40px;
+        }
+
+        .landing-steps-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .landing-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .landing-steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .landing-steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .landing-step-card {
+            position: relative;
+            padding: 36px 24px;
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .landing-step-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .landing-step-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 22px auto;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+        }
+
+        .landing-step-card h4 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-align: center;
+        }
+
+        .landing-step-card p {
+            font-size: 13.5px;
+            color: #64748b;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* Final CTA Section */
+        .landing-final-cta-section {
+            width: 100%;
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+            padding: 90px 40px;
+            color: #0f172a;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .landing-final-cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .landing-final-cta-section h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .landing-final-cta-section p {
+            font-size: 18px;
+            color: #475569;
+            margin-bottom: 36px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+            .landing-hero-section h1 {
+                font-size: 34px;
+            }
+            .landing-hero-section p {
+                font-size: 16px;
+            }
+            .landing-section-title {
+                font-size: 28px;
+            }
+            .landing-hero-section, .landing-features-section, .landing-steps-section, .landing-final-cta-section {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .hero-mock-widget {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Footer matching index.html */
+        .footer {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 60px 40px 30px;
+            margin-top: 0;
+            border-top: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .footer-content {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto 40px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #2563eb;
+        }
+
+        .footer-bottom {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
         /* 1. Auth View Styles */
         .auth-container {
             max-width: 450px;
@@ -518,23 +1077,47 @@
         .btn-submit {
             width: 100%;
             padding: 14px;
-            background: var(--primary);
+            background: var(--accent);
             color: var(--white);
             border: none;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            font-family: inherit;
+            box-shadow: 0 4px 12px var(--accent-glow);
         }
 
         .btn-submit:hover {
             opacity: 0.95;
             transform: translateY(-1px);
+        }
+
+        .btn-google-auth {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+            font-family: inherit;
+        }
+
+        .btn-google-auth:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
         }
 
         .auth-message {
@@ -1668,11 +2251,15 @@
             // 1. Not Authenticated State
             if (!user) {
                 if (showAuthForm) {
+                    container.style.padding = '';
                     renderAuthView(container);
                 } else {
+                    container.style.padding = '0';
                     renderLandingView(container);
                 }
                 return;
+            } else {
+                container.style.padding = '';
             }
 
             // 2. Logged In, but role not seller or status 'none'
@@ -1714,23 +2301,33 @@
             if (user) {
                 const displayName = profile?.shop_name || profile?.name || user.email;
                 nav.innerHTML = `
-                    <div class="seller-profile-container">
-                        <div class="seller-profile-avatar">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                            </svg>
-                        </div>
-                        <div class="seller-profile-dropdown">
-                            <div class="profile-dropdown-info">
-                                <div class="profile-shop-name">${escapeHtml(displayName)}</div>
-                                <div class="profile-email">${escapeHtml(user.email)}</div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <a href="index.html" class="nav-link-storefront" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #2563eb; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); padding: 9px 20px; border-radius: 100px; text-decoration: none; transition: all 0.2s ease;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Main Storefront
+                        </a>
+                        <div class="seller-profile-container">
+                            <div class="seller-profile-avatar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
                             </div>
-                            <div style="border-top: 1px solid var(--border); margin: 6px 0;"></div>
-                            <a href="#" onclick="signOutUser(); event.preventDefault();">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                                Logout
-                            </a>
+                            <div class="seller-profile-dropdown">
+                                <div class="profile-dropdown-info">
+                                    <div class="profile-shop-name">${escapeHtml(displayName)}</div>
+                                    <div class="profile-email">${escapeHtml(user.email)}</div>
+                                </div>
+                                <div style="border-top: 1px solid var(--border); margin: 6px 0;"></div>
+                                <a href="index.html" style="margin-bottom: 4px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                                    Main Storefront
+                                </a>
+                                <a href="#" onclick="signOutUser(); event.preventDefault();">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                    Logout
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <button class="hamburger-mobile" onclick="toggleMobileMenu()" aria-label="Open seller menu mobile">
@@ -1742,6 +2339,7 @@
 
                 if (mobileLinks) {
                     mobileLinks.innerHTML = `
+                        <li><a href="index.html" onclick="toggleMobileMenu()">Main Storefront</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); switchTab('overview'); event.preventDefault();">Dashboard</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); switchTab('add-product'); event.preventDefault();">Add Product</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); switchTab('manage'); event.preventDefault();">Manage Listing</a></li>
@@ -1754,7 +2352,10 @@
                 }
             } else {
                 nav.innerHTML = `
-                    <a href="index.html" class="nav-link">Main Storefront</a>
+                    <a href="index.html" class="nav-link-storefront" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #2563eb; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); padding: 9px 22px; border-radius: 100px; text-decoration: none; transition: all 0.2s ease;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        Main Storefront
+                    </a>
                 `;
                 if (mobileLinks) {
                     mobileLinks.innerHTML = `
@@ -1845,41 +2446,192 @@
 
         function renderLandingView(container) {
             container.innerHTML = `
-                <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 40px 20px;">
-                    <div class="landing-hero-card">
-                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 80% 20%, rgba(74, 144, 226, 0.15) 0%, transparent 60%); pointer-events: none;"></div>
-                        <h1>Start Your Selling Journey on Storify</h1>
-                        <p>
-                            Reach thousands of buyers, manage your listings easily, and secure payments through our trusted escrow model. List products for free today!
-                        </p>
-                        <button class="btn btn-primary" style="background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border: none; padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4); text-shadow: 0 1px 2px rgba(0,0,0,0.15);" onclick="openAuthForm()">
-                            Become a Seller
-                        </button>
-                    </div>
+                <div class="landing-wrapper">
+                    <!-- Hero Section - White Background SaaS Style -->
+                    <section class="landing-hero-section">
+                        <div class="landing-hero-bg-glow1"></div>
 
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; text-align: left;">
-                        <div style="background: var(--white); border-radius: 16px; padding: 25px; border: 1px solid var(--border); box-shadow: 0 4px 20px var(--shadow);">
-                            <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(74, 144, 226, 0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        <div class="landing-hero-container">
+                            <div class="landing-hero-badge">
+                                <span class="pulse-dot"></span> Official Storify Vendor Ecosystem
                             </div>
-                            <h3 style="font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">Zero Upfront Cost</h3>
-                            <p style="font-size: 13px; color: var(--text-light); line-height: 1.5;">List your products completely free. No subscription or listing fees. Pay only when you sell.</p>
-                        </div>
-                        <div style="background: var(--white); border-radius: 16px; padding: 25px; border: 1px solid var(--border); box-shadow: 0 4px 20px var(--shadow);">
-                            <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(16, 185, 129, 0.1); color: var(--success); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            
+                            <h1>
+                                Start Your Selling Journey
+                                <span class="blue-text">on Storify Marketplace</span>
+                            </h1>
+                            
+                            <p>
+                                Reach thousands of eager buyers nationwide, list your products completely free, and experience hassle-free payouts backed by 100% secure escrow protection.
+                            </p>
+
+                            <div class="landing-hero-cta-group">
+                                <button class="btn-hero-cta-primary" onclick="openAuthForm()">
+                                    Become a Seller
+                                </button>
+                                <button class="btn-hero-cta-secondary" onclick="window.location.href='index.html'">
+                                    Main Storefront
+                                </button>
                             </div>
-                            <h3 style="font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">Escrow Security</h3>
-                            <p style="font-size: 13px; color: var(--text-light); line-height: 1.5;">Buyer funds are held in secure escrow via Safepay. Ship with confidence knowing payment is guaranteed.</p>
-                        </div>
-                        <div style="background: var(--white); border-radius: 16px; padding: 25px; border: 1px solid var(--border); box-shadow: 0 4px 20px var(--shadow);">
-                            <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(245, 158, 11, 0.1); color: var(--warning); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+
+                            <!-- Bottom Stats Row matching Reference Screenshot -->
+                            <div class="hero-stats-row">
+                                <div class="hero-stat-col">
+                                    <div class="hero-stat-number">Rs 0</div>
+                                    <div class="hero-stat-label">Upfront Fee</div>
+                                </div>
+                                <div class="hero-stat-col">
+                                    <div class="hero-stat-number">100%</div>
+                                    <div class="hero-stat-label">Escrow Guarantee</div>
+                                </div>
+                                <div class="hero-stat-col">
+                                    <div class="hero-stat-number">Real-Time</div>
+                                    <div class="hero-stat-label">Sales Analytics</div>
+                                </div>
+                                <div class="hero-stat-col">
+                                    <div class="hero-stat-number">Unified</div>
+                                    <div class="hero-stat-label">Stock & Inventory</div>
+                                </div>
                             </div>
-                            <h3 style="font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">Powerful Dashboard</h3>
-                            <p style="font-size: 13px; color: var(--text-light); line-height: 1.5;">Manage your products, view payouts, and track shipment status directly inside a unified vendor panel.</p>
                         </div>
-                    </div>
+                    </section>
+
+                    <!-- Full Width Features Showcase -->
+                    <section class="landing-features-section">
+                        <div class="landing-section-header">
+                            <span class="landing-section-tag">WHY SELL ON STORIFY</span>
+                            <div class="landing-section-title">Everything You Need to Scale Your Shop</div>
+                            <div class="landing-section-subtitle">Designed specifically for modern vendors to manage listings, receive secure payments, and grow revenue without technical complexity.</div>
+                        </div>
+
+                        <div class="landing-features-grid">
+                            <div class="landing-feature-card">
+                                <div>
+                                    <div class="landing-feature-icon">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    </div>
+                                    <h3>Zero Risk & Zero Upfront Costs</h3>
+                                    <p>Launch your online storefront without spending a rupee up front. No setup fees, no monthly software subscriptions, and no listing charges. Pay only a standard fee when you make a sale.</p>
+                                </div>
+                                <div class="landing-feature-pill">FREE LISTING • ZERO SUBSCRIPTION</div>
+                            </div>
+
+                            <div class="landing-feature-card">
+                                <div>
+                                    <div class="landing-feature-icon">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                    </div>
+                                    <h3>Safepay Escrow Payment Security</h3>
+                                    <p>Never worry about non-paying buyers again. Customer funds are verified and held safely in escrow before you ship. Money is automatically disbursed directly to your bank account upon delivery.</p>
+                                </div>
+                                <div class="landing-feature-pill">100% SECURE • AUTOMATED PAYOUTS</div>
+                            </div>
+
+                            <div class="landing-feature-card">
+                                <div>
+                                    <div class="landing-feature-icon">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                    </div>
+                                    <h3>Smart Inventory & Availability Control</h3>
+                                    <p>Effortlessly mark products as <strong>Available</strong> or <strong>Sold Out</strong> with a single click. When sold out, items automatically hide from the storefront so you never get orders for out-of-stock inventory.</p>
+                                </div>
+                                <div class="landing-feature-pill">LIVE SYNCHRONIZATION • EASY CONTROL</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Full Width How It Works Step Guide -->
+                    <section class="landing-steps-section">
+                        <div class="landing-steps-container">
+                            <div class="landing-section-header" style="margin-bottom: 35px;">
+                                <span class="landing-section-tag">4 SIMPLE STEPS</span>
+                                <div class="landing-section-title">How Selling Works on Storify</div>
+                                <div class="landing-section-subtitle">A simple, proven process that gets you from zero to a scaling eCommerce store.</div>
+                            </div>
+
+                            <div class="landing-steps-grid">
+                                <div class="landing-step-card">
+                                    <div class="landing-step-badge">1</div>
+                                    <h4>Create Your Account</h4>
+                                    <p>Sign up with your email & phone number, enter your business name, and configure your bank payout details in minutes.</p>
+                                </div>
+
+                                <div class="landing-step-card">
+                                    <div class="landing-step-badge">2</div>
+                                    <h4>Add Product Catalog</h4>
+                                    <p>Upload clean product photos, set your pricing, configure shipping fees, and customize color & size variants easily.</p>
+                                </div>
+
+                                <div class="landing-step-card">
+                                    <div class="landing-step-badge">3</div>
+                                    <h4>Fulfill Customer Orders</h4>
+                                    <p>Receive live order alerts, pack your items, and ship orders to buyers nationwide with 100% escrow protection.</p>
+                                </div>
+
+                                <div class="landing-step-card">
+                                    <div class="landing-step-badge">4</div>
+                                    <h4>Receive Direct Payouts</h4>
+                                    <p>Track order deliveries in real time and receive automated payments deposited directly to your bank account or mobile wallet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Full Width Bottom CTA Section -->
+                    <section class="landing-final-cta-section">
+                        <div class="landing-final-cta-container">
+                            <h2>Ready to Grow Your Business?</h2>
+                            <p>Join thousands of sellers reaching buyers across the country on Storify's verified commerce platform.</p>
+                            <button class="btn-hero-cta-primary" style="font-size: 17px; padding: 18px 48px;" onclick="openAuthForm()">
+                                Start Selling Today
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Footer matching index.html -->
+                    <footer class="footer">
+                        <div class="footer-content">
+                            <div class="footer-section">
+                                <a href="index.html" class="logo" style="margin-bottom: 20px; display: inline-block;">
+                                    <img src="images/logo/footer.png" alt="Storify Logo" style="height: 32px; object-fit: contain;">
+                                </a>
+                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 14px; line-height: 1.6;">
+                                    Your premium destination for curated products and exceptional shopping experience.
+                                </p>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Shop</h3>
+                                <ul class="footer-links">
+                                    <li><a href="index.html?page=all-products">New Arrivals</a></li>
+                                    <li><a href="index.html?page=all-products">Best Sellers</a></li>
+                                    <li><a href="index.html?page=all-products">Sale</a></li>
+                                    <li><a href="index.html">Gift Cards</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Support</h3>
+                                <ul class="footer-links">
+                                    <li><a href="index.html">Contact Us</a></li>
+                                    <li><a href="index.html">Shipping Info</a></li>
+                                    <li><a href="index.html">Returns</a></li>
+                                    <li><a href="index.html">FAQ</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Company</h3>
+                                <ul class="footer-links">
+                                    <li><a href="index.html">About Us</a></li>
+                                    <li><a href="seller.html">Become a Seller</a></li>
+                                    <li><a href="index.html">Privacy Policy</a></li>
+                                    <li><a href="index.html">Terms of Service</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="footer-bottom">
+                            © 2026 Storify. All rights reserved. Crafted with excellence.
+                        </div>
+                    </footer>
                 </div>
             `;
         }
@@ -1936,8 +2688,42 @@
                             ${authTab === 'login' ? 'Sign In' : 'Create Seller Account'}
                         </button>
                     </form>
+
+                    <div style="display: flex; align-items: center; margin: 22px 0 18px 0; text-align: center; color: #94a3b8;">
+                        <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                        <span style="padding: 0 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;">OR</span>
+                        <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                    </div>
+
+                    <button type="button" class="btn-google-auth" onclick="handleGoogleLogin()">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                        Continue with Google
+                    </button>
                 </div>
             `;
+        }
+
+        async function handleGoogleLogin() {
+            if (!supabaseClient) {
+                showAuthAlert("Supabase is not configured.", "danger");
+                return;
+            }
+            try {
+                const { error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + window.location.pathname
+                    }
+                });
+                if (error) throw error;
+            } catch (err) {
+                showAuthAlert(err.message || "Failed to initiate Google authentication.", "danger");
+            }
         }
 
         function switchAuthTab(tab) {

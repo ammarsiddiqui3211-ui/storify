@@ -7831,7 +7831,7 @@
             if ((filter === 'all' || filter === 'all-products') && searchQuery === '' && priceFilter === 'all' && sortFilter === 'default') {
                 const renderedKeys = new Set();
                 MASTER_CATEGORIES.forEach(cat => {
-                    const catProducts = products.filter(p => p.categoryKey === cat.key);
+                    const catProducts = products.filter(p => p.categoryKey === cat.key && !p.sold && p.stockStatus !== 'sold_out');
                     if (catProducts.length > 0) {
                         const section = createProductSectionHTML(cat.name, catProducts, cat.key, catProducts.length > 8);
                         container.appendChild(section);
@@ -7842,6 +7842,7 @@
                 // Fallback for other categories that might exist
                 const categoryMap = {};
                 products.forEach(p => {
+                    if (p.sold || p.stockStatus === 'sold_out') return;
                     const key = p.categoryKey;
                     if (key && !renderedKeys.has(key)) {
                         if (!categoryMap[key]) {
@@ -7859,6 +7860,7 @@
             } else {
                 // Single Category or Search Results section layout
                 let filtered = products.filter(p => {
+                    if (p.sold || p.stockStatus === 'sold_out') return false;
                     let matchesCat = false;
                     if (filter === 'all' || filter === 'all-products') {
                         matchesCat = true;
@@ -9121,7 +9123,7 @@
             if (!p || !view) return;
 
             const related = products
-                .filter(prod => prod.id !== productId && prod.categoryKey === p.categoryKey)
+                .filter(prod => prod.id !== productId && prod.categoryKey === p.categoryKey && !prod.sold && prod.stockStatus !== 'sold_out')
                 .slice(0, 4);
 
             let discountBadgeHTML = '';
@@ -9132,7 +9134,7 @@
                 }
             }
             if (related.length === 0) {
-                related.push(...products.filter(prod => prod.id !== productId).slice(0, 4));
+                related.push(...products.filter(prod => prod.id !== productId && !prod.sold && prod.stockStatus !== 'sold_out').slice(0, 4));
             }
 
             let colorOptionsHTML = '';

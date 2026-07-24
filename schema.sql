@@ -272,7 +272,8 @@ CREATE OR REPLACE VIEW public.public_products AS
     gradient,
     featured,
     created_at
-  FROM public.products;
+  FROM public.products
+  WHERE stock_status = 'available';
 
 -- Grant public read access to the view
 GRANT SELECT ON public.public_products TO anon, authenticated;
@@ -792,7 +793,7 @@ CREATE OR REPLACE VIEW public.public_products AS
     p.created_at
   FROM public.products p
   LEFT JOIN public.profiles s ON p.seller_id = s.id
-  WHERE p.is_hidden = false AND (p.seller_id IS NULL OR s.seller_status <> 'suspended');
+  WHERE p.is_hidden = false AND p.stock_status = 'available' AND (p.seller_id IS NULL OR s.seller_status <> 'suspended');
 
 GRANT SELECT ON public.public_products TO anon, authenticated;
 
