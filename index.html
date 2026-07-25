@@ -5867,19 +5867,21 @@
                             <div class="dropdown-header"
                                 style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
                                 Account Menu</div>
-                            <a href="#" onclick="showAccountSubPage('personal', event)">Personal Info</a>
-                            <a href="#" onclick="showAccountSubPage('activity', event)">Shopping Activity</a>
-                            <a href="#" onclick="showAccountSubPage('orders', event)">Order History</a>
-                            <a href="#" onclick="signOutAccount(); if(event)event.preventDefault();"
-                                style="color: #ef4444; border-top: 1.5px solid var(--border); margin-top: 6px; padding-top: 10px; display: flex; align-items: center; gap: 8px;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                                    <polyline points="16 17 21 12 16 7" />
-                                    <line x1="21" y1="12" x2="9" y2="12" />
-                                </svg>
-                                Sign Out
-                            </a>
+                            <div id="desktopAccountMenuContent">
+                                <a href="#" onclick="showAccountSubPage('personal', event)">Personal Info</a>
+                                <a href="#" onclick="showAccountSubPage('activity', event)">Shopping Activity</a>
+                                <a href="#" onclick="showAccountSubPage('orders', event)">Order History</a>
+                                <a href="#" onclick="signOutAccount(); if(event)event.preventDefault();"
+                                    style="color: #ef4444; border-top: 1.5px solid var(--border); margin-top: 6px; padding-top: 10px; display: flex; align-items: center; gap: 8px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        <polyline points="16 17 21 12 16 7" />
+                                        <line x1="21" y1="12" x2="9" y2="12" />
+                                    </svg>
+                                    Sign Out
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <button class="nav-btn" id="desktopWishlistBtn" onclick="showView('wishlist')"
@@ -7785,6 +7787,37 @@
             }
         }
 
+        // Helper function to resolve seller storefront info
+        function getUserStorefrontInfo() {
+            if (!account) return null;
+            let shopName = account.shop_name || '';
+            if (!shopName && typeof products !== 'undefined' && products && products.length > 0) {
+                const userProduct = products.find(p => p.seller_id && String(p.seller_id) === String(account.id));
+                if (userProduct) {
+                    shopName = userProduct.shopName;
+                }
+            }
+            const isSeller = account.role === 'seller' || account.seller_status === 'approved' || !!shopName;
+            if (isSeller || shopName) {
+                return {
+                    shopName: shopName || 'My Store',
+                    isSeller: true
+                };
+            }
+            return null;
+        }
+
+        function openMyStorefront(event) {
+            if (event) event.preventDefault();
+            if (!account) return;
+            const storeInfo = getUserStorefrontInfo();
+            if (storeInfo && storeInfo.shopName) {
+                navigateToStore(storeInfo.shopName, event);
+            } else {
+                window.open('seller', '_blank');
+            }
+        }
+
         // Update the Account nav button text based on login state
         function updateAccountNavBtn() {
             const textSpans = document.querySelectorAll('.account-btn-text');
@@ -7795,6 +7828,47 @@
                     span.setAttribute('data-translate', 'login_signup');
                 }
             });
+
+            // Dynamic desktop account dropdown menu content
+            const desktopMenuContent = document.getElementById('desktopAccountMenuContent');
+            if (desktopMenuContent) {
+                if (account) {
+                    const storeInfo = getUserStorefrontInfo();
+                    let storeLinks = '';
+                    if (storeInfo) {
+                        storeLinks = `
+                            <a href="#" onclick="openMyStorefront(event)" style="color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                My Storefront
+                            </a>
+                            <a href="seller" target="_blank" style="color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                Seller Portal
+                            </a>
+                            <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
+                        `;
+                    }
+                    desktopMenuContent.innerHTML = `
+                        ${storeLinks}
+                        <a href="#" onclick="showAccountSubPage('personal', event)">Personal Info</a>
+                        <a href="#" onclick="showAccountSubPage('activity', event)">Shopping Activity</a>
+                        <a href="#" onclick="showAccountSubPage('orders', event)">Order History</a>
+                        <a href="#" onclick="signOutAccount(); if(event)event.preventDefault();"
+                            style="color: #ef4444; border-top: 1.5px solid var(--border); margin-top: 6px; padding-top: 10px; display: flex; align-items: center; gap: 8px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                            Sign Out
+                        </a>
+                    `;
+                } else {
+                    desktopMenuContent.innerHTML = '';
+                }
+            }
+
             // Show/hide account dropdown menu depending on login state
             const dropdownMenus = document.querySelectorAll('.account-dropdown .dropdown-menu');
             dropdownMenus.forEach(menu => {
@@ -7926,7 +8000,18 @@
             if (mobileNav) {
                 let accountMenuHtml = '';
                 if (account) {
+                    const storeInfo = getUserStorefrontInfo();
+                    let mobileStoreLink = '';
+                    if (storeInfo) {
+                        mobileStoreLink = `
+                            <li><a href="#" onclick="toggleMobileMenu(); openMyStorefront(event)" style="color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                My Storefront
+                            </a></li>
+                        `;
+                    }
                     accountMenuHtml = `
+                        ${mobileStoreLink}
                         <li><a href="#" onclick="toggleMobileMenu(); showAccountSubPage('personal', event)">Personal Info</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); showAccountSubPage('activity', event)">Shopping Activity</a></li>
                         <li><a href="#" onclick="toggleMobileMenu(); showAccountSubPage('orders', event)">Order History</a></li>
