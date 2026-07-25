@@ -520,6 +520,135 @@
             opacity: 0;
         }
 
+        /* Seller Store Page Styling */
+        .seller-store-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 36px 40px;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 12px 36px rgba(15, 23, 42, 0.12);
+        }
+
+        .seller-store-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .seller-store-profile-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            position: relative;
+            z-index: 2;
+            flex-wrap: wrap;
+        }
+
+        .seller-store-avatar {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            box-shadow: 0 8px 24px var(--accent-glow);
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            flex-shrink: 0;
+        }
+
+        .seller-store-info {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .seller-store-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .seller-store-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .seller-store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(37, 99, 235, 0.25);
+            border: 1px solid rgba(74, 144, 226, 0.4);
+            color: #6BA8F0;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+
+        .seller-store-meta {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 10px;
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.85);
+            flex-wrap: wrap;
+        }
+
+        .seller-store-meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .seller-store-link {
+            color: #0f172a !important;
+            font-weight: 700 !important;
+            text-decoration: underline !important;
+            text-decoration-color: var(--accent) !important;
+            text-underline-offset: 3px !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+        }
+
+        .seller-store-link:hover {
+            color: var(--accent) !important;
+            text-decoration-color: var(--accent-dark) !important;
+        }
+
+        .card-store-link {
+            color: var(--accent) !important;
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 3px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .card-store-link:hover {
+            color: var(--accent-dark) !important;
+            text-decoration: underline !important;
+        }
+
         /* Categories Toggle Button */
         .categories-toggle-btn {
             position: absolute;
@@ -6235,6 +6364,9 @@
 
         <!-- Order Success View -->
         <div id="success-view" class="fade-in" style="display: none;"></div>
+
+        <!-- Seller Store View -->
+        <div id="store-view" class="fade-in" style="display: none;"></div>
     </main>
 
     <!-- Footer -->
@@ -7009,6 +7141,7 @@
             const accountPageView = document.getElementById('account-page-view');
             const checkoutView = document.getElementById('checkout-view');
             const successView = document.getElementById('success-view');
+            const storeView = document.getElementById('store-view');
 
             // ACCOUNT VIEW LOGIC
             if (viewName === 'account') {
@@ -7038,6 +7171,7 @@
                     wishlistView.style.display = 'none';
                     checkoutView.style.display = 'none';
                     successView.style.display = 'none';
+                    if (storeView) storeView.style.display = 'none';
                     if (hero) hero.style.display = 'none';
 
                     if (accountPageView) {
@@ -7065,6 +7199,7 @@
             wishlistView.style.display = 'none';
             checkoutView.style.display = 'none';
             successView.style.display = 'none';
+            if (storeView) storeView.style.display = 'none';
             const categoriesView = document.getElementById('categories-view');
             if (categoriesView) {
                 categoriesView.style.display = 'none';
@@ -7126,6 +7261,18 @@
                     categoriesView.style.display = 'block';
                 }
             }
+            else if (viewName === 'store') {
+                if (hero) hero.style.display = 'none';
+                if (storeView) {
+                    storeView.style.display = 'block';
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const storeName = urlParams.get('store') || urlParams.get('seller') || urlParams.get('name') || decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, ''));
+                    const search = urlParams.get('search') || searchQuery || '';
+                    const price = urlParams.get('price') || 'all';
+                    const sort = urlParams.get('sort') || 'default';
+                    renderSellerStoreView(storeName, search, price, sort);
+                }
+            }
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -7175,13 +7322,21 @@
                 urlParams.delete('page');
             }
 
-            const queryString = urlParams.toString();
-            const newUrl = queryString ? `?${queryString}` : window.location.pathname;
+            let newUrl;
+            if (page === 'store' && params.name) {
+                urlParams.delete('page');
+                urlParams.delete('name');
+                const storeSlug = params.name;
+                const qs = urlParams.toString();
+                newUrl = `/${encodeURIComponent(storeSlug)}${qs ? '?' + qs : ''}`;
+            } else {
+                const queryString = urlParams.toString();
+                newUrl = queryString ? `?${queryString}` : window.location.pathname;
+            }
 
-            const currentQuery = window.location.search;
-            const newQuery = queryString ? `?${queryString}` : '';
+            const currentPathAndQuery = window.location.pathname + window.location.search;
 
-            if (currentQuery !== newQuery) {
+            if (currentPathAndQuery !== newUrl) {
                 if (replaceState) {
                     history.replaceState({ page, params }, '', newUrl);
                 } else {
@@ -7196,7 +7351,19 @@
         function parseUrlAndRender() {
             renderHeaderNavigation();
             const urlParams = new URLSearchParams(window.location.search);
-            const page = urlParams.get('page') || 'home';
+            let page = urlParams.get('page');
+            let storeNameFromUrl = urlParams.get('store') || urlParams.get('seller') || urlParams.get('name');
+
+            // Handle Clean Path URLs like website-link/seller-name
+            const pathname = decodeURIComponent(window.location.pathname.replace(/^\/+|\/+$/g, ''));
+            const reservedPaths = ['index.html', 'index', 'seller.html', 'seller', 'admin.html', 'admin', 'diagnostics.html', 'diagnostics', 'sw.js', 'manifest.json', 'sitemap.xml', 'favicon.png'];
+
+            if (pathname && !reservedPaths.includes(pathname.toLowerCase()) && !pathname.includes('.')) {
+                page = 'store';
+                if (!storeNameFromUrl) storeNameFromUrl = pathname;
+            }
+
+            if (!page) page = 'home';
             const category = urlParams.get('category') || 'all';
             const search = urlParams.get('search') || '';
             const productId = Number(urlParams.get('id')) || null;
@@ -7330,6 +7497,9 @@
                 } else {
                     navigateToPage('home', {}, true);
                 }
+            } else if (page === 'store') {
+                closeCartDrawer();
+                displayView('store', null, null, null, search);
             }
 
             // Re-apply translation on navigation/render
@@ -7537,6 +7707,7 @@
             if (document.getElementById('categories-view') && document.getElementById('categories-view').style.display !== 'none') return 'categories';
             if (document.getElementById('checkout-view') && document.getElementById('checkout-view').style.display !== 'none') return 'checkout';
             if (document.getElementById('success-view') && document.getElementById('success-view').style.display !== 'none') return 'success';
+            if (document.getElementById('store-view') && document.getElementById('store-view').style.display !== 'none') return 'store';
             return null;
         }
 
@@ -7794,6 +7965,174 @@
         function goToAllProducts(event) {
             if (event) event.preventDefault();
             navigateToPage('all-products');
+        }
+
+        // ----------------------------------------------------
+        // SELLER STORE ROUTING & VIEW HELPERS
+        // ----------------------------------------------------
+        function slugifyShopName(name) {
+            return String(name || '')
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        function navigateToStore(shopName, event) {
+            if (event) event.preventDefault();
+            if (!shopName) return;
+            const slug = slugifyShopName(shopName);
+            navigateToPage('store', { name: slug, shopName: shopName });
+        }
+
+        function renderSellerStoreView(storeIdentifier, searchQuery = '', priceFilter = 'all', sortFilter = 'default') {
+            const container = document.getElementById('store-view');
+            if (!container) return;
+
+            const targetSlug = slugifyShopName(storeIdentifier);
+
+            // Filter products matching this seller store
+            let sellerProducts = products.filter(p => {
+                const pSlug = slugifyShopName(p.shopName);
+                return pSlug === targetSlug || 
+                       (p.shopName && p.shopName.toLowerCase() === String(storeIdentifier).toLowerCase()) ||
+                       (p.seller_id && String(p.seller_id) === String(storeIdentifier));
+            });
+
+            // Display shop name resolution
+            let displayShopName = 'Partner Shop';
+            let isVerified = false;
+
+            if (sellerProducts.length > 0) {
+                displayShopName = sellerProducts[0].shopName || 'Partner Shop';
+                isVerified = sellerProducts.some(p => p.verifiedBadge);
+            } else if (storeIdentifier) {
+                displayShopName = String(storeIdentifier)
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            }
+
+            const initials = displayShopName
+                .split(' ')
+                .filter(Boolean)
+                .slice(0, 2)
+                .map(w => w[0])
+                .join('')
+                .toUpperCase() || 'S';
+
+            // Filter seller products based on in-store search & price
+            let filtered = sellerProducts.filter(p => {
+                if (p.sold || p.stockStatus === 'sold_out') return false;
+
+                let matchesPrice = true;
+                if (priceFilter === 'under-500') matchesPrice = p.currentPrice < 500;
+                else if (priceFilter === '500-1500') matchesPrice = p.currentPrice >= 500 && p.currentPrice <= 1500;
+                else if (priceFilter === 'over-1500') matchesPrice = p.currentPrice > 1500;
+
+                const query = searchQuery.toLowerCase().trim();
+                const matchesSearch = !query || 
+                    p.name.toLowerCase().includes(query) || 
+                    p.description.toLowerCase().includes(query) ||
+                    p.category.toLowerCase().includes(query);
+
+                return matchesPrice && matchesSearch;
+            });
+
+            // Sorting
+            if (sortFilter === 'price-low') {
+                filtered.sort((a, b) => a.currentPrice - b.currentPrice);
+            } else if (sortFilter === 'price-high') {
+                filtered.sort((a, b) => b.currentPrice - a.currentPrice);
+            } else if (sortFilter === 'name-asc') {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            container.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <a href="#" onclick="showView('home', null, event)" style="color: var(--text-light); text-decoration: none; font-size: 13.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s ease;">
+                        ← Back to Marketplace
+                    </a>
+                </div>
+
+                <div class="seller-store-header">
+                    <div class="seller-store-profile-wrapper">
+                        <div class="seller-store-avatar">${initials}</div>
+                        <div class="seller-store-info">
+                            <div class="seller-store-title-row">
+                                <h1 class="seller-store-name">${escapeHtml(displayShopName)}</h1>
+                                ${isVerified ? `
+                                    <span class="seller-store-badge">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb" stroke="none" style="display:inline-block; vertical-align:middle; color:#fff;" title="Verified Shop"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        Verified Seller
+                                    </span>
+                                ` : ''}
+                            </div>
+                            <p style="font-size: 14px; color: rgba(255,255,255,0.85); margin: 0;">Official Storify Partner Store</p>
+                            
+                            <div class="seller-store-meta">
+                                <span class="seller-store-meta-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                    <strong>${sellerProducts.length}</strong> Product${sellerProducts.length === 1 ? '' : 's'}
+                                </span>
+                                <span class="seller-store-meta-item">•</span>
+                                <span class="seller-store-meta-item">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <strong>5.0</strong> Rating (Verified)
+                                </span>
+                                <span class="seller-store-meta-item">•</span>
+                                <span class="seller-store-meta-item">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    Escrow Protection Guaranteed
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Store Product Grid Header -->
+                <div class="section-header" style="margin-bottom: 24px;">
+                    <h2 class="section-title">Store Products (${filtered.length})</h2>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="product-grid">
+                    ${filtered.length === 0 ? `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--white); border-radius: 16px; border: 1px solid var(--border);">
+                            <div style="width: 54px; height: 54px; border-radius: 50%; background: var(--secondary); display: inline-flex; align-items: center; justify-content: center; color: var(--text-light); margin-bottom: 12px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            </div>
+                            <p style="font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--primary);">No Products Found</p>
+                            <p style="font-size: 13.5px; color: var(--text-light);">This store doesn't have any matching products at the moment.</p>
+                            <button onclick="showView('home')" class="btn-premium" style="margin-top: 18px; padding: 10px 24px; font-weight:700;">Explore Other Sellers</button>
+                        </div>
+                    ` : filtered.map(p => `
+                        <div class="product-card fade-in">
+                            <div class="product-image" onclick="showView('product', ${p.id})">
+                                <img src="${p.image}" alt="${escapeHtml(p.name)}">
+                                ${p.badge ? `<span class="product-badge${p.badge === 'Sale' ? ' sale' : ''}${p.sold ? ' sold' : ''}">${p.badge}</span>` : ''}
+                                <button class="wishlist-btn ${wishlist.includes(p.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist(${p.id})" aria-label="${wishlist.includes(p.id) ? 'Remove from wishlist' : 'Add to wishlist'}">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                                </button>
+                            </div>
+                            <div class="product-info" onclick="showView('product', ${p.id})">
+                                <div class="product-category">${p.category}</div>
+                                <h3 class="product-name">${escapeHtml(p.name)}</h3>
+                                <div class="product-price" style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:0;">
+                                    <span class="current-price">${formatPrice(p.currentPrice)}</span>
+                                    ${p.verifiedBadge ? `
+                                        <span style="color:var(--text-light); display:inline-flex; align-items:center; gap:4px; font-size:12.5px; font-weight:400;">
+                                            <span>Storify</span>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="#2563eb" stroke="none" style="display:inline-block; vertical-align:middle; color:#fff;" title="Verified Shop"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        </span>
+                                    ` : ''}
+                                </div>
+                                <button class="add-to-cart" onclick="event.stopPropagation(); quickAddToCart(${p.id})" ${p.sold ? 'disabled' : ''}>${p.sold ? 'Sold Out' : 'Add to Cart'}</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
 
         // ----------------------------------------------------
@@ -9293,7 +9632,9 @@
                             <span style="color:var(--text-light); font-size:12px;">•</span>
                             <span style="display:inline-flex; align-items:center; gap:5px; font-size:14px; color:#475569; font-weight:500;">
                                 <span style="color:#64748b;">Sold by:</span>
-                                <span style="color:#0f172a; font-weight:700;">${escapeHtml(p.shopName || 'Partner Shop')}</span>
+                                <a href="/${slugifyShopName(p.shopName)}" onclick="navigateToStore('${escapeHtml(p.shopName)}', event)" class="seller-store-link">
+                                    ${escapeHtml(p.shopName || 'Partner Shop')}
+                                </a>
                             </span>
                         </div>
                         
@@ -9536,7 +9877,7 @@
                                         ${sellers.map((sId, index) => {
                 const prodInCart = cart.find(item => item.seller_id === sId);
                 const shopName = prodInCart ? (products.find(p => p.id === prodInCart.id)?.shopName || 'Seller ' + (index + 1)) : 'Seller ' + (index + 1);
-                return `${escapeHtml(shopName)}: ${formatPrice(sellerShippingMap[sId])}`;
+                return `<a href="/${slugifyShopName(shopName)}" onclick="navigateToStore('${escapeHtml(shopName)}', event)" style="color:var(--text-light); text-decoration:underline;">${escapeHtml(shopName)}</a>: ${formatPrice(sellerShippingMap[sId])}`;
             }).join('<br>')}
                                     </div>
                                 ` : ''}
@@ -9890,7 +10231,9 @@
                     <span style="color:var(--text-light); font-size:12px;">•</span>
                     <span style="display:inline-flex; align-items:center; gap:5px; font-size:14px; color:#475569; font-weight:500;">
                         <span style="color:#64748b;">Sold by:</span>
-                        <span style="color:#0f172a; font-weight:700;">${escapeHtml(p.shopName || 'Partner Shop')}</span>
+                        <a href="/${slugifyShopName(p.shopName)}" onclick="navigateToStore('${escapeHtml(p.shopName)}', event)" class="seller-store-link">
+                            ${escapeHtml(p.shopName || 'Partner Shop')}
+                        </a>
                     </span>
                 `;
             }
