@@ -522,49 +522,38 @@
 
         /* Seller Store Page Styling */
         .seller-store-header {
-            background: linear-gradient(135deg, var(--primary) 0%, #0f172a 100%);
-            border-radius: 20px;
-            padding: 36px 40px;
-            color: var(--white);
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 36px;
+            color: var(--primary);
             position: relative;
             overflow: hidden;
             margin-bottom: 30px;
-            box-shadow: 0 12px 36px rgba(15, 23, 42, 0.12);
-        }
-
-        .seller-store-header::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(74, 144, 226, 0.2) 0%, transparent 70%);
-            pointer-events: none;
+            box-shadow: var(--shadow-sm);
         }
 
         .seller-store-profile-wrapper {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 22px;
             position: relative;
             z-index: 2;
             flex-wrap: wrap;
         }
 
         .seller-store-avatar {
-            width: 76px;
-            height: 76px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: var(--white);
+            background: rgba(74, 144, 226, 0.12);
+            color: var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
-            box-shadow: 0 8px 24px var(--accent-glow);
-            border: 3px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(74, 144, 226, 0.25);
             flex-shrink: 0;
         }
 
@@ -576,39 +565,40 @@
         .seller-store-title-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 6px;
+            gap: 14px;
+            margin-bottom: 4px;
             flex-wrap: wrap;
         }
 
         .seller-store-name {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
-            color: var(--white);
-            letter-spacing: -0.5px;
+            color: var(--primary);
+            letter-spacing: -0.4px;
             line-height: 1.2;
+            margin: 0;
         }
 
-        .seller-store-badge {
+        .seller-store-member-tag {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            background: rgba(37, 99, 235, 0.25);
-            border: 1px solid rgba(74, 144, 226, 0.4);
-            color: #6BA8F0;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 12.5px;
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
         }
 
         .seller-store-meta {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 24px;
             margin-top: 10px;
-            font-size: 13.5px;
-            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            color: var(--text);
             flex-wrap: wrap;
         }
 
@@ -616,6 +606,8 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            color: var(--text);
+            font-weight: 500;
         }
 
         .seller-store-link {
@@ -8056,6 +8048,16 @@
                 filtered.sort((a, b) => a.name.localeCompare(b.name));
             }
 
+            // Member since resolution (using created_at or default Jan 2025)
+            let memberSince = 'Jan 2025';
+            if (sellerProducts.length > 0 && sellerProducts[0].created_at) {
+                const d = new Date(sellerProducts[0].created_at);
+                if (!isNaN(d.getTime())) {
+                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    memberSince = `${months[d.getMonth()]} ${d.getFullYear()}`;
+                }
+            }
+
             container.innerHTML = `
                 <div class="seller-store-header">
                     <div class="seller-store-profile-wrapper">
@@ -8063,29 +8065,24 @@
                         <div class="seller-store-info">
                             <div class="seller-store-title-row">
                                 <h1 class="seller-store-name">${escapeHtml(displayShopName)}</h1>
-                                ${isVerified ? `
-                                    <span class="seller-store-badge">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb" stroke="none" style="display:inline-block; vertical-align:middle; color:#fff;" title="Verified Shop"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                                        Verified Seller
-                                    </span>
-                                ` : ''}
+                                <span class="seller-store-member-tag">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-light);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    Member since ${memberSince}
+                                </span>
                             </div>
-                            <p style="font-size: 14px; color: rgba(255,255,255,0.85); margin: 0;">Official Storify Partner Store</p>
                             
                             <div class="seller-store-meta">
                                 <span class="seller-store-meta-item">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                                     <strong>${sellerProducts.length}</strong> Product${sellerProducts.length === 1 ? '' : 's'}
                                 </span>
-                                <span class="seller-store-meta-item">•</span>
                                 <span class="seller-store-meta-item">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <strong>5.0</strong> Rating (Verified)
+                                    <strong>5.0</strong> Rating
                                 </span>
-                                <span class="seller-store-meta-item">•</span>
                                 <span class="seller-store-meta-item">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                    Escrow Protection Guaranteed
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    <span style="color:#16a34a; font-weight:600;">Escrow Protected</span>
                                 </span>
                             </div>
                         </div>
