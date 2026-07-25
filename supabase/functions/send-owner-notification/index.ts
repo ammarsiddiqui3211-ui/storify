@@ -42,14 +42,6 @@ serve(async (req) => {
       })
     }
 
-    const formatSenderEmail = (rawFrom: string) => {
-      const trimmed = rawFrom ? rawFrom.trim() : ''
-      if (!trimmed) return 'Storify <onboarding@resend.dev>'
-      if (trimmed.includes('<')) return trimmed
-      return `Storify <${trimmed}>`
-    }
-    const senderFrom = formatSenderEmail(fromEmail)
-
     // 3. Handle seller application approved/rejected emails (admin triggered)
     if (type === 'seller_approved' || type === 'seller_rejected') {
       const authHeader = req.headers.get('Authorization')
@@ -185,7 +177,7 @@ serve(async (req) => {
           'Authorization': `Bearer ${resendApiKey}`
         },
         body: JSON.stringify({
-          from: senderFrom,
+          from: fromEmail,
           to: sellerEmail,
           subject: emailSubject,
           html: emailHtml
@@ -555,7 +547,7 @@ serve(async (req) => {
           'Authorization': `Bearer ${resendApiKey}`
         },
         body: JSON.stringify({
-          from: senderFrom,
+          from: fromEmail,
           to: toEmail,
           subject: emailSubject,
           html: emailHtml
@@ -702,7 +694,7 @@ serve(async (req) => {
             'Authorization': `Bearer ${resendApiKey}`
           },
           body: JSON.stringify({
-            from: senderFrom,
+            from: fromEmail,
             to: displayBuyerEmail,
             subject: buyerSubject,
             html: buyerHtml
@@ -938,7 +930,7 @@ serve(async (req) => {
             'Authorization': `Bearer ${resendApiKey}`
           },
           body: JSON.stringify({
-            from: senderFrom,
+            from: fromEmail,
             to: sellerInfo.email,
             subject: sellerSubject,
             html: sellerHtml
