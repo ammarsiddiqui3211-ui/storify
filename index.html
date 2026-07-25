@@ -528,7 +528,8 @@
             padding: 0;
             color: var(--primary);
             position: relative;
-            margin-bottom: 30px;
+            margin-top: 10px;
+            margin-bottom: 28px;
             box-shadow: none;
         }
 
@@ -584,19 +585,66 @@
         .seller-store-meta {
             display: flex;
             align-items: center;
-            gap: 20px;
-            margin-top: 4px;
-            font-size: 14px;
+            justify-content: flex-start;
+            gap: 18px;
+            margin-top: 6px;
+            font-size: 13.5px;
             color: var(--text);
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .seller-store-meta::-webkit-scrollbar {
+            display: none;
         }
 
         .seller-store-meta-item {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             color: var(--text);
             font-weight: 400;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .seller-store-header {
+                margin-top: 6px;
+                margin-bottom: 20px;
+            }
+
+            .seller-store-top-row {
+                gap: 14px;
+                margin-bottom: 10px;
+            }
+
+            .seller-store-avatar {
+                width: 60px;
+                height: 60px;
+            }
+
+            .seller-store-name {
+                font-size: 22px;
+            }
+
+            .seller-store-member-tag {
+                font-size: 12px;
+            }
+
+            .seller-store-meta {
+                gap: 12px;
+                font-size: 12px;
+                flex-wrap: nowrap !important;
+            }
+
+            .seller-store-meta-item {
+                font-size: 12px;
+                gap: 4px;
+                white-space: nowrap;
+            }
         }
 
         .seller-store-link {
