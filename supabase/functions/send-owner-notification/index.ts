@@ -42,6 +42,14 @@ serve(async (req) => {
       })
     }
 
+    const formatSenderEmail = (rawFrom: string) => {
+      const trimmed = rawFrom ? rawFrom.trim() : ''
+      if (!trimmed) return 'Storify <onboarding@resend.dev>'
+      if (trimmed.includes('<')) return trimmed
+      return `Storify <${trimmed}>`
+    }
+    const senderFrom = formatSenderEmail(fromEmail)
+
     // 3. Handle seller application approved/rejected emails (admin triggered)
     if (type === 'seller_approved' || type === 'seller_rejected') {
       const authHeader = req.headers.get('Authorization')
@@ -177,7 +185,7 @@ serve(async (req) => {
           'Authorization': `Bearer ${resendApiKey}`
         },
         body: JSON.stringify({
-          from: fromEmail,
+          from: senderFrom,
           to: sellerEmail,
           subject: emailSubject,
           html: emailHtml
@@ -537,7 +545,7 @@ serve(async (req) => {
       })
     }
 
-    // 7. Invoke Resend API
+    // 7. Invoke Resend API (Admin Owner Notification)
     const resendResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -545,7 +553,7 @@ serve(async (req) => {
         'Authorization': `Bearer ${resendApiKey}`
       },
       body: JSON.stringify({
-        from: fromEmail,
+        from: senderFrom,
         to: toEmail,
         subject: emailSubject,
         html: emailHtml
@@ -560,6 +568,155 @@ serve(async (req) => {
     }
 
     const resendData = await resendResponse.json()
+
+    // 7b. Send order confirmation email directly to buyer
+    let buyerEmailResult = null
+    if (displayBuyerEmail && displayBuyerEmail !== 'N/A') {
+      let buyerSubject = ''
+      let buyerHtml = ''
+
+      if (type === 'new_order') {
+        buyerSubject = `[Storify] Order Confirmation - #${order.order_ref}`
+        buyerHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+            <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">Order Placed Successfully!</h2>
+            
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Hello <strong>${displayBuyerName}</strong>,
+            </p>
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Thank you for shopping on Storify! We have received your order reference <strong>#${order.order_ref}</strong>.
+            </p>
+
+            <div style="background-color: #eff6ff; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #2563eb;">
+              <h3 style="margin-top: 0; color: #1e40af;">Order Summary</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; width: 35%;">Order Reference:</td>
+                  <td style="padding: 4px 0; color: #1a1a2e; font-weight: bold;">#${order.order_ref}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Total Amount:</td>
+                  <td style="padding: 4px 0; color: #1a1a2e; font-weight: bold;">RS ${orderTotal.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; vertical-align: top;">Shipping Address:</td>
+                  <td style="padding: 4px 0; color: #333;">${order.shipping_address}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h3 style="color: #333; border-bottom: 1px solid #ddd; padding-bottom: 6px;">Your Order Items</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                  <tr style="border-bottom: 2px solid #dddddd; text-align: left; font-size: 12px; color: #666666;">
+                    <th style="padding: 8px 0; text-align: left;">Product</th>
+                    <th style="padding: 8px 0; text-align: center; width: 15%;">Qty</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Price</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemsRows}
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center; font-size: 11px; color: #888888; border-top: 1px solid #e0e0e0; padding-top: 15px;">
+              Thank you for shopping with Storify Marketplace.
+            </div>
+          </div>
+        `
+      } else {
+        buyerSubject = `[Storify] Payment Confirmed - #${order.order_ref}`
+        buyerHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+            <h2 style="color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px;">Payment Confirmed!</h2>
+            
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Hello <strong>${displayBuyerName}</strong>,
+            </p>
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Your payment for order reference <strong>#${order.order_ref}</strong> has been secured in Safepay escrow. The seller(s) have been notified to ship your items!
+            </p>
+
+            <div style="background-color: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #2e7d32;">
+              <h3 style="margin-top: 0; color: #2e7d32;">Payment & Delivery Summary</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; width: 35%;">Order Reference:</td>
+                  <td style="padding: 4px 0; color: #1a1a2e; font-weight: bold;">#${order.order_ref}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Payment Status:</td>
+                  <td style="padding: 4px 0; color: #2e7d32; font-weight: bold;">Paid (Safepay Escrow)</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Total Paid:</td>
+                  <td style="padding: 4px 0; color: #2e7d32; font-weight: bold; font-size: 15px;">RS ${orderTotal.toLocaleString()}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; vertical-align: top;">Shipping Address:</td>
+                  <td style="padding: 4px 0; color: #333;">${order.shipping_address}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h3 style="color: #333; border-bottom: 1px solid #ddd; padding-bottom: 6px;">Your Order Items</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                  <tr style="border-bottom: 2px solid #dddddd; text-align: left; font-size: 12px; color: #666666;">
+                    <th style="padding: 8px 0; text-align: left;">Product</th>
+                    <th style="padding: 8px 0; text-align: center; width: 15%;">Qty</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Price</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemsRows}
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center; font-size: 11px; color: #888888; border-top: 1px solid #e0e0e0; padding-top: 15px;">
+              Thank you for shopping with Storify Marketplace.
+            </div>
+          </div>
+        `
+      }
+
+      try {
+        const buyerResendResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${resendApiKey}`
+          },
+          body: JSON.stringify({
+            from: senderFrom,
+            to: displayBuyerEmail,
+            subject: buyerSubject,
+            html: buyerHtml
+          })
+        })
+
+        if (!buyerResendResponse.ok) {
+          const bErrorText = await buyerResendResponse.text()
+          console.error(`[Error] Failed to send confirmation email to buyer ${displayBuyerEmail}: ${bErrorText}`)
+          buyerEmailResult = { email: displayBuyerEmail, success: false, error: bErrorText }
+        } else {
+          const bResendData = await buyerResendResponse.json()
+          console.log(`[Success] Confirmation email sent to buyer ${displayBuyerEmail}, Resend ID: ${bResendData?.id}`)
+          buyerEmailResult = { email: displayBuyerEmail, success: true, id: bResendData?.id }
+        }
+      } catch (bErr) {
+        const bErrMsg = bErr instanceof Error ? bErr.message : String(bErr)
+        console.error(`[Exception] Exception sending email to buyer ${displayBuyerEmail}: ${bErrMsg}`)
+        buyerEmailResult = { email: displayBuyerEmail, success: false, error: bErrMsg }
+      }
+    }
 
     // 8. Send notification emails to individual product sellers
     const sellerEmailResults = []
@@ -774,7 +931,7 @@ serve(async (req) => {
             'Authorization': `Bearer ${resendApiKey}`
           },
           body: JSON.stringify({
-            from: fromEmail,
+            from: senderFrom,
             to: sellerInfo.email,
             subject: sellerSubject,
             html: sellerHtml
@@ -799,8 +956,9 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true, 
-      message: 'Owner and seller notification emails processed successfully', 
+      message: 'Owner, buyer, and seller notification emails processed successfully', 
       owner_email_id: resendData?.id,
+      buyer_email: buyerEmailResult,
       seller_emails: sellerEmailResults
     }), {
       status: 200,
