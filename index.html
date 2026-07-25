@@ -5543,7 +5543,7 @@
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
-            <img src="images/logo/header.png" alt="Storify">
+            <a href="#" onclick="toggleMobileMenu(); filterCategory('all', event)"><img src="images/logo/header.png" alt="Storify"></a>
             <button class="close-mobile-menu" onclick="toggleMobileMenu()" aria-label="Close menu">
                 <span
                     style="display:block;width:22px;height:2px;background:var(--text);border-radius:2px;margin-bottom:5px;"></span>
@@ -7334,7 +7334,7 @@
                 newUrl = `/${encodeURIComponent(storeSlug)}${qs ? '?' + qs : ''}`;
             } else {
                 const queryString = urlParams.toString();
-                newUrl = queryString ? `?${queryString}` : window.location.pathname;
+                newUrl = queryString ? `/?${queryString}` : '/';
             }
 
             const currentPathAndQuery = window.location.pathname + window.location.search;
