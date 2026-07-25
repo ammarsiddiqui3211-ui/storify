@@ -2942,6 +2942,33 @@
             `;
         }
 
+        async function sendAdminSellerNotification(sellerData) {
+            try {
+                const payload = {
+                    _subject: `🚨 New Seller Application: ${sellerData.shopName || sellerData.name || 'Vendor'}`,
+                    _template: 'table',
+                    "Seller Owner Name": sellerData.name || 'N/A',
+                    "Shop Display Name": sellerData.shopName || 'N/A',
+                    "Contact Phone": sellerData.phone || 'N/A',
+                    "Seller Email": sellerData.email || 'N/A',
+                    "Payout Coordinates": sellerData.payoutDetails || 'N/A',
+                    "Application Date": new Date().toLocaleString(),
+                    "Action Required": "Please log into the Admin Panel (admin.html) to review and approve this seller application."
+                };
+
+                await fetch('https://formsubmit.co/ajax/storify.store.co@gmail.com', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.error("Seller email notification dispatch notice:", err);
+            }
+        }
+
         async function handleRegistrationSubmit(e) {
             e.preventDefault();
             const name = document.getElementById('regName').value.trim();
@@ -2967,6 +2994,16 @@
                     .eq('id', user.id);
 
                 if (error) throw error;
+
+                // Send email notification to admin email: storify.store.co@gmail.com
+                await sendAdminSellerNotification({
+                    name: name,
+                    phone: phone,
+                    shopName: shopName,
+                    payoutDetails: payoutDetails,
+                    email: user ? user.email : 'N/A'
+                });
+
                 await fetchProfile();
                 renderView();
             } catch (err) {
