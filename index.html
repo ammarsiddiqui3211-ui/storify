@@ -7323,10 +7323,13 @@
             }
 
             let newUrl;
-            if (page === 'store' && params.name) {
+            if (page === 'store' && (params.name || params.shopName || params.store)) {
                 urlParams.delete('page');
                 urlParams.delete('name');
-                const storeSlug = params.name;
+                urlParams.delete('shopName');
+                urlParams.delete('store');
+                urlParams.delete('seller');
+                const storeSlug = params.name || params.shopName || params.store;
                 const qs = urlParams.toString();
                 newUrl = `/${encodeURIComponent(storeSlug)}${qs ? '?' + qs : ''}`;
             } else {
@@ -7978,11 +7981,15 @@
                 .replace(/^-+|-+$/g, '');
         }
 
+        function normalizeStoreKey(str) {
+            return String(str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
         function navigateToStore(shopName, event) {
             if (event) event.preventDefault();
             if (!shopName) return;
             const slug = slugifyShopName(shopName);
-            navigateToPage('store', { name: slug, shopName: shopName });
+            navigateToPage('store', { name: slug });
         }
 
         function renderSellerStoreView(storeIdentifier, searchQuery = '', priceFilter = 'all', sortFilter = 'default') {
@@ -7990,11 +7997,14 @@
             if (!container) return;
 
             const targetSlug = slugifyShopName(storeIdentifier);
+            const targetNorm = normalizeStoreKey(storeIdentifier);
 
             // Filter products matching this seller store
             let sellerProducts = products.filter(p => {
                 const pSlug = slugifyShopName(p.shopName);
+                const pNorm = normalizeStoreKey(p.shopName);
                 return pSlug === targetSlug || 
+                       pNorm === targetNorm ||
                        (p.shopName && p.shopName.toLowerCase() === String(storeIdentifier).toLowerCase()) ||
                        (p.seller_id && String(p.seller_id) === String(storeIdentifier));
             });
