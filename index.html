@@ -6624,7 +6624,8 @@
                             reviewCount: 0,
                             seller_id: item.seller_id,
                             shopName: item.shop_name || 'Partner Shop',
-                            shippingFee: Number(item.shipping_fee || 250)
+                            shippingFee: Number(item.shipping_fee || 250),
+                            created_at: item.created_at || null
                         };
                     });
                 }
@@ -8046,13 +8047,14 @@
                 filtered.sort((a, b) => a.name.localeCompare(b.name));
             }
 
-            // Member since resolution (using created_at or default Jan 2025)
+            // Member since resolution (using created_at or earliest product date)
             let memberSince = 'Jan 2025';
-            if (sellerProducts.length > 0 && sellerProducts[0].created_at) {
-                const d = new Date(sellerProducts[0].created_at);
-                if (!isNaN(d.getTime())) {
+            if (sellerProducts.length > 0) {
+                const validDates = sellerProducts.map(p => p.created_at).filter(Boolean).map(d => new Date(d)).filter(d => !isNaN(d.getTime()));
+                if (validDates.length > 0) {
+                    const earliest = new Date(Math.min(...validDates.map(d => d.getTime())));
                     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    memberSince = `${months[d.getMonth()]} ${d.getFullYear()}`;
+                    memberSince = `${months[earliest.getMonth()]} ${earliest.getFullYear()}`;
                 }
             }
 
@@ -8079,7 +8081,7 @@
                                     5.0 Rating
                                 </span>
                                 <span class="seller-store-meta-item">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                                     Escrow Protected
                                 </span>
                             </div>
