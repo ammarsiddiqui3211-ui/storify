@@ -546,28 +546,35 @@ serve(async (req) => {
     }
 
     // 7. Invoke Resend API (Admin Owner Notification)
-    const resendResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${resendApiKey}`
-      },
-      body: JSON.stringify({
-        from: senderFrom,
-        to: toEmail,
-        subject: emailSubject,
-        html: emailHtml
+    let adminEmailResult = null
+    try {
+      const resendResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${resendApiKey}`
+        },
+        body: JSON.stringify({
+          from: senderFrom,
+          to: toEmail,
+          subject: emailSubject,
+          html: emailHtml
+        })
       })
-    })
 
-    if (!resendResponse.ok) {
-      const errorText = await resendResponse.text()
-      // CRITICAL: Log detailed Resend errors for visibility in dashboard
-      console.error(`[Error] Resend API invocation failed with status ${resendResponse.status}: ${errorText}`)
-      throw new Error(`Resend API failed: ${errorText}`)
+      if (!resendResponse.ok) {
+        const errorText = await resendResponse.text()
+        console.error(`[Error] Resend API invocation for Admin (${toEmail}) failed with status ${resendResponse.status}: ${errorText}`)
+        adminEmailResult = { email: toEmail, success: false, error: errorText }
+      } else {
+        const resendData = await resendResponse.json()
+        adminEmailResult = { email: toEmail, success: true, id: resendData?.id }
+      }
+    } catch (aErr) {
+      const aErrMsg = aErr instanceof Error ? aErr.message : String(aErr)
+      console.error(`[Exception] Exception sending Admin email (${toEmail}): ${aErrMsg}`)
+      adminEmailResult = { email: toEmail, success: false, error: aErrMsg }
     }
-
-    const resendData = await resendResponse.json()
 
     // 7b. Send order confirmation email directly to buyer
     let buyerEmailResult = null
@@ -957,7 +964,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       success: true, 
       message: 'Owner, buyer, and seller notification emails processed successfully', 
-      owner_email_id: resendData?.id,
+      admin_email: adminEmailResult,
       buyer_email: buyerEmailResult,
       seller_emails: sellerEmailResults
     }), {
