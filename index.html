@@ -528,7 +528,7 @@
             padding: 0;
             color: var(--primary);
             position: relative;
-            margin-top: -10px;
+            margin-top: 0;
             margin-bottom: 24px;
             box-shadow: none;
         }
@@ -612,7 +612,7 @@
 
         @media (max-width: 768px) {
             .seller-store-header {
-                margin-top: -12px;
+                margin-top: 0;
                 margin-bottom: 16px;
             }
 
@@ -1135,9 +1135,13 @@
             padding: 60px 40px;
         }
 
-        /* Reduce top padding on product detail view to match left/right padding of 40px */
+        /* Reduce top padding on product detail and seller store views */
         main.container:has(#product-view:not([style*="display: none"])) {
             padding-top: 40px;
+        }
+
+        main.container:has(#store-view:not([style*="display: none"])) {
+            padding-top: 16px;
         }
 
         .section-header {
