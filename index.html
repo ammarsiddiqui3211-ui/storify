@@ -7837,15 +7837,8 @@
                     let storeLinks = '';
                     if (storeInfo) {
                         storeLinks = `
-                            <a href="#" onclick="openMyStorefront(event)" style="color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                                My Storefront
-                            </a>
-                            <a href="seller" target="_blank" style="color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                Seller Portal
-                            </a>
-                            <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
+                            <a href="#" onclick="openMyStorefront(event)">My Storefront</a>
+                            <a href="seller" target="_blank">Seller Portal</a>
                         `;
                     }
                     desktopMenuContent.innerHTML = `
@@ -8004,10 +7997,8 @@
                     let mobileStoreLink = '';
                     if (storeInfo) {
                         mobileStoreLink = `
-                            <li><a href="#" onclick="toggleMobileMenu(); openMyStorefront(event)" style="color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                                My Storefront
-                            </a></li>
+                            <li><a href="#" onclick="toggleMobileMenu(); openMyStorefront(event)">My Storefront</a></li>
+                            <li><a href="seller" target="_blank" onclick="toggleMobileMenu();">Seller Portal</a></li>
                         `;
                     }
                     accountMenuHtml = `
