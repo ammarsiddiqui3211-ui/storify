@@ -1,10 +1,8 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/seller", "destination": "/seller.html" },
-    { "source": "/diagnostics", "destination": "/diagnostics.html" },
-    { "source": "/((?!admin|seller|diagnostics|images|sw\\.js|manifest\\.json|sitemap\\.xml|.*\\..*).*)", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
