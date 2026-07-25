@@ -289,7 +289,7 @@ serve(async (req) => {
     // 6. Fetch Order Items (for both email types so we always show order details)
     const { data: items, error: itemsError } = await supabase
       .from('order_items')
-      .select('quantity, price_at_purchase, product_id, seller_id')
+      .select('quantity, price_at_purchase, shipping_fee_at_purchase, product_id, seller_id')
       .eq('order_id', order_id)
 
     if (itemsError || !items || items.length === 0) {
@@ -560,7 +560,249 @@ serve(async (req) => {
     }
 
     const resendData = await resendResponse.json()
-    return new Response(JSON.stringify({ success: true, message: 'Email sent successfully', id: resendData?.id }), {
+
+    // 8. Send notification emails to individual product sellers
+    const sellerEmailResults = []
+    const uniqueSellerIds = [...new Set(items.map(i => i.seller_id).filter(Boolean))]
+
+    for (const sId of uniqueSellerIds) {
+      const sellerInfo = sellerDetailsMap[sId]
+      if (!sellerInfo || !sellerInfo.email || sellerInfo.email === 'N/A') {
+        console.warn(`[Seller Email Skipped] No valid email address found for seller ID: ${sId}`)
+        continue
+      }
+
+      // Filter items for this seller
+      const sellerItems = items.filter(i => i.seller_id === sId)
+      if (sellerItems.length === 0) continue
+
+      let sellerItemsRows = ''
+      let sellerSubtotal = 0
+      let maxSellerShippingFee = 0
+
+      for (const item of sellerItems) {
+        const prodName = productMap[item.product_id] || `Product ID #${item.product_id}`
+        const itemTotal = Number(item.price_at_purchase) * Number(item.quantity)
+        sellerSubtotal += itemTotal
+        const itemShipping = Number(item.shipping_fee_at_purchase || 250)
+        if (itemShipping > maxSellerShippingFee) {
+          maxSellerShippingFee = itemShipping
+        }
+
+        sellerItemsRows += `
+          <tr style="border-bottom: 1px solid #eeeeee;">
+            <td style="padding: 10px 0; font-weight: bold; color: #333333; vertical-align: top;">${prodName}</td>
+            <td style="padding: 10px 0; text-align: center; color: #666666; vertical-align: top;">${item.quantity}</td>
+            <td style="padding: 10px 0; text-align: right; color: #666666; vertical-align: top;">RS ${Number(item.price_at_purchase).toLocaleString()}</td>
+            <td style="padding: 10px 0; text-align: right; font-weight: bold; color: #1a1a2e; vertical-align: top;">RS ${itemTotal.toLocaleString()}</td>
+          </tr>
+        `
+      }
+
+      const sellerTotal = sellerSubtotal + maxSellerShippingFee
+
+      let sellerSubject = ''
+      let sellerHtml = ''
+
+      if (type === 'new_order') {
+        sellerSubject = `[Storify] New Order Received for ${sellerInfo.shopName} - #${order.order_ref}`
+        sellerHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+            <h2 style="color: #4A90E2; border-bottom: 2px solid #4A90E2; padding-bottom: 10px;">New Order Received!</h2>
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Hello <strong>${sellerInfo.ownerName !== 'N/A' ? sellerInfo.ownerName : sellerInfo.shopName}</strong>,
+            </p>
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Great news! A customer has placed a new order for items from your shop (<strong>${sellerInfo.shopName}</strong>).
+            </p>
+
+            <div style="background-color: #f0f8ff; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #4A90E2;">
+              <h3 style="margin-top: 0; color: #333;">Order Information</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; width: 35%;">Order Reference:</td>
+                  <td style="padding: 4px 0; color: #1a1a2e; font-weight: bold;">${order.order_ref}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Status:</td>
+                  <td style="padding: 4px 0; color: #d97706; font-weight: bold;">Pending Payment</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Your Earnings:</td>
+                  <td style="padding: 4px 0; color: #1a1a2e; font-weight: bold;">RS ${sellerTotal.toLocaleString()} <span style="font-size: 11px; color: #666;">(Items: RS ${sellerSubtotal.toLocaleString()} + Shipping: RS ${maxSellerShippingFee.toLocaleString()})</span></td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 15px 0;">
+              <h3 style="color: #333;">Customer & Delivery Details</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; width: 35%;">Customer Name:</td>
+                  <td style="padding: 4px 0; color: #333;">${displayBuyerName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Phone:</td>
+                  <td style="padding: 4px 0; color: #333;">${displayBuyerPhone}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Email:</td>
+                  <td style="padding: 4px 0; color: #333;">${displayBuyerEmail}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; vertical-align: top;">Shipping Address:</td>
+                  <td style="padding: 4px 0; color: #333;">${order.shipping_address}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h3 style="color: #333; border-bottom: 1px solid #ddd; padding-bottom: 6px;">Your Ordered Items</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                  <tr style="border-bottom: 2px solid #dddddd; text-align: left; font-size: 12px; color: #666666;">
+                    <th style="padding: 8px 0; text-align: left;">Product</th>
+                    <th style="padding: 8px 0; text-align: center; width: 15%;">Qty</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Price</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${sellerItemsRows}
+                </tbody>
+              </table>
+            </div>
+
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="https://shop.storify.services/seller.html" style="background-color: #4A90E2; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);">View Seller Portal</a>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center; font-size: 11px; color: #888888; border-top: 1px solid #e0e0e0; padding-top: 15px;">
+              This email was generated automatically by the Storify Shop platform.
+            </div>
+          </div>
+        `
+      } else {
+        sellerSubject = `[Storify] Payment Confirmed - Ready to Ship! - #${order.order_ref}`
+        sellerHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+            <h2 style="color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px;">Payment Confirmed - Ready to Ship!</h2>
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Hello <strong>${sellerInfo.ownerName !== 'N/A' ? sellerInfo.ownerName : sellerInfo.shopName}</strong>,
+            </p>
+            <p style="color: #333; font-size: 14px; line-height: 1.6;">
+              Payment for order <strong>#${order.order_ref}</strong> has been secured via Safepay escrow! You can now prepare and ship the products listed below to the customer.
+            </p>
+
+            <div style="background-color: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #2e7d32;">
+              <h3 style="margin-top: 0; color: #2e7d32;">Order Summary</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; width: 35%;">Order Reference:</td>
+                  <td style="padding: 4px 0; color: #1a1a2e; font-weight: bold;">${order.order_ref}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Status:</td>
+                  <td style="padding: 4px 0; color: #2e7d32; font-weight: bold;">Paid (Safepay Escrow)</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Payout Total:</td>
+                  <td style="padding: 4px 0; color: #2e7d32; font-weight: bold; font-size: 15px;">RS ${sellerTotal.toLocaleString()} <span style="font-size: 11px; font-weight: normal; color: #666;">(Items: RS ${sellerSubtotal.toLocaleString()} + Shipping: RS ${maxSellerShippingFee.toLocaleString()})</span></td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 15px 0;">
+              <h3 style="color: #333;">Customer & Delivery Details</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; width: 35%;">Customer Name:</td>
+                  <td style="padding: 4px 0; color: #333;">${displayBuyerName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Phone:</td>
+                  <td style="padding: 4px 0; color: #333;">${displayBuyerPhone}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555;">Email:</td>
+                  <td style="padding: 4px 0; color: #333;">${displayBuyerEmail}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-weight: bold; color: #555; vertical-align: top;">Shipping Address:</td>
+                  <td style="padding: 4px 0; color: #333;">${order.shipping_address}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 20px 0;">
+              <h3 style="color: #333; border-bottom: 1px solid #ddd; padding-bottom: 6px;">Items to Ship</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                  <tr style="border-bottom: 2px solid #dddddd; text-align: left; font-size: 12px; color: #666666;">
+                    <th style="padding: 8px 0; text-align: left;">Product</th>
+                    <th style="padding: 8px 0; text-align: center; width: 15%;">Qty</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Price</th>
+                    <th style="padding: 8px 0; text-align: right; width: 25%;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${sellerItemsRows}
+                </tbody>
+              </table>
+            </div>
+
+            <p style="color: #555; font-size: 13px; line-height: 1.5; background: #fff8e1; padding: 10px; border-radius: 6px; border-left: 3px solid #f59e0b;">
+              📌 <strong>Next Step:</strong> Once you ship these items, please update the order status to <strong>Shipped</strong> in your Seller Portal.
+            </p>
+
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="https://shop.storify.services/seller.html" style="background-color: #2e7d32; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);">Go to Seller Portal</a>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center; font-size: 11px; color: #888888; border-top: 1px solid #e0e0e0; padding-top: 15px;">
+              This email was generated automatically by the Storify Shop platform.
+            </div>
+          </div>
+        `
+      }
+
+      try {
+        const sellerResendResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${resendApiKey}`
+          },
+          body: JSON.stringify({
+            from: fromEmail,
+            to: sellerInfo.email,
+            subject: sellerSubject,
+            html: sellerHtml
+          })
+        })
+
+        if (!sellerResendResponse.ok) {
+          const sErrorText = await sellerResendResponse.text()
+          console.error(`[Error] Failed to send email to seller ${sellerInfo.email} (ID: ${sId}): ${sErrorText}`)
+          sellerEmailResults.push({ sellerId: sId, email: sellerInfo.email, success: false, error: sErrorText })
+        } else {
+          const sResendData = await sellerResendResponse.json()
+          console.log(`[Success] Email sent to seller ${sellerInfo.email} (ID: ${sId}), Resend ID: ${sResendData?.id}`)
+          sellerEmailResults.push({ sellerId: sId, email: sellerInfo.email, success: true, id: sResendData?.id })
+        }
+      } catch (sErr) {
+        const sErrMsg = sErr instanceof Error ? sErr.message : String(sErr)
+        console.error(`[Exception] Exception sending email to seller ${sellerInfo.email}: ${sErrMsg}`)
+        sellerEmailResults.push({ sellerId: sId, email: sellerInfo.email, success: false, error: sErrMsg })
+      }
+    }
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      message: 'Owner and seller notification emails processed successfully', 
+      owner_email_id: resendData?.id,
+      seller_emails: sellerEmailResults
+    }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
