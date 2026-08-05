@@ -2191,7 +2191,7 @@
                         <td style="text-align: center; white-space: nowrap;">
                             <button class="btn btn-primary btn-sm" onclick="setSellerStatus('${p.id}', 'approved')">Approve</button>
                             <button class="btn btn-danger btn-sm" style="margin-left:6px;" onclick="setSellerStatus('${p.id}', 'rejected')">Reject</button>
-                            <button class="btn btn-danger btn-sm" style="margin-left:6px; background: rgba(239, 68, 68, 0.15);" onclick="deleteSellerApplication('${p.id}')">Delete</button>
+                            <button class="btn btn-danger btn-sm" style="margin-left:6px; background:#ef4444; color:white; border:none;" onclick="deleteSellerApplication('${p.id}')">Delete</button>
                         </td>
                     </tr>
                 `).join('');
@@ -2209,7 +2209,7 @@
                             <div style="display: flex; gap: 8px; justify-content: flex-end;">
                                 <button class="btn btn-primary btn-sm" style="flex:1; justify-content:center;" onclick="setSellerStatus('${p.id}', 'approved')">Approve</button>
                                 <button class="btn btn-danger btn-sm" style="flex:1; justify-content:center;" onclick="setSellerStatus('${p.id}', 'rejected')">Reject</button>
-                                <button class="btn btn-danger btn-sm" style="flex:1; justify-content:center; background: rgba(239, 68, 68, 0.15);" onclick="deleteSellerApplication('${p.id}')">Delete</button>
+                                <button class="btn btn-danger btn-sm" style="flex:1; justify-content:center; background:#ef4444; color:white; border:none;" onclick="deleteSellerApplication('${p.id}')">Delete</button>
                             </div>
                         </div>
                     `).join('');
@@ -2259,7 +2259,7 @@
                                     ? `<button class="btn btn-primary btn-sm" onclick="setSellerStatus('${p.id}', 'approved')">Reinstate</button>`
                                     : `<button class="btn btn-outline btn-sm" onclick="setSellerStatus('${p.id}', 'approved')">Approve</button>`
                             }
-                            <button class="btn btn-danger btn-sm" style="margin-left:6px; background: rgba(239, 68, 68, 0.15);" onclick="deleteSellerApplication('${p.id}')">Delete</button>
+                            <button class="btn btn-danger btn-sm" style="margin-left:6px; background:#ef4444; color:white; border:none;" onclick="deleteSellerApplication('${p.id}')">Delete</button>
                         </td>
                     </tr>
                     <tr class="detail-row" id="seller-detail-${p.id}">
@@ -2296,7 +2296,7 @@
                                             ? `<button class="btn btn-primary btn-sm" onclick="setSellerStatus('${p.id}', 'approved')">Reinstate</button>`
                                             : `<button class="btn btn-outline btn-sm" onclick="setSellerStatus('${p.id}', 'approved')">Approve</button>`
                                     }
-                                    <button class="btn btn-danger btn-sm" style="background: rgba(239, 68, 68, 0.15);" onclick="deleteSellerApplication('${p.id}')">Delete</button>
+                                    <button class="btn btn-danger btn-sm" style="background:#ef4444; color:white; border:none;" onclick="deleteSellerApplication('${p.id}')">Delete</button>
                                 </div>
                             </div>
                         </div>
