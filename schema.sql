@@ -113,6 +113,9 @@ CREATE POLICY "Allow users to update their own profile or admin" ON public.profi
   FOR UPDATE TO authenticated USING (auth.uid() = id OR public.is_admin(auth.uid()))
   WITH CHECK (auth.uid() = id OR public.is_admin(auth.uid()));
 
+CREATE POLICY "Allow admins to delete profiles" ON public.profiles
+  FOR DELETE TO authenticated USING (public.is_admin(auth.uid()));
+
 -- Trigger to sync auth.users with public.profiles on insert
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
@@ -203,7 +206,7 @@ CREATE TABLE IF NOT EXISTS public.products (
   colors text[],
   sizes text[],
   specs jsonb DEFAULT '{}'::jsonb NOT NULL,
-  seller_id uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
+  seller_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE,
   verified_badge boolean NOT NULL DEFAULT false,
   stock_status text NOT NULL DEFAULT 'available' CHECK (stock_status IN ('available', 'sold_out')),
   gradient text,
@@ -768,6 +771,8 @@ ALTER TABLE public.products ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_hidden boolean NOT NULL DEFAULT false;
 
 -- Re-create public_products view to filter out hidden products and products from suspended sellers
+-- NOTE: Do NOT set security_invoker = true on this view unless you also add public SELECT RLS policies on public.products and public.profiles.
+-- By default (security_invoker = false), the view runs as SECURITY DEFINER so anonymous/buyer users can view products.
 DROP VIEW IF EXISTS public.public_products CASCADE;
 
 CREATE OR REPLACE VIEW public.public_products AS
@@ -793,7 +798,7 @@ CREATE OR REPLACE VIEW public.public_products AS
     p.created_at
   FROM public.products p
   LEFT JOIN public.profiles s ON p.seller_id = s.id
-  WHERE p.is_hidden = false AND p.stock_status = 'available' AND (p.seller_id IS NULL OR s.seller_status <> 'suspended');
+  WHERE p.is_hidden = false AND p.stock_status = 'available' AND p.seller_id IS NOT NULL AND s.seller_status <> 'suspended';
 
 GRANT SELECT ON public.public_products TO anon, authenticated;
 
