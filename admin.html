@@ -1691,6 +1691,25 @@
         </div>
     </div>
 
+    <!-- MODAL 4: Seller Detail View Modal -->
+    <div id="sellerDetailModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 720px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #f8fafc, #eef2ff);">
+                <div>
+                    <span style="font-size: 11px; font-weight: 500; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px;">Seller Profile</span>
+                    <h3 id="sellerDetailModalTitle" style="font-size: 18px; margin-top: 2px;">Seller Details</h3>
+                </div>
+                <button class="close-btn" onclick="closeSellerDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="sellerDetailModalBody" style="padding: 24px;">
+                <div style="text-align: center; padding: 40px;">
+                    <div class="spinner" style="width:25px; height:25px; border-width:2px; display:inline-block; border-top-color:var(--accent);"></div>
+                    <p style="font-size:12px; margin-top:10px; color:var(--text-light);">Loading seller details...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JS Implementation -->
     <script>
         const SUPABASE_URL = "https://goguiruuirltoiofmvuj.supabase.co";
@@ -2189,6 +2208,10 @@
                         </td>
                         <td style="font-size: 13px; color: var(--text-light);">${new Date(p.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                         <td style="text-align: center; white-space: nowrap;">
+                            <button class="btn btn-outline btn-sm" onclick="openSellerDetailModal('${p.id}')" style="margin-right:6px;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                                View Details
+                            </button>
                             <button class="btn btn-primary btn-sm" onclick="setSellerStatus('${p.id}', 'approved')">Approve</button>
                             <button class="btn btn-danger btn-sm" style="margin-left:6px;" onclick="setSellerStatus('${p.id}', 'rejected')">Reject</button>
                             <button class="btn btn-danger btn-sm" style="margin-left:6px; background:#ef4444; color:white; border:none;" onclick="deleteSellerApplication('${p.id}')">Delete</button>
@@ -2206,7 +2229,11 @@
                             <div style="font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 4px;">Owner: ${escapeHtml(p.name)}</div>
                             <div style="font-size: 12px; color: var(--text-light); margin-bottom: 6px;">Phone: ${escapeHtml(p.phone)}</div>
                             <div style="font-size: 12px; color: var(--text-light); background: var(--secondary); padding: 8px 10px; border-radius: 6px; margin-bottom: 12px;">Bank: ${escapeHtml(p.bank_account_details)}</div>
-                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="btn btn-outline btn-sm" style="flex:1; justify-content:center;" onclick="openSellerDetailModal('${p.id}')">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    View
+                                </button>
                                 <button class="btn btn-primary btn-sm" style="flex:1; justify-content:center;" onclick="setSellerStatus('${p.id}', 'approved')">Approve</button>
                                 <button class="btn btn-danger btn-sm" style="flex:1; justify-content:center;" onclick="setSellerStatus('${p.id}', 'rejected')">Reject</button>
                                 <button class="btn btn-danger btn-sm" style="flex:1; justify-content:center; background:#ef4444; color:white; border:none;" onclick="deleteSellerApplication('${p.id}')">Delete</button>
@@ -2253,6 +2280,10 @@
                             }
                         </td>
                         <td style="text-align: center; white-space: nowrap;">
+                            <button class="btn btn-outline btn-sm" onclick="openSellerDetailModal('${p.id}')" style="margin-right:6px;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                                View Details
+                            </button>
                             ${p.seller_status === 'approved'
                                 ? `<button class="btn btn-danger btn-sm" onclick="setSellerStatus('${p.id}', 'suspended')">Suspend</button>`
                                 : p.seller_status === 'suspended'
@@ -2289,7 +2320,11 @@
                                 <span class="badge badge-neutral" style="cursor: pointer; background:rgba(79,70,229,0.06); color:var(--accent);" onclick="openScoreModal('${p.id}', '${escapeHtml(p.shop_name)}', ${p.seller_score})">
                                     ${p.seller_score} Score
                                 </span>
-                                <div style="display:flex; gap:6px;">
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <button class="btn btn-outline btn-sm" onclick="openSellerDetailModal('${p.id}')">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                                        View
+                                    </button>
                                     ${p.seller_status === 'approved'
                                         ? `<button class="btn btn-danger btn-sm" onclick="setSellerStatus('${p.id}', 'suspended')">Suspend</button>`
                                         : p.seller_status === 'suspended'
@@ -3497,6 +3532,142 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        }
+
+        // Seller Detail Modal Functions
+        async function openSellerDetailModal(sellerId) {
+            const modal = document.getElementById('sellerDetailModal');
+            const body = document.getElementById('sellerDetailModalBody');
+            const title = document.getElementById('sellerDetailModalTitle');
+
+            modal.classList.add('active');
+            title.innerText = 'Seller Details';
+            body.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div class="spinner" style="width:25px; height:25px; border-width:2px; display:inline-block; border-top-color:var(--accent);"></div>
+                    <p style="font-size:12px; margin-top:10px; color:var(--text-light);">Loading seller details...</p>
+                </div>
+            `;
+
+            try {
+                // Find seller from cached data first, or fetch fresh
+                let seller = allSellers.find(s => s.id === sellerId);
+                if (!seller) {
+                    const { data, error } = await supabaseClient
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', sellerId)
+                        .single();
+                    if (error) throw error;
+                    seller = data;
+                }
+
+                // Fetch product and order counts
+                const { count: productCount } = await supabaseClient
+                    .from('products')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('seller_id', sellerId);
+
+                const { count: orderCount } = await supabaseClient
+                    .from('order_items')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('seller_id', sellerId);
+
+                title.innerText = escapeHtml(seller.shop_name || 'Seller Details');
+
+                const statusBadge = seller.seller_status === 'approved'
+                    ? '<span class="badge badge-success" style="font-size:11px; padding:4px 12px;">Approved</span>'
+                    : seller.seller_status === 'pending'
+                        ? '<span class="badge badge-pending" style="font-size:11px; padding:4px 12px;">Pending</span>'
+                        : seller.seller_status === 'suspended'
+                            ? '<span class="badge badge-danger" style="font-size:11px; padding:4px 12px;">Suspended</span>'
+                            : '<span class="badge badge-neutral" style="font-size:11px; padding:4px 12px;">' + escapeHtml(seller.seller_status) + '</span>';
+
+                const scoreBadgeColor = seller.seller_score >= 80 ? '#10b981' : seller.seller_score >= 50 ? '#f59e0b' : '#ef4444';
+
+                body.innerHTML = `
+                    <!-- Status & Score Header -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 16px 20px; background: var(--secondary); border-radius: 12px; border: 1px solid var(--border);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; box-shadow: 0 4px 12px rgba(79,70,229,0.25);">
+                                ${(seller.shop_name || 'S').charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 16px; color: var(--primary);">${escapeHtml(seller.shop_name)}</div>
+                                <div style="font-size: 12px; color: var(--text-light); margin-top: 1px;">Registered ${new Date(seller.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            ${statusBadge}
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats Row -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
+                        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center;">
+                            <div style="font-size: 22px; font-weight: 600; color: ${scoreBadgeColor};">${seller.seller_score}</div>
+                            <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px;">Seller Score</div>
+                        </div>
+                        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center;">
+                            <div style="font-size: 22px; font-weight: 600; color: var(--accent);">${productCount || 0}</div>
+                            <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px;">Products</div>
+                        </div>
+                        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center;">
+                            <div style="font-size: 22px; font-weight: 600; color: var(--purple);">${orderCount || 0}</div>
+                            <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px;">Order Items</div>
+                        </div>
+                    </div>
+
+                    <!-- Info Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
+                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">Owner Name</div>
+                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.name) || '—'}</div>
+                        </div>
+                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
+                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">Phone Number</div>
+                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.phone) || '—'}</div>
+                        </div>
+                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
+                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">City</div>
+                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.city) || '—'}</div>
+                        </div>
+                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
+                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">ZIP Code</div>
+                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.zip) || '—'}</div>
+                        </div>
+                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); grid-column: 1 / -1;">
+                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">Full Address</div>
+                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.address) || '—'}</div>
+                        </div>
+                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); grid-column: 1 / -1;">
+                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+                                Bank Account Details
+                            </div>
+                            <div style="font-size: 14px; font-weight: 500; color: var(--primary); word-break: break-word; line-height: 1.5;">${escapeHtml(seller.bank_account_details) || '—'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Timestamps -->
+                    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 12px; color: var(--text-light);">
+                        <span>Account Created: ${new Date(seller.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                        <span>Last Updated: ${new Date(seller.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                `;
+            } catch (err) {
+                body.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: var(--danger);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <p style="font-size: 14px; font-weight: 500;">Failed to load seller details</p>
+                        <p style="font-size: 12px; margin-top: 4px;">${escapeHtml(err.message)}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function closeSellerDetailModal() {
+            document.getElementById('sellerDetailModal').classList.remove('active');
         }
     </script>
 </body>
