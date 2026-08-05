@@ -1694,11 +1694,8 @@
     <!-- MODAL 4: Seller Detail View Modal -->
     <div id="sellerDetailModal" class="modal-overlay">
         <div class="modal-card" style="max-width: 720px;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #f8fafc, #eef2ff);">
-                <div>
-                    <span style="font-size: 11px; font-weight: 500; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px;">Seller Profile</span>
-                    <h3 id="sellerDetailModalTitle" style="font-size: 18px; margin-top: 2px;">Seller Details</h3>
-                </div>
+            <div class="modal-header">
+                <h3 id="sellerDetailModalTitle">Seller Details</h3>
                 <button class="close-btn" onclick="closeSellerDetailModal()">&times;</button>
             </div>
             <div class="modal-body" id="sellerDetailModalBody" style="padding: 24px;">
@@ -3585,74 +3582,84 @@
 
                 const scoreBadgeColor = seller.seller_score >= 80 ? '#10b981' : seller.seller_score >= 50 ? '#f59e0b' : '#ef4444';
 
+                const createdDate = new Date(seller.created_at).toLocaleString();
+                const updatedDate = new Date(seller.updated_at).toLocaleString();
+                const registeredDate = new Date(seller.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                const daysActive = Math.floor((new Date() - new Date(seller.created_at)) / (1000 * 60 * 60 * 24));
+
                 body.innerHTML = `
-                    <!-- Status & Score Header -->
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 16px 20px; background: var(--secondary); border-radius: 12px; border: 1px solid var(--border);">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; box-shadow: 0 4px 12px rgba(79,70,229,0.25);">
-                                ${(seller.shop_name || 'S').charAt(0).toUpperCase()}
+                    <div style="display:flex; flex-direction:column; gap:24px;">
+                        <!-- Seller & Shop Info Columns -->
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:24px; font-size:13.5px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+                            <div>
+                                <span style="font-size:11px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:8px;">Shop Information</span>
+                                <div style="font-size:15px; color:var(--primary); font-weight:500; margin-bottom:6px;">${escapeHtml(seller.shop_name)}</div>
+                                <div style="color:var(--text-light); margin-bottom:4px; display:flex; gap:6px;">
+                                    <span style="color:var(--text-light);">Status:</span>
+                                    ${statusBadge}
+                                </div>
+                                <div style="color:var(--text-light); display:flex; gap:6px;">
+                                    <span>Score:</span>
+                                    <span style="color:${scoreBadgeColor}; font-weight:500;">${seller.seller_score} / 100</span>
+                                </div>
                             </div>
                             <div>
-                                <div style="font-weight: 600; font-size: 16px; color: var(--primary);">${escapeHtml(seller.shop_name)}</div>
-                                <div style="font-size: 12px; color: var(--text-light); margin-top: 1px;">Registered ${new Date(seller.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                                <span style="font-size:11px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:8px;">Owner Details</span>
+                                <div style="font-size:15px; color:var(--primary); font-weight:500; margin-bottom:6px;">${escapeHtml(seller.name) || 'N/A'}</div>
+                                <div style="color:var(--text-light); margin-bottom:4px; display:flex; gap:6px;">
+                                    <span>Phone:</span>
+                                    <span style="color:var(--primary);">${escapeHtml(seller.phone) || 'N/A'}</span>
+                                </div>
+                                <div style="color:var(--text-light); display:flex; gap:6px;">
+                                    <span>City:</span>
+                                    <span style="color:var(--primary);">${escapeHtml(seller.city) || 'N/A'}</span>
+                                    ${seller.zip ? `<span style="color:var(--text-light);">|</span> <span style="color:var(--primary);">${escapeHtml(seller.zip)}</span>` : ''}
+                                </div>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            ${statusBadge}
-                        </div>
-                    </div>
 
-                    <!-- Quick Stats Row -->
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
-                        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center;">
-                            <div style="font-size: 22px; font-weight: 600; color: ${scoreBadgeColor};">${seller.seller_score}</div>
-                            <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px;">Seller Score</div>
+                        <!-- Address Section -->
+                        <div style="font-size:13.5px; border-bottom:1px solid var(--border); padding-bottom:18px;">
+                            <span style="font-size:11px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:8px;">Shipping Address</span>
+                            <div style="color:var(--primary); line-height:1.5;">${escapeHtml(seller.address) || 'N/A'}</div>
                         </div>
-                        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center;">
-                            <div style="font-size: 22px; font-weight: 600; color: var(--accent);">${productCount || 0}</div>
-                            <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px;">Products</div>
-                        </div>
-                        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center;">
-                            <div style="font-size: 22px; font-weight: 600; color: var(--purple);">${orderCount || 0}</div>
-                            <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px;">Order Items</div>
-                        </div>
-                    </div>
 
-                    <!-- Info Grid -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
-                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">Owner Name</div>
-                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.name) || '—'}</div>
+                        <!-- Bank Account Details Section -->
+                        <div style="font-size:13.5px; border-bottom:1px solid var(--border); padding-bottom:18px;">
+                            <span style="font-size:11px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:8px;">Bank Account Details</span>
+                            <div style="color:var(--primary); line-height:1.5; word-break:break-word;">${escapeHtml(seller.bank_account_details) || 'N/A'}</div>
                         </div>
-                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
-                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">Phone Number</div>
-                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.phone) || '—'}</div>
-                        </div>
-                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
-                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">City</div>
-                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.city) || '—'}</div>
-                        </div>
-                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);">
-                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">ZIP Code</div>
-                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.zip) || '—'}</div>
-                        </div>
-                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); grid-column: 1 / -1;">
-                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">Full Address</div>
-                            <div style="font-size: 14px; font-weight: 500; color: var(--primary);">${escapeHtml(seller.address) || '—'}</div>
-                        </div>
-                        <div style="background: var(--secondary); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); grid-column: 1 / -1;">
-                            <div style="font-size: 10.5px; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
-                                Bank Account Details
+
+                        <!-- Platform Stats Section -->
+                        <div style="font-size:13.5px; border-bottom:1px solid var(--border); padding-bottom:18px;">
+                            <span style="font-size:11px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:10px;">Platform Activity</span>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:12px;">
+                                <div style="text-align:center; padding:12px; border:1px solid var(--border); border-radius:8px;">
+                                    <div style="font-size:20px; font-weight:600; color:var(--accent);">${productCount || 0}</div>
+                                    <div style="font-size:11px; color:var(--text-light); margin-top:2px;">Products Listed</div>
+                                </div>
+                                <div style="text-align:center; padding:12px; border:1px solid var(--border); border-radius:8px;">
+                                    <div style="font-size:20px; font-weight:600; color:var(--purple);">${orderCount || 0}</div>
+                                    <div style="font-size:11px; color:var(--text-light); margin-top:2px;">Order Items</div>
+                                </div>
+                                <div style="text-align:center; padding:12px; border:1px solid var(--border); border-radius:8px;">
+                                    <div style="font-size:20px; font-weight:600; color:var(--primary);">${daysActive}</div>
+                                    <div style="font-size:11px; color:var(--text-light); margin-top:2px;">Days Active</div>
+                                </div>
                             </div>
-                            <div style="font-size: 14px; font-weight: 500; color: var(--primary); word-break: break-word; line-height: 1.5;">${escapeHtml(seller.bank_account_details) || '—'}</div>
                         </div>
-                    </div>
 
-                    <!-- Timestamps -->
-                    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 12px; color: var(--text-light);">
-                        <span>Account Created: ${new Date(seller.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                        <span>Last Updated: ${new Date(seller.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                        <!-- Timestamps -->
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; font-size:13.5px;">
+                            <div>
+                                <span style="font-size:11px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">Account Created</span>
+                                <div style="color:var(--primary);">${createdDate}</div>
+                            </div>
+                            <div>
+                                <span style="font-size:11px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">Last Updated</span>
+                                <div style="color:var(--primary);">${updatedDate}</div>
+                            </div>
+                        </div>
                     </div>
                 `;
             } catch (err) {
