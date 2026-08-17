@@ -6839,8 +6839,16 @@
                     }
 
                     await fetchUserProfile(session.user);
-                    closeAccountModal();
-                    showView('account');
+                    
+                    const accountModal = document.getElementById('account-view');
+                    const isModalOpen = accountModal && accountModal.style.display === 'flex';
+                    if (isModalOpen) {
+                        closeAccountModal();
+                        showView('account');
+                    } else {
+                        updateAccountNavBtn();
+                        parseUrlAndRender();
+                    }
                     
                     // Show welcome notification ONLY ONCE per login session
                     if (!sessionStorage.getItem('storify_signed_in_toast_shown')) {
