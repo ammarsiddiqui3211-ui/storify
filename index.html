@@ -1178,6 +1178,25 @@
             color: var(--accent);
         }
 
+        select.view-all {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: var(--white);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px !important;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select.view-all:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+
         /* Product Grid */
         .product-grid {
             display: grid;
@@ -8280,10 +8299,9 @@
 
             // Category select dropdown
             const catSelect = document.createElement('select');
-            catSelect.className = 'header-cat-select';
-            catSelect.style.cssText = 'padding: 6px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--white); color: var(--text); cursor: pointer; outline: none; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05);';
+            catSelect.className = 'view-all header-cat-select';
 
-            let catOptions = `<option value="all" ${(!currentCatKey || currentCatKey === 'all' || currentCatKey === 'all-products') ? 'selected' : ''}>Categories Dropdown</option>`;
+            let catOptions = `<option value="all" ${(!currentCatKey || currentCatKey === 'all' || currentCatKey === 'all-products') ? 'selected' : ''}>Categories</option>`;
             if (appCategories && appCategories.length > 0) {
                 catOptions += appCategories.map(c => `
                     <option value="${escapeHtml(c.slug)}" ${(selectedCat && (selectedCat.slug === c.slug || selectedCat.id === c.id)) ? 'selected' : ''}>
@@ -8302,10 +8320,9 @@
 
             // Subcategory select dropdown
             const subSelect = document.createElement('select');
-            subSelect.className = 'header-subcat-select';
-            subSelect.style.cssText = 'padding: 6px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--white); color: var(--text); cursor: pointer; outline: none; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05);';
+            subSelect.className = 'view-all header-subcat-select';
 
-            let subOptions = `<option value="all" ${(!currentSubcat || currentSubcat === 'all') ? 'selected' : ''}>Subcategories Dropdown</option>`;
+            let subOptions = `<option value="all" ${(!currentSubcat || currentSubcat === 'all') ? 'selected' : ''}>Subcategories</option>`;
             if (subcats.length > 0) {
                 subOptions += subcats.map(sub => `
                     <option value="${escapeHtml(sub)}" ${(currentSubcat === sub) ? 'selected' : ''}>
@@ -8316,7 +8333,7 @@
             subSelect.innerHTML = subOptions;
             if (subcats.length === 0) {
                 subSelect.disabled = true;
-                subSelect.style.opacity = '0.6';
+                subSelect.style.opacity = '0.5';
                 subSelect.style.cursor = 'not-allowed';
             }
 
