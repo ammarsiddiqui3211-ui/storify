@@ -3925,36 +3925,6 @@
         // ----------------------------------------------------
         // BANNERS MANAGEMENT FUNCTIONS
         // ----------------------------------------------------
-        const DEFAULT_ADMIN_BANNERS = [
-            {
-                id: "b1",
-                title: "Storify Shirt Collection 2026",
-                subtitle: "Premium cotton shirts for everyday elegance and style.",
-                image_url: "images/banners/banner 1.png",
-                target_link: "all",
-                badge_tag: "2026 Collection",
-                is_active: true
-            },
-            {
-                id: "b2",
-                title: "Exclusive Accessories & Jewelry",
-                subtitle: "Discover luxury watches, rings, and handcrafted accessories.",
-                image_url: "images/banners/banner 3.png",
-                target_link: "accessories-jewelry",
-                badge_tag: "Featured Deal",
-                is_active: true
-            },
-            {
-                id: "b3",
-                title: "Active Outdoor & Sports Gear",
-                subtitle: "High-performance fitness gear for active lifestyles.",
-                image_url: "images/banners/banner 4.png",
-                target_link: "sports-outdoors",
-                badge_tag: "Sports Special",
-                is_active: true
-            }
-        ];
-
         let selectedBannerFile = null;
 
         async function fetchBannersAdmin() {
@@ -3966,7 +3936,7 @@
                         .order('sort_order', { ascending: true })
                         .order('created_at', { ascending: false });
 
-                    if (!error && data && data.length > 0) {
+                    if (!error && data) {
                         allBanners = data;
                         localStorage.setItem('storify_banners', JSON.stringify(allBanners));
                         return allBanners;
@@ -3983,7 +3953,7 @@
                     return allBanners;
                 } catch (e) {}
             }
-            allBanners = [...DEFAULT_ADMIN_BANNERS];
+            allBanners = [];
             localStorage.setItem('storify_banners', JSON.stringify(allBanners));
             return allBanners;
         }

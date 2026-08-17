@@ -5989,17 +5989,7 @@
     <section class="hero" id="hero-section">
         <div class="hero-banner">
             <div class="hero-slider" id="heroSlider">
-                <div class="hero-slide active">
-                    <img src="images/banners/banner 1.png" alt="Storify shirt collection banner">
-                </div>
-                <div class="hero-slide clickable" onclick="filterCategory('accessories-jewelry')" role="button"
-                    aria-label="Shop accessories & jewelry category">
-                    <img src="images/banners/banner 3.png" alt="Storify featured products banner">
-                </div>
-                <div class="hero-slide clickable" onclick="filterCategory('sports-outdoors')" role="button"
-                    aria-label="Shop sports & outdoors category">
-                    <img src="images/banners/banner 4.png" alt="Storify sports collection banner">
-                </div>
+                <!-- Dynamically populated from Admin Panel Banners -->
             </div>
             <div class="hero-controls" aria-label="Banner slider controls">
                 <button class="hero-arrow" type="button" onclick="changeHeroSlide(-1)"
@@ -8106,7 +8096,7 @@
                         .order('sort_order', { ascending: true })
                         .order('created_at', { ascending: false });
 
-                    if (!error && data && data.length > 0) {
+                    if (!error && data) {
                         appBanners = data;
                         localStorage.setItem('storify_banners', JSON.stringify(appBanners));
                         renderHeroSlider();
@@ -8124,27 +8114,32 @@
                 } catch (e) { }
             }
 
-            appBanners = [
-                { id: 'b1', title: "Shirt Collection", image_url: "images/banners/banner 1.png", target_link: "all" },
-                { id: 'b2', title: "Accessories & Jewelry", image_url: "images/banners/banner 3.png", target_link: "accessories-jewelry" },
-                { id: 'b3', title: "Sports & Outdoors", image_url: "images/banners/banner 4.png", target_link: "sports-outdoors" }
-            ];
+            appBanners = [];
             renderHeroSlider();
         }
 
         function renderHeroSlider() {
+            const heroSection = document.getElementById('hero-section');
             const slider = document.getElementById('heroSlider');
             const controls = document.querySelector('.hero-controls');
-            if (!slider || !appBanners || appBanners.length === 0) return;
 
-            slider.innerHTML = appBanners.map((b, idx) => `
-                <div class="hero-slide ${idx === 0 ? 'active' : ''} ${b.target_link ? 'clickable' : ''}" 
-                     onclick="${b.target_link ? `filterCategory('${escapeHtml(b.target_link)}')` : ''}" 
-                     role="${b.target_link ? 'button' : 'region'}" 
-                     aria-label="${escapeHtml(b.title)}">
-                    <img src="${escapeHtml(b.image_url)}" alt="${escapeHtml(b.title)}">
-                </div>
-            `).join('');
+            if (!appBanners || appBanners.length === 0) {
+                if (heroSection) heroSection.style.display = 'none';
+                return;
+            }
+
+            if (heroSection) heroSection.style.display = 'block';
+
+            if (slider) {
+                slider.innerHTML = appBanners.map((b, idx) => `
+                    <div class="hero-slide ${idx === 0 ? 'active' : ''} ${b.target_link ? 'clickable' : ''}" 
+                         onclick="${b.target_link ? `filterCategory('${escapeHtml(b.target_link)}')` : ''}" 
+                         role="${b.target_link ? 'button' : 'region'}" 
+                         aria-label="${escapeHtml(b.title)}">
+                        <img src="${escapeHtml(b.image_url)}" alt="${escapeHtml(b.title)}">
+                    </div>
+                `).join('');
+            }
 
             if (controls) {
                 const dotsContainer = controls.querySelector('.hero-dots');
