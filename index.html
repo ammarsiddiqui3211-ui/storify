@@ -6257,7 +6257,8 @@
         }
 
         let appLocations = [];
-        let selectedLocationFilter = localStorage.getItem('storify_selected_location') || 'all';
+        let storedLoc = localStorage.getItem('storify_selected_location');
+        let selectedLocationFilter = (storedLoc && storedLoc !== 'all') ? storedLoc : 'Pakistan';
 
         async function fetchLocations() {
             try {
@@ -6295,15 +6296,15 @@
             const containers = document.querySelectorAll('#headerLocationDropdownMenu, #mobileHeaderLocationDropdownMenu');
             if (!containers || containers.length === 0) return;
 
-            const isAllSelected = (!selectedLocationFilter || selectedLocationFilter === 'all');
             const pinIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" style="vertical-align: middle; margin-right: 6px; color: var(--accent);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+            if (!selectedLocationFilter || selectedLocationFilter === 'all') {
+                selectedLocationFilter = (appLocations && appLocations.length > 0) ? appLocations[0].country_name : 'Pakistan';
+            }
 
             containers.forEach(menu => {
                 let html = `
                     <div class="dropdown-header" style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Delivery Location</div>
-                    <a href="#" onclick="selectCountry('ALL', 'All Locations', '🌐', event)" class="${isAllSelected ? 'active' : ''}">
-                        <span style="margin-right: 6px;">🌐</span> All Locations
-                    </a>
                 `;
 
                 if (appLocations && appLocations.length > 0) {
@@ -6317,7 +6318,7 @@
             });
 
             const activeLoc = (appLocations || []).find(l => selectedLocationFilter && l.country_name.toLowerCase() === selectedLocationFilter.toLowerCase());
-            const displayLabel = isAllSelected ? 'All Locations' : (activeLoc ? `${activeLoc.flag_emoji || '🌐'} ${activeLoc.country_name}` : selectedLocationFilter);
+            const displayLabel = activeLoc ? `${activeLoc.flag_emoji || '🌐'} ${activeLoc.country_name}` : selectedLocationFilter;
             document.querySelectorAll('#countryDropdown .dropdown-trigger span, #mobileCountryDropdown .dropdown-trigger span').forEach(el => {
                 el.innerHTML = `${pinIcon} ${displayLabel}`;
             });
@@ -6326,7 +6327,7 @@
         function selectCountry(countryCode, countryName, flag, event) {
             if (event) event.preventDefault();
 
-            selectedLocationFilter = (countryName === 'All Locations' || countryCode === 'ALL') ? 'all' : countryName;
+            selectedLocationFilter = countryName;
             localStorage.setItem('storify_selected_location', selectedLocationFilter);
 
             renderHeaderLocations();
@@ -8612,7 +8613,7 @@
             if ((filter === 'all' || filter === 'all-products') && searchQuery === '' && priceFilter === 'all' && sortFilter === 'default' && subcategoryFilter === 'all') {
                 const renderedKeys = new Set();
                 (appCategories || []).forEach(cat => {
-                    const catProducts = products.filter(p => (p.categoryKey === cat.slug || p.categoryKey === cat.id) && !p.sold && p.stockStatus !== 'sold_out');
+                    const catProducts = products.filter(p => (p.categoryKey === cat.slug || p.categoryKey === cat.id) && !p.sold && p.stockStatus !== 'sold_out' && ((p.location || 'Pakistan').toLowerCase() === selectedLocationFilter.toLowerCase()));
                     if (catProducts.length > 0) {
                         const section = createProductSectionHTML(cat.name, catProducts, cat.slug, true, 'all');
                         container.appendChild(section);
@@ -8623,7 +8624,7 @@
                 // Fallback for other categories that might exist
                 const categoryMap = {};
                 products.forEach(p => {
-                    if (p.sold || p.stockStatus === 'sold_out') return;
+                    if (p.sold || p.stockStatus === 'sold_out' || (p.location || 'Pakistan').toLowerCase() !== selectedLocationFilter.toLowerCase()) return;
                     const key = p.categoryKey;
                     if (key && !renderedKeys.has(key)) {
                         if (!categoryMap[key]) {
@@ -8678,7 +8679,7 @@
 
                     // Location Filter
                     let matchesLocation = true;
-                    if (selectedLocationFilter && selectedLocationFilter !== 'all') {
+                    if (selectedLocationFilter) {
                         const pLoc = String(p.location || (p.specs && p.specs.location) || 'Pakistan').toLowerCase();
                         matchesLocation = (pLoc === String(selectedLocationFilter).toLowerCase());
                     }
