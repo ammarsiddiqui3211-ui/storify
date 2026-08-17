@@ -7782,6 +7782,7 @@
                         appCategories = data;
                         localStorage.setItem('storify_categories', JSON.stringify(appCategories));
                         rebuildCategoryBars();
+                        renderAllCategoriesPage();
                         return;
                     }
                 }
@@ -7792,6 +7793,7 @@
                 try {
                     appCategories = JSON.parse(cached).filter(c => c.is_active !== false);
                     rebuildCategoryBars();
+                    renderAllCategoriesPage();
                     return;
                 } catch (e) { }
             }
