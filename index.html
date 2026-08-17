@@ -6471,6 +6471,7 @@
                             sold: item.stock_status === 'sold_out',
                             rating: 5,
                             reviewCount: 0,
+                            location: item.location || (item.specs && item.specs.location) || 'Pakistan',
                             seller_id: item.seller_id,
                             shopName: item.shop_name || 'Partner Shop',
                             sellerAvatarUrl: item.seller_avatar_url || null,

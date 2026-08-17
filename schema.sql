@@ -990,4 +990,7 @@ INSERT INTO public.locations (country_name, country_code, currency_code, currenc
 VALUES ('Pakistan', 'PK', 'PKR', 'Rs', '🇵🇰', 1)
 ON CONFLICT (country_name) DO NOTHING;
 
+-- Ensure all existing products are assigned to Pakistan location
+UPDATE public.products SET location = 'Pakistan' WHERE location IS NULL OR location = '';
+
 
