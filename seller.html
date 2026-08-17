@@ -2247,6 +2247,14 @@
                 return;
             }
 
+            // Fallback timeout to render view if auth network request hangs
+            const initTimeout = setTimeout(() => {
+                const loadingState = document.getElementById('loadingState');
+                if (loadingState) {
+                    renderView();
+                }
+            }, 2500);
+
             try {
                 // Restore/Listen to auth state
                 const { data: { session } } = await supabaseClient.auth.getSession();
@@ -2276,15 +2284,17 @@
                         renderView();
                     } catch (innerErr) {
                         console.error("Auth change error:", innerErr);
+                        renderView();
                     }
                 });
             } catch (err) {
                 console.warn("localStorage/Supabase access error (likely file:// origin restrictions):", err);
                 user = null;
                 profile = null;
+            } finally {
+                clearTimeout(initTimeout);
+                renderView();
             }
-
-            renderView();
         }
 
 
@@ -2299,7 +2309,7 @@
                 if (!error && data) {
                     profile = data;
                     if (profile.role === 'seller' && profile.seller_status === 'approved') {
-                        await loadDashboardData();
+                        await loadDashboardData().catch(err => console.warn("Dashboard data load error:", err));
                     }
                 } else {
                     console.warn("Profile not found or error, attempting to auto-create profile:", error);
@@ -2453,13 +2463,14 @@
 
             if (user) {
                 const displayName = profile?.shop_name || profile?.name || user.email;
+                const avatarHTML = profile?.avatar_url
+                    ? `<img src="${escapeHtml(profile.avatar_url)}" alt="Logo" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+                    : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+
                 nav.innerHTML = `
                     <div class="seller-profile-container">
-                        <div class="seller-profile-avatar">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                            </svg>
+                        <div class="seller-profile-avatar" style="overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                            ${avatarHTML}
                         </div>
                         <div class="seller-profile-dropdown">
                             <div class="profile-dropdown-info">
@@ -5071,21 +5082,119 @@
         // ==========================================
         // 4G. TAB: SHOP SETTINGS
         // ==========================================
+        let selectedSellerAvatarFile = null;
+
+        function handleSellerAvatarSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                alert("Logo image size must be under 5MB");
+                return;
+            }
+            selectedSellerAvatarFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('sellerAvatarPreview');
+                if (preview) preview.src = e.target.result;
+                const removeBtn = document.getElementById('removeSellerAvatarBtn');
+                if (removeBtn) removeBtn.style.display = 'inline-block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeSellerAvatar(event) {
+            if (event) event.preventDefault();
+            selectedSellerAvatarFile = null;
+            const hiddenInput = document.getElementById('setAvatarUrl');
+            if (hiddenInput) hiddenInput.value = '';
+            const fileInput = document.getElementById('setAvatarFile');
+            if (fileInput) fileInput.value = '';
+            const preview = document.getElementById('sellerAvatarPreview');
+            if (preview) {
+                preview.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><polyline points='9 22 9 12 15 12 15 22'/></svg>";
+            }
+            const removeBtn = document.getElementById('removeSellerAvatarBtn');
+            if (removeBtn) removeBtn.style.display = 'none';
+        }
+
+        async function uploadSellerLogoPhoto(file, sellerId) {
+            if (!file || !sellerId || !supabaseClient) return null;
+            try {
+                const fileExt = file.name.split('.').pop() || 'jpg';
+                const cleanName = `shop_logo_${Date.now()}.${fileExt}`;
+                const filePath = `${sellerId}/${cleanName}`;
+
+                const { data, error } = await supabaseClient.storage
+                    .from('profile-photos')
+                    .upload(filePath, file, { upsert: true });
+
+                if (error) {
+                    console.warn("Storage logo upload failed, falling back to data URL:", error);
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('profile-photos')
+                    .getPublicUrl(filePath);
+
+                return publicUrl;
+            } catch (err) {
+                console.error("Seller logo upload exception:", err);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
         function renderSettingsTab(container) {
+            const avatarSrc = profile.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><polyline points='9 22 9 12 15 12 15 22'/></svg>";
+
             container.innerHTML = `
                 <div class="dashboard-header">
                     <h2 class="dashboard-title">Shop Settings</h2>
                 </div>
 
-                <form id="settingsForm" onsubmit="handleSettingsUpdate(event)">
+                <form id="settingsForm" onsubmit="handleSettingsUpdate(event)" style="max-width: 600px;">
+                    <!-- Shop Logo Upload Field -->
+                    <div style="display: flex; flex-direction: column; margin-bottom: 22px;">
+                        <label style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Shop Logo / Profile Photo</label>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="position: relative; width: 80px; height: 80px; flex-shrink: 0;">
+                                <img id="sellerAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Shop Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <label for="setAvatarFile" class="btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                    Choose Logo Photo
+                                </label>
+                                <input type="file" id="setAvatarFile" accept="image/*" style="display: none;" onchange="handleSellerAvatarSelect(event)">
+                                <a href="#" id="removeSellerAvatarBtn" onclick="removeSellerAvatar(event)" style="font-size: 12px; color: #ef4444; text-decoration: underline; font-weight: 600; ${profile.avatar_url ? '' : 'display:none;'}">Remove Logo</a>
+                            </div>
+                        </div>
+                        <input type="hidden" id="setAvatarUrl" value="${escapeHtml(profile.avatar_url || '')}">
+                    </div>
+
                     <div class="form-group">
                         <label for="setShop">Shop Display Name *</label>
                         <input type="text" id="setShop" class="form-control" value="${escapeHtml(profile.shop_name)}" required placeholder="e.g. Trendy Collections">
                     </div>
+
+                    <div class="form-group">
+                        <label for="setDescription">Shop Description / About Store</label>
+                        <textarea id="setDescription" class="form-control" style="height: 90px; resize: none;" placeholder="Describe your store, products, and brand story for buyers...">${escapeHtml(profile.description || '')}</textarea>
+                    </div>
+
                     <div class="form-group">
                         <label for="setPhone">Contact Phone Number *</label>
                         <input type="tel" id="setPhone" class="form-control" value="${escapeHtml(profile.phone)}" required placeholder="+92 300 1234567">
                     </div>
+
                     <div class="form-group">
                         <label for="setPayout">Payout Transfer Coordinates *</label>
                         <textarea id="setPayout" class="form-control" style="height: 100px; resize:none;" required placeholder="e.g. Bank Account: ...">${escapeHtml(profile.bank_account_details)}</textarea>
@@ -5102,25 +5211,40 @@
             const shopName = document.getElementById('setShop').value.trim();
             const phone = document.getElementById('setPhone').value.trim();
             const payoutDetails = document.getElementById('setPayout').value.trim();
+            const descriptionEl = document.getElementById('setDescription');
+            const description = descriptionEl ? descriptionEl.value.trim() : '';
             const btn = document.getElementById('setSubmitBtn');
 
             btn.innerHTML = `<span class="spinner"></span> Saving...`;
             btn.classList.add('loading');
 
             try {
+                let avatarUrl = profile.avatar_url || '';
+                if (selectedSellerAvatarFile) {
+                    const uploadedUrl = await uploadSellerLogoPhoto(selectedSellerAvatarFile, user.id);
+                    if (uploadedUrl) avatarUrl = uploadedUrl;
+                } else {
+                    const hiddenAvatar = document.getElementById('setAvatarUrl');
+                    if (hiddenAvatar) avatarUrl = hiddenAvatar.value;
+                }
+
                 const { error } = await supabaseClient
                     .from('profiles')
                     .update({
                         shop_name: shopName,
                         phone: phone,
-                        bank_account_details: payoutDetails
+                        bank_account_details: payoutDetails,
+                        avatar_url: avatarUrl,
+                        description: description
                     })
                     .eq('id', user.id);
 
                 if (error) throw error;
 
+                selectedSellerAvatarFile = null;
                 alert("Settings saved successfully!");
                 await fetchProfile();
+                updateHeaderNav();
                 renderTabContent();
             } catch (err) {
                 alert("Failed to save settings: " + err.message);

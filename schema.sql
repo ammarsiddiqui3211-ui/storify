@@ -95,9 +95,15 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   address text,
   city text,
   zip text,
+  avatar_url text,
+  description text,
   updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Migrations for existing deployments
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS avatar_url text;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS description text;
 
 -- Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -748,6 +754,10 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('product-images', 'product-images', true)
 ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('profile-photos', 'profile-photos', true)
+ON CONFLICT (id) DO NOTHING;
+
 DROP POLICY IF EXISTS "Allow public read access to product-images" ON storage.objects;
 CREATE POLICY "Allow public read access to product-images" ON storage.objects
   FOR SELECT TO public USING (bucket_id = 'product-images');
@@ -758,6 +768,16 @@ CREATE POLICY "Allow approved sellers to upload product-images" ON storage.objec
     bucket_id = 'product-images' AND
     (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'seller' AND
     (SELECT seller_status FROM public.profiles WHERE id = auth.uid()) = 'approved'
+  );
+
+DROP POLICY IF EXISTS "Allow public read access to profile-photos" ON storage.objects;
+CREATE POLICY "Allow public read access to profile-photos" ON storage.objects
+  FOR SELECT TO public USING (bucket_id = 'profile-photos');
+
+DROP POLICY IF EXISTS "Allow authenticated users to upload profile-photos" ON storage.objects;
+CREATE POLICY "Allow authenticated users to upload profile-photos" ON storage.objects
+  FOR INSERT TO authenticated WITH CHECK (
+    bucket_id = 'profile-photos' AND auth.uid() IS NOT NULL
   );
 
 -- Reset products ID identity sequence to start fresh

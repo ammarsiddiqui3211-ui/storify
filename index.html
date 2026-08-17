@@ -829,16 +829,18 @@
             right: 0;
         }
 
-        /* Account dropdown hover */
-        .account-dropdown:hover .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
+        /* Account dropdown hover - ONLY show dropdown menu when logged in (.has-dropdown) */
         .account-dropdown .dropdown-menu {
             left: auto;
             right: 0;
+            display: none;
+        }
+
+        .account-dropdown.has-dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         /* Responsive - Hide from main header on mobile, shown in drawer */
@@ -6755,6 +6757,8 @@
                         address: user.user_metadata?.address || '',
                         city: user.user_metadata?.city || '',
                         zip: user.user_metadata?.zip || '',
+                        avatar_url: user.user_metadata?.avatar_url || '',
+                        description: user.user_metadata?.description || '',
                         role: 'buyer',
                         seller_status: 'none',
                         seller_score: 100
@@ -6776,12 +6780,14 @@
                 } else {
                     account = {
                         id: profile.id,
-                        name: profile.name || user.user_metadata.name || '',
+                        name: profile.name || user.user_metadata?.name || '',
                         email: user.email,
-                        phone: profile.phone || user.user_metadata.phone || '',
-                        address: profile.address || user.user_metadata.address || '',
-                        city: profile.city || user.user_metadata.city || '',
-                        zip: profile.zip || user.user_metadata.zip || '',
+                        phone: profile.phone || user.user_metadata?.phone || '',
+                        address: profile.address || user.user_metadata?.address || '',
+                        city: profile.city || user.user_metadata?.city || '',
+                        zip: profile.zip || user.user_metadata?.zip || '',
+                        avatar_url: profile.avatar_url || user.user_metadata?.avatar_url || '',
+                        description: profile.description || user.user_metadata?.description || '',
                         role: profile.role || 'buyer',
                         seller_status: profile.seller_status || 'none',
                         shop_name: profile.shop_name || '',
@@ -6865,16 +6871,12 @@
         // Toggle Cart Sidebar
         function toggleCart() {
             const sidebar = document.getElementById('cartSidebar');
+            if (!sidebar) return;
             const isActive = sidebar.classList.contains('active');
             if (isActive) {
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('page') === 'cart') {
-                    window.history.back();
-                } else {
-                    closeCartDrawer();
-                }
+                closeCartDrawer();
             } else {
-                navigateToPage('cart');
+                openCartDrawer();
             }
         }
 
@@ -7375,6 +7377,7 @@
             if (event) event.preventDefault();
 
             if (viewName === 'account' && account) {
+                navigateToPage('account', { sub: 'personal' });
                 return;
             }
 
@@ -7415,6 +7418,9 @@
             }
 
             let newUrl;
+            const currentPath = window.location.pathname;
+            const isFileProtocol = window.location.protocol === 'file:';
+
             if (page === 'store' && (params.name || params.shopName || params.store)) {
                 urlParams.delete('page');
                 urlParams.delete('name');
@@ -7423,20 +7429,27 @@
                 urlParams.delete('seller');
                 const storeSlug = params.name || params.shopName || params.store;
                 const qs = urlParams.toString();
-                newUrl = `/${encodeURIComponent(storeSlug)}${qs ? '?' + qs : ''}`;
+                newUrl = isFileProtocol 
+                    ? `${currentPath}?store=${encodeURIComponent(storeSlug)}${qs ? '&' + qs : ''}`
+                    : `/${encodeURIComponent(storeSlug)}${qs ? '?' + qs : ''}`;
             } else {
                 const queryString = urlParams.toString();
-                newUrl = queryString ? `/?${queryString}` : '/';
+                newUrl = isFileProtocol 
+                    ? (queryString ? `${currentPath}?${queryString}` : currentPath)
+                    : (queryString ? `/?${queryString}` : '/');
             }
 
-            const currentPathAndQuery = window.location.pathname + window.location.search;
-
-            if (currentPathAndQuery !== newUrl) {
-                if (replaceState) {
-                    history.replaceState({ page, params }, '', newUrl);
-                } else {
-                    history.pushState({ page, params }, '', newUrl);
+            try {
+                const currentPathAndQuery = window.location.pathname + window.location.search;
+                if (currentPathAndQuery !== newUrl) {
+                    if (replaceState) {
+                        history.replaceState({ page, params }, '', newUrl);
+                    } else {
+                        history.pushState({ page, params }, '', newUrl);
+                    }
                 }
+            } catch (navErr) {
+                console.warn("History state update bypassed (e.g. file:// origin restriction):", navErr);
             }
 
             parseUrlAndRender();
@@ -7887,6 +7900,25 @@
                 }
             });
 
+            const desktopAccountBtn = document.getElementById('desktopAccountBtn');
+            if (desktopAccountBtn) {
+                if (account && account.avatar_url) {
+                    desktopAccountBtn.innerHTML = `
+                        <img src="${escapeHtml(account.avatar_url)}" alt="Avatar" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--accent); flex-shrink: 0;">
+                        <span class="account-btn-text" data-translate="account">${escapeHtml(account.name || 'Account')}</span>
+                    `;
+                } else {
+                    desktopAccountBtn.innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        <span class="account-btn-text">${account ? escapeHtml(account.name || 'Account') : 'Login / Sign Up'}</span>
+                    `;
+                }
+            }
+
             // Dynamic desktop account dropdown menu content
             const desktopMenuContent = document.getElementById('desktopAccountMenuContent');
             if (desktopMenuContent) {
@@ -7920,11 +7952,15 @@
                 }
             }
 
-            // Show/hide account dropdown menu depending on login state
-            const dropdownMenus = document.querySelectorAll('.account-dropdown .dropdown-menu');
-            dropdownMenus.forEach(menu => {
-                menu.style.display = account ? 'block' : 'none';
-            });
+            // Toggle account dropdown container class depending on login state
+            const accountDropdown = document.getElementById('accountDropdown');
+            if (accountDropdown) {
+                if (account) {
+                    accountDropdown.classList.add('has-dropdown');
+                } else {
+                    accountDropdown.classList.remove('has-dropdown');
+                }
+            }
             // Re-apply language translation to translate this button immediately
             const savedLang = localStorage.getItem('selectedLang') || 'en';
             applyTranslations(savedLang);
@@ -8238,7 +8274,7 @@
             container.innerHTML = `
                 <div class="seller-store-header">
                     <div class="seller-store-top-row">
-                        <div class="seller-store-avatar" title="${escapeHtml(displayShopName)}">
+                        <div class="seller-store-avatar" id="storeHeaderAvatar" title="${escapeHtml(displayShopName)}">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         </div>
                         <div class="seller-store-header-right">
@@ -8247,6 +8283,7 @@
                                 Member since ${memberSince}
                             </span>
                             <h1 class="seller-store-name">${escapeHtml(displayShopName)}</h1>
+                            <div id="storeHeaderDescription"></div>
                         </div>
                     </div>
                     
@@ -8309,6 +8346,27 @@
                     `).join('')}
                 </div>
             `;
+
+            // Asynchronously load seller avatar & description from profiles table
+            if (sellerProducts.length > 0 && sellerProducts[0].seller_id && supabaseClient) {
+                supabaseClient.from('profiles').select('avatar_url, description').eq('id', sellerProducts[0].seller_id).single()
+                    .then(({ data }) => {
+                        if (data) {
+                            if (data.avatar_url) {
+                                const avatarEl = document.getElementById('storeHeaderAvatar');
+                                if (avatarEl) {
+                                    avatarEl.innerHTML = `<img src="${escapeHtml(data.avatar_url)}" alt="${escapeHtml(displayShopName)}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                                }
+                            }
+                            if (data.description) {
+                                const descEl = document.getElementById('storeHeaderDescription');
+                                if (descEl) {
+                                    descEl.innerHTML = `<p style="font-size: 13.5px; color: var(--text-light); margin: 6px 0 0 0; line-height: 1.5; font-weight: 400;">${escapeHtml(data.description)}</p>`;
+                                }
+                            }
+                        }
+                    }).catch(console.error);
+            }
         }
 
         // ----------------------------------------------------
@@ -8645,21 +8703,47 @@
 
             // --- SUB-PAGE: Personal Info ---
             if (subPage === 'personal') {
+                const avatarSrc = account.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
                 view.innerHTML = `
                     <div style="display: flex; justify-content: center; width: 100%;">
-                        <div class="auth-card" style="position: static; transform: none; box-shadow: 0 4px 20px var(--shadow); margin: 0 auto; width: 100%; max-width: 500px;">
-                            <div style="margin-bottom: 20px;">
+                        <div class="auth-card" style="position: static; transform: none; box-shadow: 0 4px 20px var(--shadow); margin: 0 auto; width: 100%; max-width: 520px;">
+                            <div style="margin-bottom: 20px; text-align: center;">
                                 <h2 style="font-size: 20px; font-weight: 800; color: var(--primary); margin: 0 0 6px 0;">Edit Account Details</h2>
-                                <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal and shipping information.</p>
+                                <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal profile, avatar, and shipping information.</p>
                             </div>
 
                             <div id="edit-msg-block" class="auth-message"></div>
 
                             <form id="editAccountForm" onsubmit="handleAccountSubmit(event)">
+                                <!-- Avatar Photo Upload Component -->
+                                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 22px;">
+                                    <div style="position: relative; width: 90px; height: 90px; cursor: pointer;" onclick="document.getElementById('accountAvatarFile').click()">
+                                        <img id="accountAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+                                        <label for="accountAvatarFile" style="position: absolute; bottom: 0; right: 0; background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" title="Change Photo">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                        </label>
+                                    </div>
+                                    <input type="file" id="accountAvatarFile" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                                        <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                            Upload Profile Photo
+                                        </label>
+                                        <a href="#" id="removeAvatarLink" onclick="removeUserAvatar(event)" style="color: #ef4444; font-size: 12px; font-weight: 600; text-decoration: underline; ${account.avatar_url ? '' : 'display:none;'}">Remove</a>
+                                    </div>
+                                    <input type="hidden" id="accountAvatarUrl" value="${escapeHtml(account.avatar_url || '')}">
+                                </div>
+
                                 <div class="form-group">
                                     <label for="accountName">Full Name *</label>
                                     <input type="text" id="accountName" name="name" class="form-control" placeholder="Your Full Name" value="${escapeHtml(account.name)}" required>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="accountDescription">Profile Description / Bio</label>
+                                    <textarea id="accountDescription" name="description" class="form-control" style="height: 75px; resize: none;" placeholder="Share a few details about yourself...">${escapeHtml(account.description || '')}</textarea>
+                                </div>
+
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="accountEmail">Email Address *</label>
@@ -9275,26 +9359,124 @@
         }
         // --- END SELLER DASHBOARD HELPER METHODS ---
 
+        // --- USER AVATAR & PROFILE HELPERS ---
+        let selectedAvatarFile = null;
+
+        function handleAvatarFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                showToast("Image size must be under 5MB");
+                return;
+            }
+            selectedAvatarFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('accountAvatarPreview');
+                if (preview) preview.src = e.target.result;
+                const removeBtn = document.getElementById('removeAvatarLink');
+                if (removeBtn) removeBtn.style.display = 'inline';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeUserAvatar(event) {
+            if (event) event.preventDefault();
+            selectedAvatarFile = null;
+            const hiddenInput = document.getElementById('accountAvatarUrl');
+            if (hiddenInput) hiddenInput.value = '';
+            const fileInput = document.getElementById('accountAvatarFile');
+            if (fileInput) fileInput.value = '';
+            const preview = document.getElementById('accountAvatarPreview');
+            if (preview) {
+                preview.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
+            }
+            const removeBtn = document.getElementById('removeAvatarLink');
+            if (removeBtn) removeBtn.style.display = 'none';
+        }
+
+        async function uploadUserProfilePhoto(file, userId) {
+            if (!file || !userId || !supabaseClient) return null;
+            try {
+                const fileExt = file.name.split('.').pop() || 'jpg';
+                const cleanName = `avatar_${Date.now()}.${fileExt}`;
+                const filePath = `${userId}/${cleanName}`;
+
+                const { data, error } = await supabaseClient.storage
+                    .from('profile-photos')
+                    .upload(filePath, file, { upsert: true });
+
+                if (error) {
+                    console.warn("Storage upload failed, falling back to data URL:", error);
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('profile-photos')
+                    .getPublicUrl(filePath);
+
+                return publicUrl;
+            } catch (err) {
+                console.error("Avatar upload exception:", err);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
         // Modal edit profile form for logged-in users
         function renderEditAccountModal() {
             const view = document.getElementById('account-view');
             if (!view || !account) return;
 
+            const avatarSrc = account.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
+
             view.innerHTML = `
-                <div class="auth-card fade-in" onclick="event.stopPropagation()">
+                <div class="auth-card fade-in" onclick="event.stopPropagation()" style="max-width: 520px; width: 100%;">
                     <button class="close-auth-modal" onclick="closeAccountModal()" aria-label="Close modal">×</button>
-                    <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 18px; text-align: center;">
                         <h2 style="font-size: 20px; font-weight: 800; color: var(--primary); margin: 0 0 6px 0;">Edit Account Details</h2>
-                        <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal and shipping information.</p>
+                        <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal profile, avatar photo, and bio.</p>
                     </div>
 
                     <div id="edit-msg-block" class="auth-message"></div>
 
                     <form id="editAccountForm" onsubmit="handleAccountSubmit(event)">
+                        <!-- Avatar Photo Upload Component -->
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+                            <div style="position: relative; width: 90px; height: 90px; cursor: pointer;" onclick="document.getElementById('accountAvatarFile').click()">
+                                <img id="accountAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+                                <label for="accountAvatarFile" style="position: absolute; bottom: 0; right: 0; background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" title="Change Photo">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                </label>
+                            </div>
+                            <input type="file" id="accountAvatarFile" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                                <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                    Upload Profile Photo
+                                </label>
+                                <a href="#" id="removeAvatarLink" onclick="removeUserAvatar(event)" style="color: #ef4444; font-size: 12px; font-weight: 600; text-decoration: underline; ${account.avatar_url ? '' : 'display:none;'}">Remove</a>
+                            </div>
+                            <input type="hidden" id="accountAvatarUrl" value="${escapeHtml(account.avatar_url || '')}">
+                        </div>
+
                         <div class="form-group">
                             <label for="accountName">Full Name *</label>
                             <input type="text" id="accountName" name="name" class="form-control" placeholder="Your Full Name" value="${escapeHtml(account.name)}" required>
                         </div>
+
+                        <div class="form-group">
+                            <label for="accountDescription">Profile Description / Bio</label>
+                            <textarea id="accountDescription" name="description" class="form-control" style="height: 75px; resize: none;" placeholder="Share a few details about yourself...">${escapeHtml(account.description || '')}</textarea>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="accountEmail">Email Address *</label>
@@ -9516,10 +9698,10 @@
         }
 
 
-        function handleAccountSubmit(event) {
+        async function handleAccountSubmit(event) {
             event.preventDefault();
 
-            if (!supabaseClient) {
+            if (!supabaseClient || !account) {
                 showToast("Supabase is not configured.");
                 return;
             }
@@ -9531,6 +9713,8 @@
             const address = document.getElementById('accountAddress').value.trim();
             const city = document.getElementById('accountCity').value.trim();
             const zip = document.getElementById('accountZip').value.trim();
+            const descriptionEl = document.getElementById('accountDescription');
+            const description = descriptionEl ? descriptionEl.value.trim() : '';
 
             if (!name || !email || !phone) {
                 showToast("Fill all fields");
@@ -9542,53 +9726,67 @@
             btn.innerHTML = `<span class="spinner"></span> Saving Details...`;
             btn.classList.add('loading');
 
-            supabaseClient.auth.updateUser({
-                data: {
-                    name: name,
-                    phone: phone,
-                    address: address,
-                    city: city,
-                    zip: zip
+            try {
+                let avatarUrl = account.avatar_url || '';
+                if (selectedAvatarFile) {
+                    const uploadedUrl = await uploadUserProfilePhoto(selectedAvatarFile, account.id);
+                    if (uploadedUrl) avatarUrl = uploadedUrl;
+                } else {
+                    const hiddenAvatar = document.getElementById('accountAvatarUrl');
+                    if (hiddenAvatar) avatarUrl = hiddenAvatar.value;
                 }
-            })
-                .then(async ({ data, error }) => {
-                    if (error) {
-                        btn.innerHTML = `Update Account`;
-                        btn.classList.remove('loading');
-                        showAuthMessage('error', error.message, 'edit-msg-block');
-                        return;
+
+                const { data, error } = await supabaseClient.auth.updateUser({
+                    data: {
+                        name: name,
+                        phone: phone,
+                        address: address,
+                        city: city,
+                        zip: zip,
+                        avatar_url: avatarUrl,
+                        description: description
                     }
-
-                    const { error: profileError } = await supabaseClient
-                        .from('profiles')
-                        .update({
-                            name: name,
-                            phone: phone,
-                            address: address,
-                            city: city,
-                            zip: zip
-                        })
-                        .eq('id', account.id);
-
-                    btn.innerHTML = `Update Account`;
-                    btn.classList.remove('loading');
-
-                    if (profileError) {
-                        showAuthMessage('error', profileError.message, 'edit-msg-block');
-                    } else {
-                        await fetchUserProfile(data.user);
-                        accountEditMode = false;
-                        closeAccountModal();
-                        renderAccountPageView();
-                        showToast("Details updated");
-                    }
-                })
-                .catch(err => {
-                    btn.innerHTML = `Update Account`;
-                    btn.classList.remove('loading');
-                    showAuthMessage('error', 'An error occurred while updating profile.', 'edit-msg-block');
-                    console.error(err);
                 });
+
+                if (error) {
+                    btn.innerHTML = `Update Account`;
+                    btn.classList.remove('loading');
+                    showAuthMessage('error', error.message, 'edit-msg-block');
+                    return;
+                }
+
+                const { error: profileError } = await supabaseClient
+                    .from('profiles')
+                    .update({
+                        name: name,
+                        phone: phone,
+                        address: address,
+                        city: city,
+                        zip: zip,
+                        avatar_url: avatarUrl,
+                        description: description
+                    })
+                    .eq('id', account.id);
+
+                btn.innerHTML = `Update Account`;
+                btn.classList.remove('loading');
+
+                if (profileError) {
+                    showAuthMessage('error', profileError.message, 'edit-msg-block');
+                } else {
+                    selectedAvatarFile = null;
+                    await fetchUserProfile(data.user || { id: account.id, email: email, user_metadata: {} });
+                    accountEditMode = false;
+                    closeAccountModal();
+                    renderAccountPageView();
+                    showToast("Profile details updated");
+                }
+            } catch (err) {
+                btn.innerHTML = `Update Account`;
+                btn.classList.remove('loading');
+                showAuthMessage('error', 'An error occurred while updating profile.', 'edit-msg-block');
+                console.error(err);
+            }
         }
 
         function editAccount() {
