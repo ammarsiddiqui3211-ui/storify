@@ -814,6 +814,8 @@ CREATE OR REPLACE VIEW public.public_products AS
     p.featured,
     p.seller_id,
     s.shop_name,
+    s.avatar_url AS seller_avatar_url,
+    s.description AS seller_description,
     p.shipping_fee,
     p.created_at
   FROM public.products p
