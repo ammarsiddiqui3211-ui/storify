@@ -6331,7 +6331,8 @@
             localStorage.setItem('storify_selected_location', selectedLocationFilter);
 
             renderHeaderLocations();
-            renderProductGrid(currentCategoryFilter || 'all');
+            parseUrlAndRender();
+            renderCart();
 
             if (event) {
                 showToast(`Delivery location set to ${countryName}`);
