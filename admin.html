@@ -1697,7 +1697,6 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th style="width: 70px;">Icon</th>
                                         <th>Category Name</th>
                                         <th>Slug / Target Key</th>
                                         <th>Subcategories</th>
@@ -1707,7 +1706,7 @@
                                 </thead>
                                 <tbody id="categoriesTableBody">
                                     <tr>
-                                        <td colspan="6" style="text-align: center; color: var(--text-light); padding: 30px;">Loading categories list...</td>
+                                        <td colspan="5" style="text-align: center; color: var(--text-light); padding: 30px;">Loading categories list...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -4280,7 +4279,7 @@
             if (allCategories.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; color: var(--text-light); padding: 40px;">
+                        <td colspan="5" style="text-align: center; color: var(--text-light); padding: 40px;">
                             No categories found. Click "+ Add New Category" to create one.
                         </td>
                     </tr>
@@ -4299,7 +4298,6 @@
 
                 return `
                     <tr>
-                        <td style="font-size: 20px; text-align: center;">${escapeHtml(c.icon || '🏷️')}</td>
                         <td>
                             <strong style="font-size: 14px; color: var(--primary);">${escapeHtml(c.name)}</strong>
                         </td>
@@ -4327,12 +4325,9 @@
                 mobileCards.innerHTML = allCategories.map(c => `
                     <div style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 24px;">${escapeHtml(c.icon || '🏷️')}</span>
-                                <div>
-                                    <strong style="font-size: 15px; color: var(--primary);">${escapeHtml(c.name)}</strong>
-                                    <div style="font-size: 11.5px; color: var(--text-light);">${escapeHtml(c.slug)}</div>
-                                </div>
+                            <div>
+                                <strong style="font-size: 15px; color: var(--primary);">${escapeHtml(c.name)}</strong>
+                                <div style="font-size: 11.5px; color: var(--text-light);">${escapeHtml(c.slug)}</div>
                             </div>
                             <span class="badge ${c.is_active ? 'badge-success' : 'badge-danger'}">${c.is_active ? 'Active' : 'Disabled'}</span>
                         </div>
