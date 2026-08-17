@@ -1229,6 +1229,18 @@
                     Payouts
                 </a>
             </li>
+            <li id="mobile-menu-banners">
+                <a href="#" onclick="switchTab('banners'); closeMobileAdminMenu();">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Banners
+                </a>
+            </li>
+            <li id="mobile-menu-categories">
+                <a href="#" onclick="switchTab('categories'); closeMobileAdminMenu();">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    Categories
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -1269,6 +1281,18 @@
                     <a href="#" onclick="switchTab('payouts')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                         Payouts
+                    </a>
+                </li>
+                <li class="sidebar-item" id="menu-banners">
+                    <a href="#" onclick="switchTab('banners')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Banners
+                    </a>
+                </li>
+                <li class="sidebar-item" id="menu-categories">
+                    <a href="#" onclick="switchTab('categories')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                        Categories
                     </a>
                 </li>
             </ul>
@@ -1625,6 +1649,210 @@
                     </div>
                 </section>
 
+                <!-- BANNERS TAB -->
+                <section id="panel-banners" class="tab-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 style="font-size: 18px; font-weight: 800; color: var(--primary); margin: 0 0 4px 0;">Hero Banners Management</h2>
+                            <p style="font-size: 13px; color: var(--text-light); margin: 0;">Add, edit, or remove carousel promotional banners displayed on the storefront hero section.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddBannerModal()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            Add New Banner
+                        </button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h2>Storefront Carousel Banners</h2>
+                            <span id="bannerCountBadge" class="badge badge-info" style="font-size: 11px;">0 Banners</span>
+                        </div>
+                        <div style="padding: 24px;">
+                            <div id="bannersGridContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                                <!-- Dynamically rendered banner cards -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CATEGORIES TAB -->
+                <section id="panel-categories" class="tab-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 style="font-size: 18px; font-weight: 800; color: var(--primary); margin: 0 0 4px 0;">Categories & Subcategories Management</h2>
+                            <p style="font-size: 13px; color: var(--text-light); margin: 0;">Manage marketplace main product categories and nested subcategories.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddCategoryModal()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            Add New Category
+                        </button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h2>Categories List</h2>
+                            <span id="categoryCountBadge" class="badge badge-info" style="font-size: 11px;">0 Categories</span>
+                        </div>
+                        <div class="table-responsive hide-mobile-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 70px;">Icon</th>
+                                        <th>Category Name</th>
+                                        <th>Slug / Target Key</th>
+                                        <th>Subcategories</th>
+                                        <th>Status</th>
+                                        <th style="text-align: center;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoriesTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: var(--text-light); padding: 30px;">Loading categories list...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="categoriesMobileCards" class="show-mobile-cards"></div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: Add/Edit Banner Modal -->
+    <div id="bannerModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3 id="bannerModalTitle">Add New Banner</h3>
+                <button class="close-btn" onclick="closeBannerModal()">&times;</button>
+            </div>
+            <form id="bannerForm" onsubmit="handleBannerFormSubmit(event)">
+                <div class="modal-body" style="padding: 24px;">
+                    <input type="hidden" id="bannerEditId">
+                    
+                    <!-- Banner Image Upload Preview -->
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: block;">Banner Image *</label>
+                        <div style="position: relative; width: 100%; height: 160px; border-radius: 12px; overflow: hidden; border: 2px dashed var(--border); background: var(--secondary); display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('bannerImageFile').click()">
+                            <img id="bannerImagePreview" src="" alt="Banner Preview" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <div id="bannerImagePlaceholder" style="text-align: center; color: var(--text-light);">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                <div style="font-size: 13px; font-weight: 600; margin-top: 6px;">Click to Choose Banner Image</div>
+                                <div style="font-size: 11px; opacity: 0.8;">JPG, PNG, WEBP (Recommended: 1200x450px)</div>
+                            </div>
+                        </div>
+                        <input type="file" id="bannerImageFile" accept="image/*" style="display: none;" onchange="handleBannerImageSelect(event)">
+                        <input type="hidden" id="bannerImageUrl">
+                    </div>
+
+                    <div class="filter-group" style="margin-bottom: 16px;">
+                        <label for="bannerTitle">Banner Title *</label>
+                        <input type="text" id="bannerTitle" class="input-control" placeholder="e.g. Summer Shirt Collection 2026" required>
+                    </div>
+
+                    <div class="filter-group" style="margin-bottom: 16px;">
+                        <label for="bannerSubtitle">Subtitle / Description</label>
+                        <input type="text" id="bannerSubtitle" class="input-control" placeholder="e.g. Enjoy up to 40% OFF on premium shirts">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div class="filter-group">
+                            <label for="bannerTag">Badge / Tag Text</label>
+                            <input type="text" id="bannerTag" class="input-control" placeholder="e.g. 2026 Collection">
+                        </div>
+                        <div class="filter-group">
+                            <label for="bannerTarget">Target Link / Category</label>
+                            <input type="text" id="bannerTarget" class="input-control" placeholder="e.g. best-sellers, fashion, electronics">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="bannerIsActive" checked style="width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer;">
+                        <label for="bannerIsActive" style="font-size: 13.5px; font-weight: 600; cursor: pointer;">Active (Visible on Storefront Carousel)</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeBannerModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBannerSubmitBtn">Save Banner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add/Edit Category Modal -->
+    <div id="categoryModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">Add New Category</h3>
+                <button class="close-btn" onclick="closeCategoryModal()">&times;</button>
+            </div>
+            <form id="categoryForm" onsubmit="handleCategoryFormSubmit(event)">
+                <div class="modal-body" style="padding: 24px;">
+                    <input type="hidden" id="categoryEditId">
+
+                    <div class="filter-group" style="margin-bottom: 16px;">
+                        <label for="categoryName">Category Name *</label>
+                        <input type="text" id="categoryName" class="input-control" placeholder="e.g. Electronics & Gadgets" required oninput="autoGenerateCategorySlug(this.value)">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div class="filter-group">
+                            <label for="categorySlug">Category Slug / Key *</label>
+                            <input type="text" id="categorySlug" class="input-control" placeholder="e.g. electronics" required>
+                        </div>
+                        <div class="filter-group">
+                            <label for="categoryIcon">Icon (Emoji or SVG Name)</label>
+                            <input type="text" id="categoryIcon" class="input-control" placeholder="e.g. ⚡, 📱, shirt, tag">
+                        </div>
+                    </div>
+
+                    <div class="filter-group" style="margin-bottom: 16px;">
+                        <label for="categorySubcategoriesInput">Subcategories (Comma separated)</label>
+                        <textarea id="categorySubcategoriesInput" class="input-control" rows="3" placeholder="e.g. Smartphones, Laptops, Accessories, Audio"></textarea>
+                        <div style="font-size: 11px; color: var(--text-light); margin-top: 4px;">Enter subcategories separated by commas. You can also add or remove subcategories anytime.</div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="categoryIsActive" checked style="width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer;">
+                        <label for="categoryIsActive" style="font-size: 13.5px; font-weight: 600; cursor: pointer;">Active (Visible on Navigation & Filter Bars)</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeCategoryModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveCategorySubmitBtn">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Subcategory Quick Modal -->
+    <div id="subcategoryModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 460px;">
+            <div class="modal-header">
+                <h3>Add Subcategory</h3>
+                <button class="close-btn" onclick="closeSubcategoryModal()">&times;</button>
+            </div>
+            <form id="subcategoryForm" onsubmit="handleAddSubcategorySubmit(event)">
+                <div class="modal-body" style="padding: 24px;">
+                    <input type="hidden" id="subcatParentId">
+                    <div class="filter-group" style="margin-bottom: 16px;">
+                        <label for="subcatParentName">Parent Category</label>
+                        <input type="text" id="subcatParentName" class="input-control" disabled style="background: var(--secondary);">
+                    </div>
+                    <div class="filter-group">
+                        <label for="newSubcategoryName">Subcategory Name *</label>
+                        <input type="text" id="newSubcategoryName" class="input-control" placeholder="e.g. Wireless Headphones" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeSubcategoryModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Subcategory</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
             </div>
         </main>
     </div>
@@ -1968,7 +2196,9 @@
                 sellers: 'Sellers Management',
                 products: 'Platform Inventory Catalog',
                 orders: 'Customer Orders Ledger',
-                payouts: 'Payouts Settlement Panel'
+                payouts: 'Payouts Settlement Panel',
+                banners: 'Hero Carousel Banners',
+                categories: 'Categories & Subcategories'
             };
             document.getElementById('topbarTitleText').innerText = tabTitles[tabId] || 'Dashboard';
 
@@ -1988,6 +2218,10 @@
                     await renderOrdersTab();
                 } else if (tabId === 'payouts') {
                     await renderPayoutsTab();
+                } else if (tabId === 'banners') {
+                    await renderBannersTab();
+                } else if (tabId === 'categories') {
+                    await renderCategoriesTab();
                 }
             } catch (err) {
                 console.error(`Failed to load data for tab ${tabId}:`, err);
@@ -3686,6 +3920,730 @@
 
         function closeSellerDetailModal() {
             document.getElementById('sellerDetailModal').classList.remove('active');
+        }
+
+        // ----------------------------------------------------
+        // BANNERS MANAGEMENT FUNCTIONS
+        // ----------------------------------------------------
+        const DEFAULT_ADMIN_BANNERS = [
+            {
+                id: "b1",
+                title: "Storify Shirt Collection 2026",
+                subtitle: "Premium cotton shirts for everyday elegance and style.",
+                image_url: "images/banners/banner 1.png",
+                target_link: "all",
+                badge_tag: "2026 Collection",
+                is_active: true
+            },
+            {
+                id: "b2",
+                title: "Exclusive Accessories & Jewelry",
+                subtitle: "Discover luxury watches, rings, and handcrafted accessories.",
+                image_url: "images/banners/banner 3.png",
+                target_link: "accessories-jewelry",
+                badge_tag: "Featured Deal",
+                is_active: true
+            },
+            {
+                id: "b3",
+                title: "Active Outdoor & Sports Gear",
+                subtitle: "High-performance fitness gear for active lifestyles.",
+                image_url: "images/banners/banner 4.png",
+                target_link: "sports-outdoors",
+                badge_tag: "Sports Special",
+                is_active: true
+            }
+        ];
+
+        let selectedBannerFile = null;
+
+        async function fetchBannersAdmin() {
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('banners')
+                        .select('*')
+                        .order('sort_order', { ascending: true })
+                        .order('created_at', { ascending: false });
+
+                    if (!error && data && data.length > 0) {
+                        allBanners = data;
+                        localStorage.setItem('storify_banners', JSON.stringify(allBanners));
+                        return allBanners;
+                    }
+                }
+            } catch (err) {
+                console.warn("Banners Supabase fetch warning:", err);
+            }
+
+            const cached = localStorage.getItem('storify_banners');
+            if (cached) {
+                try {
+                    allBanners = JSON.parse(cached);
+                    return allBanners;
+                } catch (e) {}
+            }
+            allBanners = [...DEFAULT_ADMIN_BANNERS];
+            localStorage.setItem('storify_banners', JSON.stringify(allBanners));
+            return allBanners;
+        }
+
+        async function renderBannersTab() {
+            await fetchBannersAdmin();
+            const container = document.getElementById('bannersGridContainer');
+            const badge = document.getElementById('bannerCountBadge');
+            if (!container) return;
+
+            if (badge) badge.innerText = `${allBanners.length} Banner${allBanners.length === 1 ? '' : 's'}`;
+
+            if (allBanners.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-light);">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 10px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <p style="font-size: 15px; font-weight: 600; color: var(--primary);">No banners created yet</p>
+                        <p style="font-size: 13px;">Click "+ Add New Banner" to create your first storefront carousel slide.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allBanners.map(b => `
+                <div style="background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 14px var(--shadow); display: flex; flex-direction: column; transition: all 0.25s ease;">
+                    <div style="position: relative; width: 100%; height: 160px; background: var(--secondary);">
+                        <img src="${escapeHtml(b.image_url)}" alt="${escapeHtml(b.title)}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 6px;">
+                            <span class="badge ${b.is_active ? 'badge-success' : 'badge-danger'}">${b.is_active ? 'Active' : 'Draft / Hidden'}</span>
+                            ${b.badge_tag ? `<span class="badge badge-info">${escapeHtml(b.badge_tag)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div style="padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h3 style="font-size: 15px; font-weight: 700; color: var(--primary); margin: 0 0 6px 0;">${escapeHtml(b.title)}</h3>
+                            <p style="font-size: 12.5px; color: var(--text-light); margin: 0 0 10px 0; line-height: 1.4;">${escapeHtml(b.subtitle || 'No description provided')}</p>
+                            <div style="font-size: 11.5px; font-weight: 600; color: var(--accent);">Target Link: ${escapeHtml(b.target_link || 'all')}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);">
+                            <button class="btn btn-sm ${b.is_active ? 'btn-outline' : 'btn-primary'}" onclick="toggleBannerActiveStatus('${b.id}')">
+                                ${b.is_active ? 'Deactivate' : 'Activate'}
+                            </button>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-sm btn-outline" onclick="openEditBannerModal('${b.id}')">Edit</button>
+                                <button class="btn btn-sm" style="background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.25);" onclick="deleteBanner('${b.id}')">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddBannerModal() {
+            document.getElementById('bannerModalTitle').innerText = 'Add New Banner';
+            document.getElementById('bannerEditId').value = '';
+            document.getElementById('bannerTitle').value = '';
+            document.getElementById('bannerSubtitle').value = '';
+            document.getElementById('bannerTag').value = '';
+            document.getElementById('bannerTarget').value = '';
+            document.getElementById('bannerImageUrl').value = '';
+            document.getElementById('bannerIsActive').checked = true;
+            
+            const preview = document.getElementById('bannerImagePreview');
+            const placeholder = document.getElementById('bannerImagePlaceholder');
+            preview.style.display = 'none';
+            preview.src = '';
+            placeholder.style.display = 'block';
+            selectedBannerFile = null;
+
+            document.getElementById('bannerModal').classList.add('active');
+        }
+
+        function openEditBannerModal(bannerId) {
+            const b = allBanners.find(item => String(item.id) === String(bannerId));
+            if (!b) return;
+
+            document.getElementById('bannerModalTitle').innerText = 'Edit Banner Details';
+            document.getElementById('bannerEditId').value = b.id;
+            document.getElementById('bannerTitle').value = b.title || '';
+            document.getElementById('bannerSubtitle').value = b.subtitle || '';
+            document.getElementById('bannerTag').value = b.badge_tag || '';
+            document.getElementById('bannerTarget').value = b.target_link || 'all';
+            document.getElementById('bannerImageUrl').value = b.image_url || '';
+            document.getElementById('bannerIsActive').checked = b.is_active !== false;
+
+            const preview = document.getElementById('bannerImagePreview');
+            const placeholder = document.getElementById('bannerImagePlaceholder');
+            if (b.image_url) {
+                preview.src = b.image_url;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                preview.style.display = 'none';
+                placeholder.style.display = 'block';
+            }
+            selectedBannerFile = null;
+
+            document.getElementById('bannerModal').classList.add('active');
+        }
+
+        function closeBannerModal() {
+            document.getElementById('bannerModal').classList.remove('active');
+        }
+
+        function handleBannerImageSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            selectedBannerFile = file;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const preview = document.getElementById('bannerImagePreview');
+                const placeholder = document.getElementById('bannerImagePlaceholder');
+                preview.src = evt.target.result;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function uploadBannerImageFile(file) {
+            if (!file) return null;
+            try {
+                if (supabaseClient) {
+                    const fileExt = file.name.split('.').pop() || 'jpg';
+                    const cleanName = `banner_${Date.now()}.${fileExt}`;
+                    const filePath = `banners/${cleanName}`;
+
+                    const { data, error } = await supabaseClient.storage
+                        .from('profile-photos')
+                        .upload(filePath, file, { upsert: true });
+
+                    if (!error) {
+                        const { data: { publicUrl } } = supabaseClient.storage
+                            .from('profile-photos')
+                            .getPublicUrl(filePath);
+                        return publicUrl;
+                    }
+                }
+            } catch (err) {
+                console.warn("Storage upload warning, using data URL fallback:", err);
+            }
+
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleBannerFormSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('bannerEditId').value;
+            const title = document.getElementById('bannerTitle').value.trim();
+            const subtitle = document.getElementById('bannerSubtitle').value.trim();
+            const badgeTag = document.getElementById('bannerTag').value.trim();
+            const targetLink = document.getElementById('bannerTarget').value.trim() || 'all';
+            const isActive = document.getElementById('bannerIsActive').checked;
+            let imageUrl = document.getElementById('bannerImageUrl').value;
+
+            if (!title) {
+                alert("Please fill in the banner title");
+                return;
+            }
+
+            const btn = document.getElementById('saveBannerSubmitBtn');
+            btn.innerText = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                if (selectedBannerFile) {
+                    const uploaded = await uploadBannerImageFile(selectedBannerFile);
+                    if (uploaded) imageUrl = uploaded;
+                }
+
+                if (!imageUrl) {
+                    alert("Please select an image for the banner");
+                    btn.innerText = 'Save Banner';
+                    btn.disabled = false;
+                    return;
+                }
+
+                const bannerData = {
+                    title: title,
+                    subtitle: subtitle,
+                    badge_tag: badgeTag,
+                    target_link: targetLink,
+                    image_url: imageUrl,
+                    is_active: isActive,
+                    updated_at: new Date().toISOString()
+                };
+
+                let savedItem = null;
+                if (supabaseClient) {
+                    try {
+                        if (editId) {
+                            const { data, error } = await supabaseClient
+                                .from('banners')
+                                .update(bannerData)
+                                .eq('id', editId)
+                                .select()
+                                .single();
+                            if (!error && data) savedItem = data;
+                        } else {
+                            const { data, error } = await supabaseClient
+                                .from('banners')
+                                .insert([bannerData])
+                                .select()
+                                .single();
+                            if (!error && data) savedItem = data;
+                        }
+                    } catch (dbErr) {
+                        console.warn("Supabase banners DB warning:", dbErr);
+                    }
+                }
+
+                if (!savedItem) {
+                    if (editId) {
+                        const idx = allBanners.findIndex(item => String(item.id) === String(editId));
+                        if (idx !== -1) {
+                            allBanners[idx] = { ...allBanners[idx], ...bannerData };
+                        }
+                    } else {
+                        const newId = "b_" + Date.now();
+                        allBanners.unshift({ id: newId, ...bannerData });
+                    }
+                } else {
+                    if (editId) {
+                        const idx = allBanners.findIndex(item => String(item.id) === String(editId));
+                        if (idx !== -1) allBanners[idx] = savedItem;
+                    } else {
+                        allBanners.unshift(savedItem);
+                    }
+                }
+
+                localStorage.setItem('storify_banners', JSON.stringify(allBanners));
+                closeBannerModal();
+                showToast("Banner saved successfully!");
+                await renderBannersTab();
+            } catch (err) {
+                alert("Failed to save banner: " + err.message);
+            } finally {
+                btn.innerText = 'Save Banner';
+                btn.disabled = false;
+            }
+        }
+
+        async function toggleBannerActiveStatus(bannerId) {
+            const b = allBanners.find(item => String(item.id) === String(bannerId));
+            if (!b) return;
+
+            const newStatus = !b.is_active;
+            b.is_active = newStatus;
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient
+                        .from('banners')
+                        .update({ is_active: newStatus })
+                        .eq('id', bannerId);
+                } catch (err) {}
+            }
+
+            localStorage.setItem('storify_banners', JSON.stringify(allBanners));
+            showToast(`Banner ${newStatus ? 'activated' : 'deactivated'}`);
+            await renderBannersTab();
+        }
+
+        async function deleteBanner(bannerId) {
+            if (!confirm("Are you sure you want to delete this banner?")) return;
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient
+                        .from('banners')
+                        .delete()
+                        .eq('id', bannerId);
+                } catch (err) {}
+            }
+
+            allBanners = allBanners.filter(item => String(item.id) !== String(bannerId));
+            localStorage.setItem('storify_banners', JSON.stringify(allBanners));
+            showToast("Banner deleted successfully");
+            await renderBannersTab();
+        }
+
+        // ----------------------------------------------------
+        // CATEGORIES & SUBCATEGORIES MANAGEMENT FUNCTIONS
+        // ----------------------------------------------------
+        const DEFAULT_ADMIN_CATEGORIES = [
+            {
+                id: "c1",
+                name: "Electronics & Gadgets",
+                slug: "electronics",
+                icon: "📱",
+                subcategories: ["Smartphones", "Laptops", "Accessories", "Audio", "Smartwatches"],
+                is_active: true
+            },
+            {
+                id: "c2",
+                name: "Fashion & Apparel",
+                slug: "fashion",
+                icon: "👕",
+                subcategories: ["Men's Wear", "Women's Wear", "Kids Fashion", "Shoes", "Watches"],
+                is_active: true
+            },
+            {
+                id: "c3",
+                name: "Home & Living",
+                slug: "home-living",
+                icon: "🏡",
+                subcategories: ["Decor", "Kitchenware", "Bedding", "Furniture", "Lighting"],
+                is_active: true
+            },
+            {
+                id: "c4",
+                name: "Beauty & Personal Care",
+                slug: "beauty",
+                icon: "💄",
+                subcategories: ["Skincare", "Makeup", "Haircare", "Fragrances", "Grooming"],
+                is_active: true
+            },
+            {
+                id: "c5",
+                name: "Sports & Outdoors",
+                slug: "sports-outdoors",
+                icon: "⚽",
+                subcategories: ["Fitness Gear", "Sportswear", "Camping", "Footwear", "Cycles"],
+                is_active: true
+            },
+            {
+                id: "c6",
+                name: "Accessories & Jewelry",
+                slug: "accessories-jewelry",
+                icon: "💍",
+                subcategories: ["Watches", "Jewelry", "Bags & Wallets", "Sunglasses", "Belts"],
+                is_active: true
+            }
+        ];
+
+        async function fetchCategoriesAdmin() {
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('categories')
+                        .select('*')
+                        .order('sort_order', { ascending: true })
+                        .order('created_at', { ascending: true });
+
+                    if (!error && data && data.length > 0) {
+                        allCategories = data;
+                        localStorage.setItem('storify_categories', JSON.stringify(allCategories));
+                        return allCategories;
+                    }
+                }
+            } catch (err) {
+                console.warn("Categories Supabase fetch warning:", err);
+            }
+
+            const cached = localStorage.getItem('storify_categories');
+            if (cached) {
+                try {
+                    allCategories = JSON.parse(cached);
+                    return allCategories;
+                } catch (e) {}
+            }
+            allCategories = [...DEFAULT_ADMIN_CATEGORIES];
+            localStorage.setItem('storify_categories', JSON.stringify(allCategories));
+            return allCategories;
+        }
+
+        async function renderCategoriesTab() {
+            await fetchCategoriesAdmin();
+            const tableBody = document.getElementById('categoriesTableBody');
+            const mobileCards = document.getElementById('categoriesMobileCards');
+            const badge = document.getElementById('categoryCountBadge');
+            if (!tableBody) return;
+
+            if (badge) badge.innerText = `${allCategories.length} Categori${allCategories.length === 1 ? 'y' : 'es'}`;
+
+            if (allCategories.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-light); padding: 40px;">
+                            No categories found. Click "+ Add New Category" to create one.
+                        </td>
+                    </tr>
+                `;
+                if (mobileCards) mobileCards.innerHTML = '';
+                return;
+            }
+
+            tableBody.innerHTML = allCategories.map(c => {
+                const subTags = (c.subcategories || []).map(sub => `
+                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: var(--secondary); border: 1px solid var(--border); border-radius: 6px; font-size: 11.5px; margin: 2px;">
+                        ${escapeHtml(sub)}
+                        <span onclick="removeSubcategory('${c.id}', '${escapeHtml(sub)}')" style="cursor: pointer; color: #ef4444; font-weight: 700; margin-left: 2px;" title="Remove Subcategory">&times;</span>
+                    </span>
+                `).join('');
+
+                return `
+                    <tr>
+                        <td style="font-size: 20px; text-align: center;">${escapeHtml(c.icon || '🏷️')}</td>
+                        <td>
+                            <strong style="font-size: 14px; color: var(--primary);">${escapeHtml(c.name)}</strong>
+                        </td>
+                        <td><code style="background: var(--secondary); padding: 2px 6px; border-radius: 4px; font-size: 12px;">${escapeHtml(c.slug)}</code></td>
+                        <td>
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px; align-items: center; max-width: 400px;">
+                                ${subTags}
+                                <button class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="openAddSubcategoryModal('${c.id}')">+ Subcategory</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge ${c.is_active ? 'badge-success' : 'badge-danger'}">${c.is_active ? 'Active' : 'Disabled'}</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <div style="display: flex; gap: 6px; justify-content: center;">
+                                <button class="btn btn-sm btn-outline" onclick="openEditCategoryModal('${c.id}')">Edit</button>
+                                <button class="btn btn-sm" style="background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.25);" onclick="deleteCategory('${c.id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (mobileCards) {
+                mobileCards.innerHTML = allCategories.map(c => `
+                    <div style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 24px;">${escapeHtml(c.icon || '🏷️')}</span>
+                                <div>
+                                    <strong style="font-size: 15px; color: var(--primary);">${escapeHtml(c.name)}</strong>
+                                    <div style="font-size: 11.5px; color: var(--text-light);">${escapeHtml(c.slug)}</div>
+                                </div>
+                            </div>
+                            <span class="badge ${c.is_active ? 'badge-success' : 'badge-danger'}">${c.is_active ? 'Active' : 'Disabled'}</span>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 6px;">Subcategories (${(c.subcategories || []).length}):</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                ${(c.subcategories || []).map(sub => `<span class="badge badge-info" style="font-size: 11px;">${escapeHtml(sub)}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <button class="btn btn-sm btn-outline" onclick="openAddSubcategoryModal('${c.id}')">+ Subcategory</button>
+                            <button class="btn btn-sm btn-outline" onclick="openEditCategoryModal('${c.id}')">Edit</button>
+                            <button class="btn btn-sm" style="background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.25);" onclick="deleteCategory('${c.id}')">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function autoGenerateCategorySlug(name) {
+            const slugInput = document.getElementById('categorySlug');
+            if (slugInput && !document.getElementById('categoryEditId').value) {
+                slugInput.value = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            }
+        }
+
+        function openAddCategoryModal() {
+            document.getElementById('categoryModalTitle').innerText = 'Add New Category';
+            document.getElementById('categoryEditId').value = '';
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categorySlug').value = '';
+            document.getElementById('categoryIcon').value = '🏷️';
+            document.getElementById('categorySubcategoriesInput').value = '';
+            document.getElementById('categoryIsActive').checked = true;
+
+            document.getElementById('categoryModal').classList.add('active');
+        }
+
+        function openEditCategoryModal(categoryId) {
+            const c = allCategories.find(item => String(item.id) === String(categoryId));
+            if (!c) return;
+
+            document.getElementById('categoryModalTitle').innerText = 'Edit Category';
+            document.getElementById('categoryEditId').value = c.id;
+            document.getElementById('categoryName').value = c.name || '';
+            document.getElementById('categorySlug').value = c.slug || '';
+            document.getElementById('categoryIcon').value = c.icon || '🏷️';
+            document.getElementById('categorySubcategoriesInput').value = (c.subcategories || []).join(', ');
+            document.getElementById('categoryIsActive').checked = c.is_active !== false;
+
+            document.getElementById('categoryModal').classList.add('active');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+        }
+
+        async function handleCategoryFormSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('categoryEditId').value;
+            const name = document.getElementById('categoryName').value.trim();
+            const slug = document.getElementById('categorySlug').value.trim();
+            const icon = document.getElementById('categoryIcon').value.trim() || '🏷️';
+            const subInput = document.getElementById('categorySubcategoriesInput').value;
+            const isActive = document.getElementById('categoryIsActive').checked;
+
+            if (!name || !slug) {
+                alert("Please enter Category Name and Slug");
+                return;
+            }
+
+            const subcategories = subInput
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+
+            const categoryData = {
+                name: name,
+                slug: slug,
+                icon: icon,
+                subcategories: subcategories,
+                is_active: isActive,
+                updated_at: new Date().toISOString()
+            };
+
+            const btn = document.getElementById('saveCategorySubmitBtn');
+            btn.innerText = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                let savedItem = null;
+                if (supabaseClient) {
+                    try {
+                        if (editId) {
+                            const { data, error } = await supabaseClient
+                                .from('categories')
+                                .update(categoryData)
+                                .eq('id', editId)
+                                .select()
+                                .single();
+                            if (!error && data) savedItem = data;
+                        } else {
+                            const { data, error } = await supabaseClient
+                                .from('categories')
+                                .insert([categoryData])
+                                .select()
+                                .single();
+                            if (!error && data) savedItem = data;
+                        }
+                    } catch (err) {}
+                }
+
+                if (!savedItem) {
+                    if (editId) {
+                        const idx = allCategories.findIndex(item => String(item.id) === String(editId));
+                        if (idx !== -1) {
+                            allCategories[idx] = { ...allCategories[idx], ...categoryData };
+                        }
+                    } else {
+                        const newId = "c_" + Date.now();
+                        allCategories.push({ id: newId, ...categoryData });
+                    }
+                } else {
+                    if (editId) {
+                        const idx = allCategories.findIndex(item => String(item.id) === String(editId));
+                        if (idx !== -1) allCategories[idx] = savedItem;
+                    } else {
+                        allCategories.push(savedItem);
+                    }
+                }
+
+                localStorage.setItem('storify_categories', JSON.stringify(allCategories));
+                closeCategoryModal();
+                showToast("Category saved successfully!");
+                await renderCategoriesTab();
+            } catch (err) {
+                alert("Failed to save category: " + err.message);
+            } finally {
+                btn.innerText = 'Save Category';
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteCategory(categoryId) {
+            if (!confirm("Are you sure you want to delete this category?")) return;
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient
+                        .from('categories')
+                        .delete()
+                        .eq('id', categoryId);
+                } catch (err) {}
+            }
+
+            allCategories = allCategories.filter(item => String(item.id) !== String(categoryId));
+            localStorage.setItem('storify_categories', JSON.stringify(allCategories));
+            showToast("Category deleted successfully");
+            await renderCategoriesTab();
+        }
+
+        function openAddSubcategoryModal(categoryId) {
+            const c = allCategories.find(item => String(item.id) === String(categoryId));
+            if (!c) return;
+
+            document.getElementById('subcatParentId').value = c.id;
+            document.getElementById('subcatParentName').value = c.name;
+            document.getElementById('newSubcategoryName').value = '';
+
+            document.getElementById('subcategoryModal').classList.add('active');
+        }
+
+        function closeSubcategoryModal() {
+            document.getElementById('subcategoryModal').classList.remove('active');
+        }
+
+        async function handleAddSubcategorySubmit(e) {
+            e.preventDefault();
+            const parentId = document.getElementById('subcatParentId').value;
+            const newSub = document.getElementById('newSubcategoryName').value.trim();
+
+            if (!parentId || !newSub) return;
+
+            const c = allCategories.find(item => String(item.id) === String(parentId));
+            if (!c) return;
+
+            if (!c.subcategories) c.subcategories = [];
+            if (!c.subcategories.includes(newSub)) {
+                c.subcategories.push(newSub);
+            }
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient
+                        .from('categories')
+                        .update({ subcategories: c.subcategories, updated_at: new Date().toISOString() })
+                        .eq('id', parentId);
+                } catch (err) {}
+            }
+
+            localStorage.setItem('storify_categories', JSON.stringify(allCategories));
+            closeSubcategoryModal();
+            showToast(`Added subcategory "${newSub}" to ${c.name}`);
+            await renderCategoriesTab();
+        }
+
+        async function removeSubcategory(categoryId, subcategoryName) {
+            const c = allCategories.find(item => String(item.id) === String(categoryId));
+            if (!c || !c.subcategories) return;
+
+            c.subcategories = c.subcategories.filter(s => s !== subcategoryName);
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient
+                        .from('categories')
+                        .update({ subcategories: c.subcategories, updated_at: new Date().toISOString() })
+                        .eq('id', categoryId);
+                } catch (err) {}
+            }
+
+            localStorage.setItem('storify_categories', JSON.stringify(allCategories));
+            showToast(`Removed subcategory "${subcategoryName}"`);
+            await renderCategoriesTab();
         }
     </script>
 </body>

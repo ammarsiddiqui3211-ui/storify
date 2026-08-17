@@ -8071,20 +8071,136 @@
             ).join('');
         }
 
+        // ----------------------------------------------------
+        // DYNAMIC BANNERS & CATEGORIES FETCHING
+        // ----------------------------------------------------
+        let appBanners = [];
+        let appCategories = [];
+
+        async function fetchBanners() {
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('banners')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('sort_order', { ascending: true })
+                        .order('created_at', { ascending: false });
+
+                    if (!error && data && data.length > 0) {
+                        appBanners = data;
+                        localStorage.setItem('storify_banners', JSON.stringify(appBanners));
+                        renderHeroSlider();
+                        return;
+                    }
+                }
+            } catch (err) {}
+
+            const cached = localStorage.getItem('storify_banners');
+            if (cached) {
+                try {
+                    appBanners = JSON.parse(cached).filter(b => b.is_active !== false);
+                    renderHeroSlider();
+                    return;
+                } catch (e) {}
+            }
+
+            appBanners = [
+                { id: 'b1', title: "Shirt Collection", image_url: "images/banners/banner 1.png", target_link: "all" },
+                { id: 'b2', title: "Accessories & Jewelry", image_url: "images/banners/banner 3.png", target_link: "accessories-jewelry" },
+                { id: 'b3', title: "Sports & Outdoors", image_url: "images/banners/banner 4.png", target_link: "sports-outdoors" }
+            ];
+            renderHeroSlider();
+        }
+
+        function renderHeroSlider() {
+            const slider = document.getElementById('heroSlider');
+            const controls = document.querySelector('.hero-controls');
+            if (!slider || !appBanners || appBanners.length === 0) return;
+
+            slider.innerHTML = appBanners.map((b, idx) => `
+                <div class="hero-slide ${idx === 0 ? 'active' : ''} ${b.target_link ? 'clickable' : ''}" 
+                     onclick="${b.target_link ? `filterCategory('${escapeHtml(b.target_link)}')` : ''}" 
+                     role="${b.target_link ? 'button' : 'region'}" 
+                     aria-label="${escapeHtml(b.title)}">
+                    <img src="${escapeHtml(b.image_url)}" alt="${escapeHtml(b.title)}">
+                </div>
+            `).join('');
+
+            if (controls) {
+                const dotsContainer = controls.querySelector('.hero-dots');
+                if (dotsContainer) {
+                    dotsContainer.innerHTML = appBanners.map((_, idx) => `
+                        <button class="hero-dot ${idx === 0 ? 'active' : ''}" type="button" onclick="setHeroSlide(${idx})" aria-label="Show banner ${idx + 1}"></button>
+                    `).join('');
+                }
+            }
+        }
+
+        async function fetchCategories() {
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('categories')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('sort_order', { ascending: true })
+                        .order('created_at', { ascending: true });
+
+                    if (!error && data && data.length > 0) {
+                        appCategories = data;
+                        localStorage.setItem('storify_categories', JSON.stringify(appCategories));
+                        rebuildCategoryBars();
+                        return;
+                    }
+                }
+            } catch (err) {}
+
+            const cached = localStorage.getItem('storify_categories');
+            if (cached) {
+                try {
+                    appCategories = JSON.parse(cached).filter(c => c.is_active !== false);
+                    rebuildCategoryBars();
+                    return;
+                } catch (e) {}
+            }
+
+            appCategories = [
+                { id: "c1", name: "Electronics & Gadgets", slug: "electronics", icon: "📱", subcategories: ["Smartphones", "Laptops"] },
+                { id: "c2", name: "Fashion & Apparel", slug: "fashion", icon: "👕", subcategories: ["Men's Wear", "Women's Wear"] },
+                { id: "c3", name: "Home & Living", slug: "home-living", icon: "🏡", subcategories: ["Decor", "Kitchenware"] },
+                { id: "c4", name: "Beauty & Personal Care", slug: "beauty", icon: "💄", subcategories: ["Skincare", "Makeup"] },
+                { id: "c5", name: "Sports & Outdoors", slug: "sports-outdoors", icon: "⚽", subcategories: ["Fitness Gear", "Sportswear"] },
+                { id: "c6", name: "Accessories & Jewelry", slug: "accessories-jewelry", icon: "💍", subcategories: ["Watches", "Jewelry"] }
+            ];
+            rebuildCategoryBars();
+        }
+
         function rebuildCategoryBars() {
             // Desktop category bar
             const container = document.getElementById('categoriesContainer');
             if (container) {
-                container.innerHTML = `
+                let catLinksHtml = `
                     <a href="#" class="category-link active" data-category="all" onclick="filterCategory('all', event)">Home</a>
                     <a href="#" class="category-link" data-category="categories" onclick="goToAllCategories(event)">All Categories</a>
-                    <a href="#" class="category-link" data-category="featured" onclick="filterCategory('featured', event)">Featured</a>
-                    <a href="#" class="category-link" data-category="best-sellers" onclick="filterCategory('best-sellers', event)">Best Sellers</a>
-                    <a href="#" class="category-link" data-category="deals" onclick="filterCategory('deals', event)">Deals</a>
-                    <a href="#" class="category-link" data-category="sales" onclick="filterCategory('sales', event)">Sales</a>
-                    <a href="#" class="category-link" data-category="new-arrivals" onclick="filterCategory('new-arrivals', event)">New Arrivals</a>
-                    <a href="seller" target="_blank" class="category-link">Sell</a>
                 `;
+
+                if (appCategories && appCategories.length > 0) {
+                    catLinksHtml += appCategories.map(c => `
+                        <a href="#" class="category-link" data-category="${escapeHtml(c.slug)}" onclick="filterCategory('${escapeHtml(c.slug)}', event)">${escapeHtml(c.name)}</a>
+                    `).join('');
+                } else {
+                    catLinksHtml += `
+                        <a href="#" class="category-link" data-category="featured" onclick="filterCategory('featured', event)">Featured</a>
+                        <a href="#" class="category-link" data-category="best-sellers" onclick="filterCategory('best-sellers', event)">Best Sellers</a>
+                        <a href="#" class="category-link" data-category="deals" onclick="filterCategory('deals', event)">Deals</a>
+                        <a href="#" class="category-link" data-category="sales" onclick="filterCategory('sales', event)">Sales</a>
+                        <a href="#" class="category-link" data-category="new-arrivals" onclick="filterCategory('new-arrivals', event)">New Arrivals</a>
+                    `;
+                }
+
+                catLinksHtml += `<a href="seller" target="_blank" class="category-link">Sell</a>`;
+                container.innerHTML = catLinksHtml;
                 updateCategoryScrollArrows();
             }
 
@@ -10878,8 +10994,9 @@
             // Fetch products from database
             await fetchProductsFromSupabase();
 
-            // Rebuild category navigation from loaded products
-            rebuildCategoryBars();
+            // Fetch dynamic banners & categories from admin database / cache
+            await fetchBanners();
+            await fetchCategories();
 
             // Initial render based on URL routing
             parseUrlAndRender();

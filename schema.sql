@@ -900,3 +900,54 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+
+-- ----------------------------------------------------
+-- 12. DYNAMIC BANNERS & CATEGORIES TABLES
+-- ----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS public.banners (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  title text NOT NULL,
+  subtitle text,
+  image_url text NOT NULL,
+  target_link text DEFAULT 'all',
+  badge_tag text,
+  sort_order integer DEFAULT 0,
+  is_active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.banners ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to active banners" ON public.banners;
+CREATE POLICY "Allow public read access to active banners" ON public.banners
+  FOR SELECT TO public USING (true);
+
+DROP POLICY IF EXISTS "Allow admin all access to banners" ON public.banners;
+CREATE POLICY "Allow admin all access to banners" ON public.banners
+  FOR ALL TO authenticated USING (public.is_admin(auth.uid()));
+
+CREATE TABLE IF NOT EXISTS public.categories (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  name text NOT NULL UNIQUE,
+  slug text NOT NULL UNIQUE,
+  icon text DEFAULT 'tag',
+  subcategories text[] DEFAULT '{}'::text[],
+  sort_order integer DEFAULT 0,
+  is_active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to categories" ON public.categories;
+CREATE POLICY "Allow public read access to categories" ON public.categories
+  FOR SELECT TO public USING (true);
+
+DROP POLICY IF EXISTS "Allow admin all access to categories" ON public.categories;
+CREATE POLICY "Allow admin all access to categories" ON public.categories
+  FOR ALL TO authenticated USING (public.is_admin(auth.uid()));
+
+
