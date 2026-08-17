@@ -2161,7 +2161,7 @@
                         .eq('is_active', true)
                         .order('sort_order', { ascending: true });
 
-                    if (!error && data && data.length > 0) {
+                    if (!error && data) {
                         sellerCategoriesList = data;
                         localStorage.setItem('storify_categories', JSON.stringify(sellerCategoriesList));
                         return sellerCategoriesList;
@@ -2177,15 +2177,7 @@
                 } catch (e) {}
             }
 
-            sellerCategoriesList = [
-                { name: "Apparel & Fashion", slug: "apparel-fashion", subcategories: ["Men's Wear", "Women's Wear", "Kids Fashion", "Shoes", "Watches"] },
-                { name: "Electronics & Tech", slug: "electronics-tech", subcategories: ["Smartphones", "Laptops", "Accessories", "Audio", "Smartwatches"] },
-                { name: "Home & Living", slug: "home-living", subcategories: ["Decor", "Kitchenware", "Bedding", "Furniture", "Lighting"] },
-                { name: "Personal Care & Beauty", slug: "personal-care-beauty", subcategories: ["Skincare", "Makeup", "Haircare", "Fragrances", "Grooming"] },
-                { name: "Sports & Outdoors", slug: "sports-outdoors", subcategories: ["Fitness Gear", "Sportswear", "Camping", "Footwear", "Cycles"] },
-                { name: "Accessories & Jewelry", slug: "accessories-jewelry", subcategories: ["Watches", "Jewelry", "Bags & Wallets", "Sunglasses", "Belts"] },
-                { name: "Stationery & Office", slug: "stationery-office", subcategories: ["Notebooks", "Pens", "Desk Organizers"] }
-            ];
+            sellerCategoriesList = [];
             return sellerCategoriesList;
         }
 

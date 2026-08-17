@@ -4243,57 +4243,6 @@
         // ----------------------------------------------------
         // CATEGORIES & SUBCATEGORIES MANAGEMENT FUNCTIONS
         // ----------------------------------------------------
-        const DEFAULT_ADMIN_CATEGORIES = [
-            {
-                id: "c1",
-                name: "Electronics & Gadgets",
-                slug: "electronics",
-                icon: "📱",
-                subcategories: ["Smartphones", "Laptops", "Accessories", "Audio", "Smartwatches"],
-                is_active: true
-            },
-            {
-                id: "c2",
-                name: "Fashion & Apparel",
-                slug: "fashion",
-                icon: "👕",
-                subcategories: ["Men's Wear", "Women's Wear", "Kids Fashion", "Shoes", "Watches"],
-                is_active: true
-            },
-            {
-                id: "c3",
-                name: "Home & Living",
-                slug: "home-living",
-                icon: "🏡",
-                subcategories: ["Decor", "Kitchenware", "Bedding", "Furniture", "Lighting"],
-                is_active: true
-            },
-            {
-                id: "c4",
-                name: "Beauty & Personal Care",
-                slug: "beauty",
-                icon: "💄",
-                subcategories: ["Skincare", "Makeup", "Haircare", "Fragrances", "Grooming"],
-                is_active: true
-            },
-            {
-                id: "c5",
-                name: "Sports & Outdoors",
-                slug: "sports-outdoors",
-                icon: "⚽",
-                subcategories: ["Fitness Gear", "Sportswear", "Camping", "Footwear", "Cycles"],
-                is_active: true
-            },
-            {
-                id: "c6",
-                name: "Accessories & Jewelry",
-                slug: "accessories-jewelry",
-                icon: "💍",
-                subcategories: ["Watches", "Jewelry", "Bags & Wallets", "Sunglasses", "Belts"],
-                is_active: true
-            }
-        ];
-
         async function fetchCategoriesAdmin() {
             try {
                 if (supabaseClient) {
@@ -4303,7 +4252,7 @@
                         .order('sort_order', { ascending: true })
                         .order('created_at', { ascending: true });
 
-                    if (!error && data && data.length > 0) {
+                    if (!error && data) {
                         allCategories = data;
                         localStorage.setItem('storify_categories', JSON.stringify(allCategories));
                         return allCategories;
@@ -4320,7 +4269,7 @@
                     return allCategories;
                 } catch (e) {}
             }
-            allCategories = [...DEFAULT_ADMIN_CATEGORIES];
+            allCategories = [];
             localStorage.setItem('storify_categories', JSON.stringify(allCategories));
             return allCategories;
         }

@@ -8161,7 +8161,7 @@
                         .order('sort_order', { ascending: true })
                         .order('created_at', { ascending: true });
 
-                    if (!error && data && data.length > 0) {
+                    if (!error && data) {
                         appCategories = data;
                         localStorage.setItem('storify_categories', JSON.stringify(appCategories));
                         rebuildCategoryBars();
@@ -8179,14 +8179,7 @@
                 } catch (e) { }
             }
 
-            appCategories = [
-                { id: "c1", name: "Electronics & Gadgets", slug: "electronics", icon: "📱", subcategories: ["Smartphones", "Laptops"] },
-                { id: "c2", name: "Fashion & Apparel", slug: "fashion", icon: "👕", subcategories: ["Men's Wear", "Women's Wear"] },
-                { id: "c3", name: "Home & Living", slug: "home-living", icon: "🏡", subcategories: ["Decor", "Kitchenware"] },
-                { id: "c4", name: "Beauty & Personal Care", slug: "beauty", icon: "💄", subcategories: ["Skincare", "Makeup"] },
-                { id: "c5", name: "Sports & Outdoors", slug: "sports-outdoors", icon: "⚽", subcategories: ["Fitness Gear", "Sportswear"] },
-                { id: "c6", name: "Accessories & Jewelry", slug: "accessories-jewelry", icon: "💍", subcategories: ["Watches", "Jewelry"] }
-            ];
+            appCategories = [];
             rebuildCategoryBars();
         }
 
