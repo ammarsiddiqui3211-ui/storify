@@ -7107,18 +7107,24 @@
         // Navigate to a page by pushing to History API
         function navigateToPage(page, params = {}, replaceState = false) {
             const urlParams = new URLSearchParams();
-            if (page !== 'home' || params.category || params.search) {
+            if (page !== 'home') {
                 urlParams.set('page', page);
             }
             for (const [key, val] of Object.entries(params)) {
-                if (val !== undefined && val !== null && val !== '') {
+                if (val !== undefined && val !== null && val !== '' && val !== 'all') {
                     urlParams.set(key, val);
                 }
             }
 
-            // Clean up: if page is 'home' and no query params, we don't need 'page=home' in URL.
-            if (page === 'home') {
+            // Clean up: if page is 'home', remove 'page', 'category=all', and 'subcategory=all' from URL
+            if (page === 'home' || page === '') {
                 urlParams.delete('page');
+                if (urlParams.get('category') === 'all') {
+                    urlParams.delete('category');
+                }
+                if (urlParams.get('subcategory') === 'all') {
+                    urlParams.delete('subcategory');
+                }
             }
 
             let newUrl;
@@ -8124,7 +8130,11 @@
         // Category Filtering from Navigation
         function filterCategory(catKey, event) {
             if (event) event.preventDefault();
-            navigateToPage('home', { category: catKey });
+            if (!catKey || catKey === 'all' || catKey === 'all-products' || catKey === 'home') {
+                navigateToPage('home', {});
+            } else {
+                navigateToPage('home', { category: catKey });
+            }
         }
 
         function goToAllCategories(event) {
