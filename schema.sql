@@ -791,8 +791,8 @@ ALTER TABLE public.products ALTER COLUMN id RESTART WITH 1;
 -- 11. DEDICATED ADMIN DASHBOARD SCHEMA ADDITIONS
 -- ----------------------------------------------------
 
--- Add is_hidden column to products
-ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_hidden boolean NOT NULL DEFAULT false;
+-- Add subcategory column to products table
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS subcategory text;
 
 -- Re-create public_products view to filter out hidden products and products from suspended sellers
 -- NOTE: Do NOT set security_invoker = true on this view unless you also add public SELECT RLS policies on public.products and public.profiles.
@@ -808,6 +808,7 @@ CREATE OR REPLACE VIEW public.public_products AS
     p.original_price,
     p.category,
     p.category_key,
+    p.subcategory,
     p.images,
     p.colors,
     p.sizes,

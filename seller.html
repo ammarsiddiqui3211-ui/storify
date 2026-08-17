@@ -2137,6 +2137,7 @@
         // Global variables for Add Product variant builders
         let addedProductTitle = '';
         let addedProductCategory = 'Apparel & Fashion';
+        let addedProductSubcategory = '';
         let addedProductPrice = '';
         let addedProductOriginalPrice = '';
         let addedProductShippingFee = '250';
@@ -2147,6 +2148,79 @@
         let selectedImageFiles = [];
         let tempColorPicker = '#4a90e2';
         let tempColorHex = '';
+
+        // Dynamic Categories & Subcategories Helper
+        let sellerCategoriesList = [];
+
+        async function fetchSellerCategories() {
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('categories')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('sort_order', { ascending: true });
+
+                    if (!error && data && data.length > 0) {
+                        sellerCategoriesList = data;
+                        localStorage.setItem('storify_categories', JSON.stringify(sellerCategoriesList));
+                        return sellerCategoriesList;
+                    }
+                }
+            } catch (e) {}
+
+            const cached = localStorage.getItem('storify_categories');
+            if (cached) {
+                try {
+                    sellerCategoriesList = JSON.parse(cached).filter(c => c.is_active !== false);
+                    return sellerCategoriesList;
+                } catch (e) {}
+            }
+
+            sellerCategoriesList = [
+                { name: "Apparel & Fashion", slug: "apparel-fashion", subcategories: ["Men's Wear", "Women's Wear", "Kids Fashion", "Shoes", "Watches"] },
+                { name: "Electronics & Tech", slug: "electronics-tech", subcategories: ["Smartphones", "Laptops", "Accessories", "Audio", "Smartwatches"] },
+                { name: "Home & Living", slug: "home-living", subcategories: ["Decor", "Kitchenware", "Bedding", "Furniture", "Lighting"] },
+                { name: "Personal Care & Beauty", slug: "personal-care-beauty", subcategories: ["Skincare", "Makeup", "Haircare", "Fragrances", "Grooming"] },
+                { name: "Sports & Outdoors", slug: "sports-outdoors", subcategories: ["Fitness Gear", "Sportswear", "Camping", "Footwear", "Cycles"] },
+                { name: "Accessories & Jewelry", slug: "accessories-jewelry", subcategories: ["Watches", "Jewelry", "Bags & Wallets", "Sunglasses", "Belts"] },
+                { name: "Stationery & Office", slug: "stationery-office", subcategories: ["Notebooks", "Pens", "Desk Organizers"] }
+            ];
+            return sellerCategoriesList;
+        }
+
+        function renderCategoryOptionsHtml(selectedCat) {
+            if (!sellerCategoriesList || sellerCategoriesList.length === 0) {
+                fetchSellerCategories();
+            }
+            return sellerCategoriesList.map(c => `
+                <option value="${escapeHtml(c.name)}" data-key="${escapeHtml(c.slug)}" ${(selectedCat && (selectedCat === c.name || selectedCat === c.slug)) ? 'selected' : ''}>
+                    ${escapeHtml(c.name)}
+                </option>
+            `).join('');
+        }
+
+        function onSellerCategoryChange(categorySelectId, subcategorySelectId, selectedSubcat = '') {
+            const catSelect = document.getElementById(categorySelectId);
+            const subcatSelect = document.getElementById(subcategorySelectId);
+            if (!catSelect || !subcatSelect) return;
+
+            const selectedCatVal = catSelect.value;
+            const matchedCat = sellerCategoriesList.find(c => c.name === selectedCatVal || c.slug === selectedCatVal);
+
+            if (matchedCat && matchedCat.subcategories && matchedCat.subcategories.length > 0) {
+                subcatSelect.innerHTML = `<option value="">Select Subcategory (Optional)</option>` +
+                    matchedCat.subcategories.map(sub => `
+                        <option value="${escapeHtml(sub)}" ${(selectedSubcat === sub) ? 'selected' : ''}>
+                            ${escapeHtml(sub)}
+                        </option>
+                    `).join('');
+                subcatSelect.disabled = false;
+            } else {
+                subcatSelect.innerHTML = `<option value="">No subcategories available</option>`;
+                subcatSelect.disabled = true;
+            }
+        }
 
         // Save state to sessionStorage
         function saveAddProductState() {
@@ -2202,6 +2276,7 @@
         function clearAddProductState() {
             addedProductTitle = '';
             addedProductCategory = 'Apparel & Fashion';
+            addedProductSubcategory = '';
             addedProductPrice = '';
             addedProductOriginalPrice = '';
             addedProductShippingFee = '250';
@@ -2242,6 +2317,7 @@
         // Initialize Application
         async function initApp() {
             loadAddProductState();
+            await fetchSellerCategories();
             if (!supabaseClient) {
                 document.getElementById('loadingState').innerHTML = `<p style="color:var(--danger)">Supabase failed to initialize. Please check configurations.</p>`;
                 return;
@@ -3502,21 +3578,21 @@
                     <h2 class="dashboard-title">Add New Product</h2>
                 </div>
                 <form id="addProductForm" onsubmit="handleProductSubmit(event)" ${formStyle}>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                         <div class="form-group">
                             <label for="prodName">Product Title *</label>
                             <input type="text" id="prodName" class="form-control" placeholder="e.g. Premium Cotton Polo Tee" required value="${escapeHtml(addedProductTitle)}" oninput="addedProductTitle = this.value; saveAddProductState();">
                         </div>
                         <div class="form-group">
                             <label for="prodCategory">Category *</label>
-                            <select id="prodCategory" class="form-control" required onchange="addedProductCategory = this.value; saveAddProductState();">
-                                <option value="Apparel & Fashion" data-key="apparel-fashion" ${addedProductCategory === 'Apparel & Fashion' ? 'selected' : ''}>Apparel & Fashion</option>
-                                <option value="Electronics & Tech" data-key="electronics-tech" ${addedProductCategory === 'Electronics & Tech' ? 'selected' : ''}>Electronics & Tech</option>
-                                <option value="Home & Living" data-key="home-living" ${addedProductCategory === 'Home & Living' ? 'selected' : ''}>Home & Living</option>
-                                <option value="Personal Care & Beauty" data-key="personal-care-beauty" ${addedProductCategory === 'Personal Care & Beauty' ? 'selected' : ''}>Personal Care & Beauty</option>
-                                <option value="Sports & Outdoors" data-key="sports-outdoors" ${addedProductCategory === 'Sports & Outdoors' ? 'selected' : ''}>Sports & Outdoors</option>
-                                <option value="Accessories & Jewelry" data-key="accessories-jewelry" ${addedProductCategory === 'Accessories & Jewelry' ? 'selected' : ''}>Accessories & Jewelry</option>
-                                <option value="Stationery & Office" data-key="stationery-office" ${addedProductCategory === 'Stationery & Office' ? 'selected' : ''}>Stationery & Office</option>
+                            <select id="prodCategory" class="form-control" required onchange="addedProductCategory = this.value; saveAddProductState(); onSellerCategoryChange('prodCategory', 'prodSubcategory');">
+                                ${renderCategoryOptionsHtml(addedProductCategory)}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="prodSubcategory">Subcategory (Optional)</label>
+                            <select id="prodSubcategory" class="form-control" onchange="addedProductSubcategory = this.value; saveAddProductState();">
+                                <option value="">Select Subcategory (Optional)</option>
                             </select>
                         </div>
                     </div>
@@ -3599,6 +3675,7 @@
             renderColors();
             renderSpecs();
             renderImagePreviews();
+            onSellerCategoryChange('prodCategory', 'prodSubcategory', addedProductSubcategory);
         }
 
         function renderAddProductTab(container) {
@@ -3754,6 +3831,9 @@
                 return;
             }
 
+            const subcategorySelect = document.getElementById('prodSubcategory');
+            const subcategory = subcategorySelect ? subcategorySelect.value.trim() : '';
+
             btn.innerHTML = `<span class="spinner"></span> Listing Product...`;
             btn.classList.add('loading');
 
@@ -3784,6 +3864,7 @@
                         name: name,
                         category: category,
                         category_key: categoryKey,
+                        subcategory: subcategory,
                         price: price,
                         original_price: originalPrice,
                         shipping_fee: shippingFee,
@@ -3791,7 +3872,7 @@
                         images: imageUrls,
                         colors: addedColors.length ? addedColors : null,
                         sizes: addedSizes.length ? addedSizes : null,
-                        specs: addedSpecs,
+                        specs: { ...addedSpecs, subcategory: subcategory },
                         seller_id: user.id
                     }]);
 
@@ -4130,21 +4211,21 @@
                     <h2 style="font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1.5px solid var(--border);">Edit Product Listing</h2>
                     
                     <form id="editProductForm" onsubmit="handleProductUpdate(event)">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                             <div class="form-group">
                                 <label for="editProdName">Product Title *</label>
                                 <input type="text" id="editProdName" class="form-control" required value="${escapeHtml(prod.name)}">
                             </div>
                             <div class="form-group">
                                 <label for="editProdCategory">Category *</label>
-                                <select id="editProdCategory" class="form-control" required>
-                                    <option value="Apparel & Fashion" data-key="apparel-fashion" ${prod.category === 'Apparel & Fashion' ? 'selected' : ''}>Apparel & Fashion</option>
-                                    <option value="Electronics & Tech" data-key="electronics-tech" ${prod.category === 'Electronics & Tech' ? 'selected' : ''}>Electronics & Tech</option>
-                                    <option value="Home & Living" data-key="home-living" ${prod.category === 'Home & Living' ? 'selected' : ''}>Home & Living</option>
-                                    <option value="Personal Care & Beauty" data-key="personal-care-beauty" ${prod.category === 'Personal Care & Beauty' ? 'selected' : ''}>Personal Care & Beauty</option>
-                                    <option value="Sports & Outdoors" data-key="sports-outdoors" ${prod.category === 'Sports & Outdoors' ? 'selected' : ''}>Sports & Outdoors</option>
-                                    <option value="Accessories & Jewelry" data-key="accessories-jewelry" ${prod.category === 'Accessories & Jewelry' ? 'selected' : ''}>Accessories & Jewelry</option>
-                                    <option value="Stationery & Office" data-key="stationery-office" ${prod.category === 'Stationery & Office' ? 'selected' : ''}>Stationery & Office</option>
+                                <select id="editProdCategory" class="form-control" required onchange="onSellerCategoryChange('editProdCategory', 'editProdSubcategory');">
+                                    ${renderCategoryOptionsHtml(prod.category)}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editProdSubcategory">Subcategory (Optional)</label>
+                                <select id="editProdSubcategory" class="form-control">
+                                    <option value="">Select Subcategory (Optional)</option>
                                 </select>
                             </div>
                         </div>
@@ -4241,6 +4322,7 @@
             renderEditNewImages();
             renderEditColors();
             renderEditSpecs();
+            onSellerCategoryChange('editProdCategory', 'editProdSubcategory', prod.subcategory || (prod.specs && prod.specs.subcategory) || '');
         }
 
         function closeEditModal() {
@@ -4420,6 +4502,9 @@
             const description = document.getElementById('editProdDescription').value.trim();
             const btn = document.getElementById('editProdSubmitBtn');
 
+            const subcategorySelect = document.getElementById('editProdSubcategory');
+            const subcategory = subcategorySelect ? subcategorySelect.value.trim() : '';
+
             const totalImagesCount = editingImageUrls.length + editingNewFiles.length;
             if (totalImagesCount === 0) {
                 alert("Please upload at least 1 image");
@@ -4463,6 +4548,7 @@
                         name: name,
                         category: category,
                         category_key: categoryKey,
+                        subcategory: subcategory,
                         price: price,
                         original_price: originalPrice,
                         shipping_fee: shippingFee,
@@ -4470,7 +4556,7 @@
                         images: finalImages,
                         colors: editingColors.length ? editingColors : null,
                         sizes: editingSizes.length ? editingSizes : null,
-                        specs: editingSpecs
+                        specs: { ...editingSpecs, subcategory: subcategory }
                     })
                     .eq('id', editingProduct.id);
 
