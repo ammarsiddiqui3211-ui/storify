@@ -8184,30 +8184,19 @@
         }
 
         function rebuildCategoryBars() {
-            // Desktop category bar
+            // Desktop category bar (Fixed navigation items)
             const container = document.getElementById('categoriesContainer');
             if (container) {
-                let catLinksHtml = `
+                container.innerHTML = `
                     <a href="#" class="category-link active" data-category="all" onclick="filterCategory('all', event)">Home</a>
                     <a href="#" class="category-link" data-category="categories" onclick="goToAllCategories(event)">All Categories</a>
+                    <a href="#" class="category-link" data-category="featured" onclick="filterCategory('featured', event)">Featured</a>
+                    <a href="#" class="category-link" data-category="best-sellers" onclick="filterCategory('best-sellers', event)">Best Sellers</a>
+                    <a href="#" class="category-link" data-category="deals" onclick="filterCategory('deals', event)">Deals</a>
+                    <a href="#" class="category-link" data-category="sales" onclick="filterCategory('sales', event)">Sales</a>
+                    <a href="#" class="category-link" data-category="new-arrivals" onclick="filterCategory('new-arrivals', event)">New Arrivals</a>
+                    <a href="seller" target="_blank" class="category-link">Sell</a>
                 `;
-
-                if (appCategories && appCategories.length > 0) {
-                    catLinksHtml += appCategories.map(c => `
-                        <a href="#" class="category-link" data-category="${escapeHtml(c.slug)}" onclick="filterCategory('${escapeHtml(c.slug)}', event)">${escapeHtml(c.name)}</a>
-                    `).join('');
-                } else {
-                    catLinksHtml += `
-                        <a href="#" class="category-link" data-category="featured" onclick="filterCategory('featured', event)">Featured</a>
-                        <a href="#" class="category-link" data-category="best-sellers" onclick="filterCategory('best-sellers', event)">Best Sellers</a>
-                        <a href="#" class="category-link" data-category="deals" onclick="filterCategory('deals', event)">Deals</a>
-                        <a href="#" class="category-link" data-category="sales" onclick="filterCategory('sales', event)">Sales</a>
-                        <a href="#" class="category-link" data-category="new-arrivals" onclick="filterCategory('new-arrivals', event)">New Arrivals</a>
-                    `;
-                }
-
-                catLinksHtml += `<a href="seller" target="_blank" class="category-link">Sell</a>`;
-                container.innerHTML = catLinksHtml;
                 updateCategoryScrollArrows();
             }
 
