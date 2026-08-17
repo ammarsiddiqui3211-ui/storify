@@ -2479,6 +2479,14 @@
             align-self: start;
         }
 
+        .product-gallery-main {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 16px;
+            width: 100%;
+        }
+
         .product-detail-container {
             align-items: start;
             justify-items: center;
@@ -2490,6 +2498,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 16px;
+            flex: 1;
             width: 100%;
             max-width: 480px;
             height: 500px;
@@ -2515,12 +2524,14 @@
         }
 
         .product-thumbnails {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, 76px);
-            justify-content: flex-start;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            width: 100%;
-            max-width: 480px;
+            width: 80px;
+            max-height: 500px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            padding-right: 4px;
         }
 
         .product-thumbnail {
@@ -4511,6 +4522,12 @@
                 margin-right: auto;
             }
 
+            .product-gallery-main {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+
             .product-detail-image-wrapper {
                 height: 440px;
                 max-width: 460px;
@@ -4518,9 +4535,14 @@
             }
 
             .product-thumbnails {
+                flex-direction: row;
+                width: 100%;
                 max-width: 460px;
-                grid-template-columns: repeat(auto-fill, 64px);
-                gap: 10px;
+                max-height: unset;
+                overflow-x: auto;
+                overflow-y: visible;
+                justify-content: flex-start;
+                padding-bottom: 4px;
             }
 
             .product-thumbnail {
@@ -10129,13 +10151,15 @@
             view.innerHTML = `
                 <div class="product-detail-container">
                     <div class="product-gallery">
-                        <div class="product-detail-image-wrapper">
-                            <img id="detail-main-image" src="${detailImages[0]}" alt="${p.name}">
-                            ${p.badge ? `<span class="product-detail-badge${p.badge === 'Sale' ? ' sale' : ''}${p.sold ? ' sold' : ''}">${p.badge}</span>` : ''}
+                        <div class="product-gallery-main">
+                            <div class="product-detail-image-wrapper">
+                                <img id="detail-main-image" src="${detailImages[0]}" alt="${p.name}">
+                                ${p.badge ? `<span class="product-detail-badge${p.badge === 'Sale' ? ' sale' : ''}${p.sold ? ' sold' : ''}">${p.badge}</span>` : ''}
+                            </div>
+                            ${thumbnailsHTML}
                         </div>
-                        ${thumbnailsHTML}
                         
-                        <div class="product-options" style="margin-top: 24px;">
+                        <div class="product-options" style="margin-top: 24px; width: 100%;">
                             ${colorOptionsHTML}
                             ${sizeOptionsHTML}
                             
