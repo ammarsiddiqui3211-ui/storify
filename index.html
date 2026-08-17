@@ -7249,7 +7249,8 @@
 
                 const price = urlParams.get('price') || 'all';
                 const sort = urlParams.get('sort') || 'default';
-                const isFilteredView = (page === 'all-products') || (category !== 'all' || search !== '');
+                const subcategory = urlParams.get('subcategory') || 'all';
+                const isFilteredView = (page === 'all-products') || (category !== 'all' || search !== '' || subcategory !== 'all');
                 const isSpecialCategory = ['featured', 'best-sellers', 'deals', 'sales', 'new-arrivals'].includes(category);
                 const showFilterBar = isFilteredView && !isSpecialCategory;
 
@@ -7268,7 +7269,7 @@
                     featuresSec.style.display = isFilteredView ? 'none' : '';
                 }
 
-                renderProductGrid(page === 'all-products' ? 'all-products' : category, search, price, sort);
+                renderProductGrid(page === 'all-products' ? 'all-products' : category, search, price, sort, subcategory);
             } else if (page === 'product') {
                 closeCartDrawer();
                 displayView('product', productId);
@@ -8385,7 +8386,11 @@
 
             subSelect.onchange = function (e) {
                 activeSubcategoryFilter = this.value;
-                renderProductGrid(currentCatKey, '', 'all', 'default', this.value);
+                const params = { category: currentCatKey };
+                if (this.value && this.value !== 'all') {
+                    params.subcategory = this.value;
+                }
+                navigateToPage('home', params);
             };
 
             controlsDiv.appendChild(subSelect);
