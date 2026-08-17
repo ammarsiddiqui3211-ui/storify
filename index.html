@@ -7801,6 +7801,71 @@
             renderHeroSlider();
         }
 
+        function handleBannerClick(targetLink, event) {
+            if (event) event.preventDefault();
+            if (!targetLink) return;
+
+            const str = String(targetLink).trim();
+            if (!str) return;
+
+            // 1. Query string format (e.g. "?category=electronics-tech&subcategory=Smartphones" or "category=...&subcategory=...")
+            if (str.includes('subcategory=') || str.includes('category=')) {
+                const query = str.includes('?') ? str.split('?')[1] : str;
+                const params = new URLSearchParams(query);
+                const cat = params.get('category') || 'all';
+                const sub = params.get('subcategory') || 'all';
+                navigateToPage('home', { category: cat, subcategory: sub });
+                return;
+            }
+
+            // 2. Store link (e.g. "store:shop-name" or "store/shop-name")
+            if (str.startsWith('store:') || str.startsWith('store/')) {
+                const storeSlug = str.replace(/^store[:\/]/, '').trim();
+                navigateToPage('store', { name: storeSlug });
+                return;
+            }
+
+            // 3. Slashed format (e.g. "electronics-tech/Smartphones" or "apparel-fashion/Men's Wear")
+            if (str.includes('/') && !str.startsWith('http://') && !str.startsWith('https://')) {
+                const parts = str.split('/');
+                const cat = parts[0].trim();
+                const sub = parts[1].trim();
+                navigateToPage('home', { category: cat, subcategory: sub });
+                return;
+            }
+
+            // 4. Colon format (e.g. "electronics-tech:Smartphones")
+            if (str.includes(':') && !str.startsWith('http://') && !str.startsWith('https://')) {
+                const parts = str.split(':');
+                const cat = parts[0].trim();
+                const sub = parts[1].trim();
+                navigateToPage('home', { category: cat, subcategory: sub });
+                return;
+            }
+
+            // 5. Match subcategory name directly (e.g. targetLink = "Smartphones")
+            if (appCategories && appCategories.length > 0) {
+                for (const catObj of appCategories) {
+                    if (catObj.subcategories && catObj.subcategories.length > 0) {
+                        const matchedSub = catObj.subcategories.find(s => s.toLowerCase() === str.toLowerCase());
+                        if (matchedSub) {
+                            navigateToPage('home', { category: catObj.slug, subcategory: matchedSub });
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // 6. External full URL
+            if (str.startsWith('http://') || str.startsWith('https://')) {
+                window.open(str, '_blank');
+                return;
+            }
+
+            // 7. Standard Category filter fallback
+            filterCategory(str, event);
+        }
+
         function renderHeroSlider() {
             const heroSection = document.getElementById('hero-section');
             const slider = document.getElementById('heroSlider');
@@ -7816,7 +7881,7 @@
             if (slider) {
                 slider.innerHTML = appBanners.map((b, idx) => `
                     <div class="hero-slide ${idx === 0 ? 'active' : ''} ${b.target_link ? 'clickable' : ''}" 
-                         onclick="${b.target_link ? `filterCategory('${escapeHtml(b.target_link)}')` : ''}" 
+                         onclick="${b.target_link ? `handleBannerClick('${escapeHtml(b.target_link)}', event)` : ''}" 
                          role="${b.target_link ? 'button' : 'region'}" 
                          aria-label="${escapeHtml(b.title)}">
                         <img src="${escapeHtml(b.image_url)}" alt="${escapeHtml(b.title)}">
