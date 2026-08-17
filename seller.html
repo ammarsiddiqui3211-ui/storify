@@ -5111,7 +5111,7 @@
             if (fileInput) fileInput.value = '';
             const preview = document.getElementById('sellerAvatarPreview');
             if (preview) {
-                preview.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><polyline points='9 22 9 12 15 12 15 22'/></svg>";
+                preview.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMS41Ij48cGF0aCBkPSJNMyA5bDktNyA5IDd2MTFhMiAyIDAgMCAwIDIgMkg1YTIgMiAwIDAgMS0yLTJ6Ii8+PHBvbHlsaW5lIHBvaW50cz0iOSAyMiA5IDEyIDE1IDEyIDE1IDIyIi8+PC9zdmc+";
             }
             const removeBtn = document.getElementById('removeSellerAvatarBtn');
             if (removeBtn) removeBtn.style.display = 'none';
@@ -5153,7 +5153,8 @@
         }
 
         function renderSettingsTab(container) {
-            const avatarSrc = profile.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><polyline points='9 22 9 12 15 12 15 22'/></svg>";
+            const defaultSellerAvatarB64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMS41Ij48cGF0aCBkPSJNMyA5bDktNyA5IDd2MTFhMiAyIDAgMCAwIDIgMkg1YTIgMiAwIDAgMS0yLTJ6Ii8+PHBvbHlsaW5lIHBvaW50cz0iOSAyMiA5IDEyIDE1IDEyIDE1IDIyIi8+PC9zdmc+";
+            const avatarSrc = profile.avatar_url ? escapeHtml(profile.avatar_url) : defaultSellerAvatarB64;
 
             container.innerHTML = `
                 <div class="dashboard-header">
@@ -5166,7 +5167,7 @@
                         <label style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Shop Logo / Profile Photo</label>
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <div style="position: relative; width: 80px; height: 80px; flex-shrink: 0;">
-                                <img id="sellerAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Shop Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+                                <img id="sellerAvatarPreview" src="${avatarSrc}" alt="Shop Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 6px;">
                                 <label for="setAvatarFile" class="btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px;">

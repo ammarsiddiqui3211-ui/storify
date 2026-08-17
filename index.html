@@ -8701,7 +8701,8 @@
 
             // --- SUB-PAGE: Personal Info ---
             if (subPage === 'personal') {
-                const avatarSrc = account.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
+                const defaultAvatarB64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMS41Ij48cGF0aCBkPSJNMjAgMjF2LTJhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC00IDR2MiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIvPjwvc3ZnPg==";
+                const avatarSrc = account.avatar_url ? escapeHtml(account.avatar_url) : defaultAvatarB64;
                 view.innerHTML = `
                     <div style="display: flex; justify-content: center; width: 100%;">
                         <div class="auth-card" style="position: static; transform: none; box-shadow: 0 4px 20px var(--shadow); margin: 0 auto; width: 100%; max-width: 520px;">
@@ -8716,7 +8717,7 @@
                                 <!-- Avatar Photo Upload Component -->
                                 <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 22px;">
                                     <div style="position: relative; width: 90px; height: 90px; cursor: pointer;" onclick="document.getElementById('accountAvatarFile').click()">
-                                        <img id="accountAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+                                        <img id="accountAvatarPreview" src="${avatarSrc}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
                                         <label for="accountAvatarFile" style="position: absolute; bottom: 0; right: 0; background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" title="Change Photo">
                                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                                         </label>
@@ -9382,7 +9383,7 @@
             if (fileInput) fileInput.value = '';
             const preview = document.getElementById('accountAvatarPreview');
             if (preview) {
-                preview.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
+                preview.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMS41Ij48cGF0aCBkPSJNMjAgMjF2LTJhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC04IDR2MiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIvPjwvc3ZnPg==";
             }
             const removeBtn = document.getElementById('removeAvatarLink');
             if (removeBtn) removeBtn.style.display = 'none';
@@ -9428,7 +9429,8 @@
             const view = document.getElementById('account-view');
             if (!view || !account) return;
 
-            const avatarSrc = account.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
+            const defaultAvatarB64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMS41Ij48cGF0aCBkPSJNMjAgMjF2LTJhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC00IDR2MiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIvPjwvc3ZnPg==";
+            const avatarSrc = account.avatar_url ? escapeHtml(account.avatar_url) : defaultAvatarB64;
 
             view.innerHTML = `
                 <div class="auth-card fade-in" onclick="event.stopPropagation()" style="max-width: 520px; width: 100%;">
@@ -9444,7 +9446,7 @@
                         <!-- Avatar Photo Upload Component -->
                         <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
                             <div style="position: relative; width: 90px; height: 90px; cursor: pointer;" onclick="document.getElementById('accountAvatarFile').click()">
-                                <img id="accountAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+                                <img id="accountAvatarPreview" src="${avatarSrc}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
                                 <label for="accountAvatarFile" style="position: absolute; bottom: 0; right: 0; background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" title="Change Photo">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                                 </label>
