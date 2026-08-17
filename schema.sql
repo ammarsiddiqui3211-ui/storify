@@ -809,6 +809,7 @@ CREATE OR REPLACE VIEW public.public_products AS
     p.category,
     p.category_key,
     p.subcategory,
+    p.location,
     p.images,
     p.colors,
     p.sizes,
