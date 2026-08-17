@@ -8701,17 +8701,36 @@
 
             // --- SUB-PAGE: Personal Info ---
             if (subPage === 'personal') {
+                const avatarSrc = account.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
                 view.innerHTML = `
                     <div style="display: flex; justify-content: center; width: 100%;">
                         <div class="auth-card" style="position: static; transform: none; box-shadow: 0 4px 20px var(--shadow); margin: 0 auto; width: 100%; max-width: 520px;">
                             <div style="margin-bottom: 20px; text-align: center;">
                                 <h2 style="font-size: 20px; font-weight: 800; color: var(--primary); margin: 0 0 6px 0;">Edit Account Details</h2>
-                                <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal profile, bio, and shipping information.</p>
+                                <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal profile photo and shipping information.</p>
                             </div>
 
                             <div id="edit-msg-block" class="auth-message"></div>
 
                             <form id="editAccountForm" onsubmit="handleAccountSubmit(event)">
+                                <!-- Avatar Photo Upload Component -->
+                                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 22px;">
+                                    <div style="position: relative; width: 90px; height: 90px; cursor: pointer;" onclick="document.getElementById('accountAvatarFile').click()">
+                                        <img id="accountAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+                                        <label for="accountAvatarFile" style="position: absolute; bottom: 0; right: 0; background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" title="Change Photo">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                        </label>
+                                    </div>
+                                    <input type="file" id="accountAvatarFile" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                                        <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                            Upload Profile Photo
+                                        </label>
+                                        <a href="#" id="removeAvatarLink" onclick="removeUserAvatar(event)" style="color: #ef4444; font-size: 12px; font-weight: 600; text-decoration: underline; ${account.avatar_url ? '' : 'display:none;'}">Remove</a>
+                                    </div>
+                                    <input type="hidden" id="accountAvatarUrl" value="${escapeHtml(account.avatar_url || '')}">
+                                </div>
 
                                 <div class="form-group">
                                     <label for="accountName">Full Name *</label>
@@ -9409,17 +9428,37 @@
             const view = document.getElementById('account-view');
             if (!view || !account) return;
 
+            const avatarSrc = account.avatar_url || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>";
+
             view.innerHTML = `
                 <div class="auth-card fade-in" onclick="event.stopPropagation()" style="max-width: 520px; width: 100%;">
                     <button class="close-auth-modal" onclick="closeAccountModal()" aria-label="Close modal">×</button>
                     <div style="margin-bottom: 18px; text-align: center;">
                         <h2 style="font-size: 20px; font-weight: 800; color: var(--primary); margin: 0 0 6px 0;">Edit Account Details</h2>
-                        <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal profile and bio.</p>
+                        <p style="font-size: 13px; color: var(--text-light); margin: 0;">Update your personal profile photo and shipping information.</p>
                     </div>
 
                     <div id="edit-msg-block" class="auth-message"></div>
 
                     <form id="editAccountForm" onsubmit="handleAccountSubmit(event)">
+                        <!-- Avatar Photo Upload Component -->
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+                            <div style="position: relative; width: 90px; height: 90px; cursor: pointer;" onclick="document.getElementById('accountAvatarFile').click()">
+                                <img id="accountAvatarPreview" src="${escapeHtml(avatarSrc)}" alt="Profile Avatar" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); background: var(--secondary); box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+                                <label for="accountAvatarFile" style="position: absolute; bottom: 0; right: 0; background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" title="Change Photo">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                </label>
+                            </div>
+                            <input type="file" id="accountAvatarFile" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                                <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                    Upload Profile Photo
+                                </label>
+                                <a href="#" id="removeAvatarLink" onclick="removeUserAvatar(event)" style="color: #ef4444; font-size: 12px; font-weight: 600; text-decoration: underline; ${account.avatar_url ? '' : 'display:none;'}">Remove</a>
+                            </div>
+                            <input type="hidden" id="accountAvatarUrl" value="${escapeHtml(account.avatar_url || '')}">
+                        </div>
 
                         <div class="form-group">
                             <label for="accountName">Full Name *</label>
