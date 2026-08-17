@@ -1796,15 +1796,9 @@
                         <input type="text" id="categoryName" class="input-control" placeholder="e.g. Electronics & Gadgets" required oninput="autoGenerateCategorySlug(this.value)">
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                        <div class="filter-group">
-                            <label for="categorySlug">Category Slug / Key *</label>
-                            <input type="text" id="categorySlug" class="input-control" placeholder="e.g. electronics" required>
-                        </div>
-                        <div class="filter-group">
-                            <label for="categoryIcon">Icon (Emoji or SVG Name)</label>
-                            <input type="text" id="categoryIcon" class="input-control" placeholder="e.g. ⚡, 📱, shirt, tag">
-                        </div>
+                    <div class="filter-group" style="margin-bottom: 16px;">
+                        <label for="categorySlug">Category Slug / Key *</label>
+                        <input type="text" id="categorySlug" class="input-control" placeholder="e.g. electronics" required>
                     </div>
 
                     <div class="filter-group" style="margin-bottom: 16px;">
@@ -4370,7 +4364,6 @@
             document.getElementById('categoryEditId').value = '';
             document.getElementById('categoryName').value = '';
             document.getElementById('categorySlug').value = '';
-            document.getElementById('categoryIcon').value = '🏷️';
             document.getElementById('categorySubcategoriesInput').value = '';
             document.getElementById('categoryIsActive').checked = true;
 
@@ -4385,7 +4378,6 @@
             document.getElementById('categoryEditId').value = c.id;
             document.getElementById('categoryName').value = c.name || '';
             document.getElementById('categorySlug').value = c.slug || '';
-            document.getElementById('categoryIcon').value = c.icon || '🏷️';
             document.getElementById('categorySubcategoriesInput').value = (c.subcategories || []).join(', ');
             document.getElementById('categoryIsActive').checked = c.is_active !== false;
 
@@ -4401,7 +4393,7 @@
             const editId = document.getElementById('categoryEditId').value;
             const name = document.getElementById('categoryName').value.trim();
             const slug = document.getElementById('categorySlug').value.trim();
-            const icon = document.getElementById('categoryIcon').value.trim() || '🏷️';
+            const icon = 'tag';
             const subInput = document.getElementById('categorySubcategoriesInput').value;
             const isActive = document.getElementById('categoryIsActive').checked;
 
