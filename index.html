@@ -7239,7 +7239,7 @@
         // ----------------------------------------------------
         // DYNAMIC VIEW ROUTER
         // ----------------------------------------------------
-        function displayView(viewName, productId = null, event = null, successDetails = null, searchQuery = '', accountSubPage = 'all') {
+        async function displayView(viewName, productId = null, event = null, successDetails = null, searchQuery = '', accountSubPage = 'all') {
             if (event) event.preventDefault();
 
             const hero = document.getElementById('hero-section');
