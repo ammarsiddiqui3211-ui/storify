@@ -2598,12 +2598,12 @@
         }
 
         .product-detail-name {
-            font-size: 38px;
-            font-weight: 800;
+            font-size: 28px;
+            font-weight: 700;
             color: var(--primary);
             margin-bottom: 8px;
-            line-height: 1.2;
-            letter-spacing: -0.5px;
+            line-height: 1.25;
+            letter-spacing: -0.4px;
         }
 
         .product-detail-rating {
@@ -4573,8 +4573,17 @@
             }
 
             .product-detail-name {
-                font-size: 30px;
+                font-size: 20px;
+                line-height: 1.3;
                 overflow-wrap: anywhere;
+            }
+
+            .product-detail-price .current {
+                font-size: 24px;
+            }
+
+            .product-detail-price .original {
+                font-size: 16px;
             }
 
             #wishlist-view {
@@ -4634,12 +4643,33 @@
                 border-radius: 14px;
             }
 
+            .product-detail-name {
+                font-size: 18px;
+                line-height: 1.3;
+                margin-top: 2px;
+                overflow-wrap: anywhere;
+            }
+
             .product-detail-rating {
                 gap: 8px;
             }
 
             .product-detail-price {
-                gap: 10px;
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+
+            .product-detail-price .current {
+                font-size: 20px;
+            }
+
+            .product-detail-price .original {
+                font-size: 14px;
+            }
+
+            .product-detail-price .discount-badge {
+                font-size: 11px;
+                padding: 4px 10px;
             }
 
             .color-swatches,
@@ -10163,7 +10193,7 @@
                     
                     <div class="product-detail-info">
                         <div class="product-detail-cat" style="margin-bottom:8px;">${p.category}</div>
-                        <h1 class="product-detail-name" style="font-size:24px; font-weight:500; margin-top:4px;">${p.name}</h1>
+                        <h1 class="product-detail-name" style="margin-top:4px;">${p.name}</h1>
                         
                         <div class="product-detail-rating" id="detailRatingSummary" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                             <span class="stars">${'★'.repeat(p.rating)}${'☆'.repeat(5 - p.rating)}</span>
