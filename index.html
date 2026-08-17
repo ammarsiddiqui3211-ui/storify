@@ -8348,7 +8348,7 @@
         }
 
         // Helper function to create a category section
-        function createProductSectionHTML(title, productList, catKey, currentSubcat = 'all') {
+        function createProductSectionHTML(title, productList, catKey, isStackedHome = false, currentSubcat = 'all') {
             const section = document.createElement('section');
             section.style.marginBottom = '60px';
 
@@ -8362,8 +8362,19 @@
             h2.textContent = title;
             header.appendChild(h2);
 
-            const dropdownControls = createHeaderDropdownControls(catKey, currentSubcat);
-            header.appendChild(dropdownControls);
+            if (isStackedHome) {
+                const a = document.createElement('a');
+                a.href = '#';
+                a.className = 'view-all';
+                a.textContent = 'View All →';
+                a.onclick = function (e) {
+                    filterCategory(catKey, e);
+                };
+                header.appendChild(a);
+            } else {
+                const dropdownControls = createHeaderDropdownControls(catKey, currentSubcat);
+                header.appendChild(dropdownControls);
+            }
 
             section.appendChild(header);
 
@@ -8425,7 +8436,7 @@
                 (appCategories || []).forEach(cat => {
                     const catProducts = products.filter(p => (p.categoryKey === cat.slug || p.categoryKey === cat.id) && !p.sold && p.stockStatus !== 'sold_out');
                     if (catProducts.length > 0) {
-                        const section = createProductSectionHTML(cat.name, catProducts, cat.slug, 'all');
+                        const section = createProductSectionHTML(cat.name, catProducts, cat.slug, true, 'all');
                         container.appendChild(section);
                         renderedKeys.add(cat.slug);
                     }
@@ -8446,7 +8457,7 @@
 
                 Object.keys(categoryMap).forEach(key => {
                     const cat = categoryMap[key];
-                    const section = createProductSectionHTML(cat.name, cat.products, key, 'all');
+                    const section = createProductSectionHTML(cat.name, cat.products, key, true, 'all');
                     container.appendChild(section);
                 });
             } else {
@@ -8525,7 +8536,7 @@
                     title = selectedCatObj ? selectedCatObj.name : (filter.charAt(0).toUpperCase() + filter.slice(1));
                 }
 
-                const section = createProductSectionHTML(title, filtered, filter, subcategoryFilter);
+                const section = createProductSectionHTML(title, filtered, filter, false, subcategoryFilter);
                 container.appendChild(section);
             }
         }
