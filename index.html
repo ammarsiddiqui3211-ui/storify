@@ -8362,24 +8362,48 @@
                 if (!targetSellerId) targetSellerId = account.id;
             }
 
+            // Check local cache for stored seller profiles
+            let cachedMap = {};
+            try {
+                cachedMap = JSON.parse(localStorage.getItem('storify_seller_profiles_cache') || '{}');
+                const cached = cachedMap[targetSellerId] || cachedMap[targetSlug] || cachedMap[targetNorm];
+                if (cached) {
+                    if (cached.avatar_url && !sellerAvatarUrl) sellerAvatarUrl = cached.avatar_url;
+                    if (cached.description && !sellerDescription) sellerDescription = cached.description;
+                    if (cached.shop_name && displayShopName === 'Partner Shop') displayShopName = cached.shop_name;
+                }
+            } catch (e) {}
+
             // If avatar or description missing, query Supabase profiles
             if ((!sellerAvatarUrl || !sellerDescription) && supabaseClient) {
                 try {
-                    let query = null;
-                    if (targetSellerId) {
-                        query = supabaseClient.from('profiles').select('avatar_url, description, shop_name').eq('id', targetSellerId);
-                    } else if (displayShopName && displayShopName !== 'Partner Shop') {
-                        query = supabaseClient.from('profiles').select('avatar_url, description, shop_name').ilike('shop_name', displayShopName);
-                    }
+                    const { data: profs } = await supabaseClient
+                        .from('profiles')
+                        .select('id, avatar_url, description, shop_name')
+                        .or('role.eq.seller,seller_status.eq.approved');
 
-                    if (query) {
-                        const { data: prof } = await query.maybeSingle();
-                        if (prof) {
-                            if (prof.avatar_url && !sellerAvatarUrl) sellerAvatarUrl = prof.avatar_url;
-                            if (prof.description && !sellerDescription) sellerDescription = prof.description;
+                    if (profs && profs.length > 0) {
+                        const matchedProf = profs.find(p => 
+                            (targetSellerId && String(p.id) === String(targetSellerId)) ||
+                            (p.shop_name && slugifyShopName(p.shop_name) === targetSlug) ||
+                            (p.shop_name && normalizeStoreKey(p.shop_name) === targetNorm)
+                        );
+
+                        if (matchedProf) {
+                            if (matchedProf.avatar_url && !sellerAvatarUrl) sellerAvatarUrl = matchedProf.avatar_url;
+                            if (matchedProf.description && !sellerDescription) sellerDescription = matchedProf.description;
+                            if (matchedProf.shop_name && (displayShopName === 'Partner Shop' || !sellerProducts.length)) displayShopName = matchedProf.shop_name;
+
+                            // Cache matched profile
+                            cachedMap[matchedProf.id] = matchedProf;
+                            cachedMap[slugifyShopName(matchedProf.shop_name)] = matchedProf;
+                            cachedMap[normalizeStoreKey(matchedProf.shop_name)] = matchedProf;
+                            localStorage.setItem('storify_seller_profiles_cache', JSON.stringify(cachedMap));
                         }
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.warn("Seller profile fetch warning:", e);
+                }
             }
 
             const initials = displayShopName

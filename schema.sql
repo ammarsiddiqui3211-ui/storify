@@ -109,6 +109,10 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS description text;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
+DROP POLICY IF EXISTS "Allow public read access to seller profiles" ON public.profiles;
+CREATE POLICY "Allow public read access to seller profiles" ON public.profiles
+  FOR SELECT TO public USING (role = 'seller' OR seller_status = 'approved' OR (shop_name IS NOT NULL AND shop_name <> ''));
+
 CREATE POLICY "Allow users to select their own profile or admin" ON public.profiles
   FOR SELECT TO authenticated USING (auth.uid() = id OR public.is_admin(auth.uid()));
 
