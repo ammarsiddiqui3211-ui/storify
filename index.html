@@ -5660,7 +5660,7 @@
                                     style="vertical-align: middle; margin-right: 6px; color: var(--accent);">
                                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                     <circle cx="12" cy="10" r="3" />
-                                </svg> Pakistan</span>
+                                </svg> Location</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -5671,9 +5671,6 @@
                             <div class="dropdown-header"
                                 style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
                                 Delivery Location</div>
-                            <a href="#" onclick="selectCountry('PK', 'Pakistan', '🇵🇰', event)" class="active">
-                                🇵🇰 Pakistan
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -5777,27 +5774,17 @@
                                                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                                 <circle cx="12" cy="10" r="3" />
                                             </svg> Pakistan</span>
+                                            </svg> <span id="mobileCountryLabel">Select Location</span></span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <path d="m6 9 6 6 6-6" />
                                         </svg>
                                     </div>
-                                    <div class="dropdown-menu" style="width: 100%; min-width: unset;">
+                                    <div class="dropdown-menu" id="mobileHeaderLocationDropdownMenu" style="width: 100%; min-width: unset;">
                                         <div class="dropdown-header"
                                             style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
                                             Delivery Location</div>
-                                        <a href="#" onclick="selectCountry('PK', 'Pakistan', '🇵🇰', event)"
-                                            class="active">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-map-pin"
-                                                style="vertical-align: middle; margin-right: 6px; color: var(--accent);">
-                                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                                                <circle cx="12" cy="10" r="3" />
-                                            </svg> Pakistan
-                                        </a>
                                     </div>
                                 </div>
 
@@ -6270,7 +6257,7 @@
         }
 
         let appLocations = [];
-        let selectedLocationFilter = localStorage.getItem('storify_selected_location') || 'Pakistan';
+        let selectedLocationFilter = localStorage.getItem('storify_selected_location') || 'all';
 
         async function fetchLocations() {
             try {
@@ -6300,9 +6287,7 @@
                 } catch (e) {}
             }
 
-            appLocations = [
-                { id: 'loc_pk', country_name: 'Pakistan', country_code: 'PK', currency_code: 'PKR', currency_symbol: 'Rs', flag_emoji: '🇵🇰', is_active: true }
-            ];
+            appLocations = [];
             renderHeaderLocations();
         }
 
@@ -6387,12 +6372,14 @@
 
         function formatPrice(value, pLoc = null) {
             const amount = Number(value || 0);
-            const targetLocName = pLoc || (selectedLocationFilter && selectedLocationFilter !== 'all' ? selectedLocationFilter : 'Pakistan');
-            const locObj = (appLocations || []).find(l => l.country_name.toLowerCase() === String(targetLocName).toLowerCase()) 
+            const defaultLoc = (appLocations && appLocations.length > 0) ? appLocations[0].country_name : '';
+            const targetLocName = pLoc || (selectedLocationFilter && selectedLocationFilter !== 'all' ? selectedLocationFilter : defaultLoc);
+            const locObj = (appLocations || []).find(l => targetLocName && l.country_name.toLowerCase() === String(targetLocName).toLowerCase()) 
                            || (appLocations && appLocations[0]) 
-                           || { currency_symbol: 'Rs' };
-            const symbol = locObj.currency_symbol || locObj.currency_code || 'Rs';
-            return `${symbol} ${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+                           || { currency_symbol: '' };
+            const symbol = locObj.currency_symbol || locObj.currency_code || '';
+            const prefix = symbol ? `${symbol} ` : '';
+            return `${prefix}${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
         }
 
         // Check for early OAuth redirect target (seller / admin) and preserve URL hash/query
@@ -11035,18 +11022,12 @@
         // APPLICATION INITIALIZATION
         // ----------------------------------------------------
         async function initializeApp() {
-            // Load saved language and country
+            // Load saved language
             const savedLang = localStorage.getItem('selectedLang') || 'en';
-            const savedCountry = localStorage.getItem('selectedCountry') || 'PK';
 
             // Set initial language
             const langName = savedLang === 'ur' ? 'Urdu' : 'English';
             selectLanguage(savedLang, langName);
-
-            // Set initial country
-            if (savedCountry === 'PK') {
-                selectCountry('PK', 'Pakistan', '🇵🇰');
-            }
 
             // Check session and load user profile
             await checkUserSession();

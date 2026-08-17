@@ -2138,7 +2138,7 @@
         let addedProductTitle = '';
         let addedProductCategory = 'Apparel & Fashion';
         let addedProductSubcategory = '';
-        let addedProductLocation = 'Pakistan';
+        let addedProductLocation = '';
         let addedProductPrice = '';
         let addedProductOriginalPrice = '';
         let addedProductShippingFee = '250';
@@ -2178,21 +2178,21 @@
                 } catch (e) {}
             }
 
-            appLocations = [
-                { id: 'loc_pk', country_name: 'Pakistan', country_code: 'PK', currency_code: 'PKR', currency_symbol: 'Rs', flag_emoji: '🇵🇰', is_active: true }
-            ];
+            appLocations = [];
             return appLocations;
         }
 
-        function renderLocationOptionsHtml(selectedVal = 'Pakistan') {
+        function renderLocationOptionsHtml(selectedVal = '') {
             if (!appLocations || appLocations.length === 0) {
                 fetchSellerLocations();
             }
-            const list = (appLocations && appLocations.length > 0) ? appLocations : [
-                { country_name: 'Pakistan', currency_code: 'PKR', flag_emoji: '🇵🇰' }
-            ];
+            const list = (appLocations && appLocations.length > 0) ? appLocations : [];
+            if (list.length === 0) {
+                return `<option value="">No active locations configured</option>`;
+            }
+            const defaultVal = selectedVal || list[0].country_name;
             return list.map(loc => `
-                <option value="${escapeHtml(loc.country_name)}" ${(selectedVal && loc.country_name.toLowerCase() === String(selectedVal).toLowerCase()) ? 'selected' : ''}>
+                <option value="${escapeHtml(loc.country_name)}" ${(defaultVal && loc.country_name.toLowerCase() === String(defaultVal).toLowerCase()) ? 'selected' : ''}>
                     ${escapeHtml(loc.flag_emoji || '🌐')} ${escapeHtml(loc.country_name)} (${escapeHtml(loc.currency_code)})
                 </option>
             `).join('');
@@ -2703,8 +2703,14 @@
                 .replace(/'/g, '&#039;');
         }
 
-        function formatPrice(num) {
-            return "Rs " + Number(num).toLocaleString('en-US');
+        function formatPrice(num, pLoc = null) {
+            const amount = Number(num || 0);
+            const locObj = (appLocations || []).find(l => pLoc && l.country_name.toLowerCase() === String(pLoc).toLowerCase()) 
+                           || (appLocations && appLocations[0]) 
+                           || { currency_symbol: '' };
+            const symbol = locObj.currency_symbol || locObj.currency_code || '';
+            const prefix = symbol ? `${symbol} ` : '';
+            return `${prefix}${amount.toLocaleString('en-US')}`;
         }
 
         function renderLandingView(container) {
@@ -3646,15 +3652,15 @@
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
                         <div class="form-group">
-                            <label for="prodPrice">Price (RS) *</label>
+                            <label for="prodPrice">Price *</label>
                             <input type="number" id="prodPrice" class="form-control" placeholder="e.g. 1200" required value="${escapeHtml(addedProductPrice)}" oninput="addedProductPrice = this.value; saveAddProductState();">
                         </div>
                         <div class="form-group">
-                            <label for="prodOriginalPrice">Original Price (RS, Optional)</label>
+                            <label for="prodOriginalPrice">Original Price (Optional)</label>
                             <input type="number" id="prodOriginalPrice" class="form-control" placeholder="e.g. 1800" value="${escapeHtml(addedProductOriginalPrice)}" oninput="addedProductOriginalPrice = this.value; saveAddProductState();">
                         </div>
                         <div class="form-group">
-                            <label for="prodShippingFee">Shipping Fee (RS) *</label>
+                            <label for="prodShippingFee">Shipping Fee *</label>
                             <input type="number" id="prodShippingFee" class="form-control" placeholder="e.g. 250" required value="${escapeHtml(addedProductShippingFee)}" oninput="addedProductShippingFee = this.value; saveAddProductState();">
                         </div>
                     </div>
@@ -4194,7 +4200,7 @@
                     alert("Bulk delete failed: " + err.message);
                 }
             } else if (action === 'edit_shipping') {
-                const newFeeStr = prompt("Enter new shipping fee (PKR) for selected listings:", "250");
+                const newFeeStr = prompt("Enter new shipping fee for selected listings:", "250");
                 if (newFeeStr === null) return;
                 const newFee = Number(newFeeStr);
                 if (isNaN(newFee) || newFee < 0) {
@@ -4288,15 +4294,15 @@
 
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
                             <div class="form-group">
-                                <label for="editProdPrice">Price (RS) *</label>
+                                <label for="editProdPrice">Price *</label>
                                 <input type="number" id="editProdPrice" class="form-control" required value="${prod.price}">
                             </div>
                             <div class="form-group">
-                                <label for="editProdOriginalPrice">Original Price (RS, Optional)</label>
+                                <label for="editProdOriginalPrice">Original Price (Optional)</label>
                                 <input type="number" id="editProdOriginalPrice" class="form-control" value="${prod.original_price || ''}">
                             </div>
                             <div class="form-group">
-                                <label for="editProdShippingFee">Shipping Fee (RS) *</label>
+                                <label for="editProdShippingFee">Shipping Fee *</label>
                                 <input type="number" id="editProdShippingFee" class="form-control" required value="${prod.shipping_fee || 250}">
                             </div>
                         </div>
