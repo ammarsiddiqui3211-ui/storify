@@ -2138,6 +2138,7 @@
         let addedProductTitle = '';
         let addedProductCategory = 'Apparel & Fashion';
         let addedProductSubcategory = '';
+        let addedProductLocation = 'Pakistan';
         let addedProductPrice = '';
         let addedProductOriginalPrice = '';
         let addedProductShippingFee = '250';
@@ -2148,6 +2149,54 @@
         let selectedImageFiles = [];
         let tempColorPicker = '#4a90e2';
         let tempColorHex = '';
+
+        // Dynamic Locations Helper
+        let appLocations = [];
+
+        async function fetchSellerLocations() {
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('locations')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('sort_order', { ascending: true });
+
+                    if (!error && data && data.length > 0) {
+                        appLocations = data;
+                        localStorage.setItem('storify_locations', JSON.stringify(appLocations));
+                        return appLocations;
+                    }
+                }
+            } catch (e) {}
+
+            const cached = localStorage.getItem('storify_locations');
+            if (cached) {
+                try {
+                    appLocations = JSON.parse(cached).filter(l => l.is_active !== false);
+                    return appLocations;
+                } catch (e) {}
+            }
+
+            appLocations = [
+                { id: 'loc_pk', country_name: 'Pakistan', country_code: 'PK', currency_code: 'PKR', currency_symbol: 'Rs', flag_emoji: '🇵🇰', is_active: true }
+            ];
+            return appLocations;
+        }
+
+        function renderLocationOptionsHtml(selectedVal = 'Pakistan') {
+            if (!appLocations || appLocations.length === 0) {
+                fetchSellerLocations();
+            }
+            const list = (appLocations && appLocations.length > 0) ? appLocations : [
+                { country_name: 'Pakistan', currency_code: 'PKR', flag_emoji: '🇵🇰' }
+            ];
+            return list.map(loc => `
+                <option value="${escapeHtml(loc.country_name)}" ${(selectedVal && loc.country_name.toLowerCase() === String(selectedVal).toLowerCase()) ? 'selected' : ''}>
+                    ${escapeHtml(loc.flag_emoji || '🌐')} ${escapeHtml(loc.country_name)} (${escapeHtml(loc.currency_code)})
+                </option>
+            `).join('');
+        }
 
         // Dynamic Categories & Subcategories Helper
         let sellerCategoriesList = [];
@@ -3587,6 +3636,12 @@
                                 <option value="">Select Subcategory (Optional)</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="prodLocation">Selling Location / Country *</label>
+                            <select id="prodLocation" class="form-control" required onchange="addedProductLocation = this.value; saveAddProductState();">
+                                ${renderLocationOptionsHtml(addedProductLocation)}
+                            </select>
+                        </div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
@@ -3825,6 +3880,8 @@
 
             const subcategorySelect = document.getElementById('prodSubcategory');
             const subcategory = subcategorySelect ? subcategorySelect.value.trim() : '';
+            const locationSelect = document.getElementById('prodLocation');
+            const location = locationSelect ? locationSelect.value.trim() : 'Pakistan';
 
             btn.innerHTML = `<span class="spinner"></span> Listing Product...`;
             btn.classList.add('loading');
@@ -3857,6 +3914,7 @@
                         category: category,
                         category_key: categoryKey,
                         subcategory: subcategory,
+                        location: location,
                         price: price,
                         original_price: originalPrice,
                         shipping_fee: shippingFee,
@@ -3864,7 +3922,7 @@
                         images: imageUrls,
                         colors: addedColors.length ? addedColors : null,
                         sizes: addedSizes.length ? addedSizes : null,
-                        specs: { ...addedSpecs, subcategory: subcategory },
+                        specs: { ...addedSpecs, subcategory: subcategory, location: location },
                         seller_id: user.id
                     }]);
 
@@ -4218,6 +4276,12 @@
                                 <label for="editProdSubcategory">Subcategory (Optional)</label>
                                 <select id="editProdSubcategory" class="form-control">
                                     <option value="">Select Subcategory (Optional)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editProdLocation">Selling Location / Country *</label>
+                                <select id="editProdLocation" class="form-control" required>
+                                    ${renderLocationOptionsHtml(prod.location || 'Pakistan')}
                                 </select>
                             </div>
                         </div>

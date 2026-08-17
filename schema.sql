@@ -957,4 +957,37 @@ DROP POLICY IF EXISTS "Allow admin all access to categories" ON public.categorie
 CREATE POLICY "Allow admin all access to categories" ON public.categories
   FOR ALL TO authenticated USING (public.is_admin(auth.uid()));
 
+-- ----------------------------------------------------
+-- 13. DYNAMIC LOCATIONS & CURRENCIES TABLE
+-- ----------------------------------------------------
+
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS location text DEFAULT 'Pakistan';
+
+CREATE TABLE IF NOT EXISTS public.locations (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  country_name text NOT NULL UNIQUE,
+  country_code text NOT NULL,
+  currency_code text NOT NULL,
+  currency_symbol text NOT NULL,
+  flag_emoji text DEFAULT '🌐',
+  sort_order integer DEFAULT 0,
+  is_active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.locations ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to locations" ON public.locations;
+CREATE POLICY "Allow public read access to locations" ON public.locations
+  FOR SELECT TO public USING (true);
+
+DROP POLICY IF EXISTS "Allow admin all access to locations" ON public.locations;
+CREATE POLICY "Allow admin all access to locations" ON public.locations
+  FOR ALL TO authenticated USING (public.is_admin(auth.uid()));
+
+INSERT INTO public.locations (country_name, country_code, currency_code, currency_symbol, flag_emoji, sort_order)
+VALUES ('Pakistan', 'PK', 'PKR', 'Rs', '🇵🇰', 1)
+ON CONFLICT (country_name) DO NOTHING;
+
 

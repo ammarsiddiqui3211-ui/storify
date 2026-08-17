@@ -5667,18 +5667,12 @@
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" id="headerLocationDropdownMenu">
                             <div class="dropdown-header"
                                 style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
                                 Delivery Location</div>
                             <a href="#" onclick="selectCountry('PK', 'Pakistan', '🇵🇰', event)" class="active">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-map-pin"
-                                    style="vertical-align: middle; margin-right: 6px; color: var(--accent);">
-                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                                    <circle cx="12" cy="10" r="3" />
-                                </svg> Pakistan
+                                🇵🇰 Pakistan
                             </a>
                         </div>
                     </div>
@@ -6275,19 +6269,86 @@
             }
         }
 
+        let appLocations = [];
+        let selectedLocationFilter = localStorage.getItem('storify_selected_location') || 'Pakistan';
+
+        async function fetchLocations() {
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('locations')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('sort_order', { ascending: true })
+                        .order('created_at', { ascending: true });
+
+                    if (!error && data && data.length > 0) {
+                        appLocations = data;
+                        localStorage.setItem('storify_locations', JSON.stringify(appLocations));
+                        renderHeaderLocations();
+                        return;
+                    }
+                }
+            } catch (err) {}
+
+            const cached = localStorage.getItem('storify_locations');
+            if (cached) {
+                try {
+                    appLocations = JSON.parse(cached).filter(l => l.is_active !== false);
+                    renderHeaderLocations();
+                    return;
+                } catch (e) {}
+            }
+
+            appLocations = [
+                { id: 'loc_pk', country_name: 'Pakistan', country_code: 'PK', currency_code: 'PKR', currency_symbol: 'Rs', flag_emoji: '🇵🇰', is_active: true }
+            ];
+            renderHeaderLocations();
+        }
+
+        function renderHeaderLocations() {
+            const containers = document.querySelectorAll('#headerLocationDropdownMenu, #mobileHeaderLocationDropdownMenu');
+            if (!containers || containers.length === 0) return;
+
+            const isAllSelected = (!selectedLocationFilter || selectedLocationFilter === 'all');
+            const pinIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" style="vertical-align: middle; margin-right: 6px; color: var(--accent);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+            containers.forEach(menu => {
+                let html = `
+                    <div class="dropdown-header" style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Delivery Location</div>
+                    <a href="#" onclick="selectCountry('ALL', 'All Locations', '🌐', event)" class="${isAllSelected ? 'active' : ''}">
+                        <span style="margin-right: 6px;">🌐</span> All Locations
+                    </a>
+                `;
+
+                if (appLocations && appLocations.length > 0) {
+                    html += appLocations.map(loc => `
+                        <a href="#" onclick="selectCountry('${escapeHtml(loc.country_code)}', '${escapeHtml(loc.country_name)}', '${escapeHtml(loc.flag_emoji || '🌐')}', event)" class="${(selectedLocationFilter && selectedLocationFilter.toLowerCase() === loc.country_name.toLowerCase()) ? 'active' : ''}">
+                            <span style="margin-right: 6px;">${escapeHtml(loc.flag_emoji || '🌐')}</span> ${escapeHtml(loc.country_name)} (${escapeHtml(loc.currency_code)})
+                        </a>
+                    `).join('');
+                }
+                menu.innerHTML = html;
+            });
+
+            const activeLoc = (appLocations || []).find(l => selectedLocationFilter && l.country_name.toLowerCase() === selectedLocationFilter.toLowerCase());
+            const displayLabel = isAllSelected ? 'All Locations' : (activeLoc ? `${activeLoc.flag_emoji || '🌐'} ${activeLoc.country_name}` : selectedLocationFilter);
+            document.querySelectorAll('#countryDropdown .dropdown-trigger span, #mobileCountryDropdown .dropdown-trigger span').forEach(el => {
+                el.innerHTML = `${pinIcon} ${displayLabel}`;
+            });
+        }
+
         function selectCountry(countryCode, countryName, flag, event) {
             if (event) event.preventDefault();
 
-            const pinIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" style="vertical-align: middle; margin-right: 6px; color: var(--accent);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
+            selectedLocationFilter = (countryName === 'All Locations' || countryCode === 'ALL') ? 'all' : countryName;
+            localStorage.setItem('storify_selected_location', selectedLocationFilter);
 
-            // Update both desktop and mobile triggers
-            document.querySelectorAll('#countryDropdown .dropdown-trigger span, #mobileCountryDropdown .dropdown-trigger span').forEach(el => {
-                el.innerHTML = `${pinIcon} ${countryName}`;
-            });
+            renderHeaderLocations();
+            renderProductGrid(currentCategoryFilter || 'all');
 
-            localStorage.setItem('selectedCountry', countryCode);
             if (event) {
-                showToast(`Delivery country set to ${countryName}`);
+                showToast(`Delivery location set to ${countryName}`);
             }
         }
 
@@ -6299,12 +6360,10 @@
             const flag = langCode === 'ur' ? pkFlag : usFlag;
             const label = langCode === 'ur' ? 'اردو' : 'English';
 
-            // Update trigger text on both desktop and mobile
             document.querySelectorAll('#languageDropdown .dropdown-trigger span, #mobileLanguageDropdown .dropdown-trigger span').forEach(el => {
                 el.innerHTML = `${flag} ${label}`;
             });
 
-            // Highlight active class inside dropdown menus
             document.querySelectorAll('#languageDropdown .dropdown-menu a, #mobileLanguageDropdown .dropdown-menu a').forEach(a => {
                 const matchesLang = a.getAttribute('onclick').includes(`'${langCode}'`);
                 a.classList.toggle('active', matchesLang);
@@ -6317,18 +6376,23 @@
             }
         }
 
-        // Close dropdowns when clicking anywhere outside
         window.addEventListener('click', () => {
             document.querySelectorAll('.header-dropdown').forEach(d => d.classList.remove('active'));
         });
+
         // ----------------------------------------------------
         // PRODUCTS DATABASE (SEED AND FALLBACK)
         // ----------------------------------------------------
         let products = [];
 
-        function formatPrice(value) {
+        function formatPrice(value, pLoc = null) {
             const amount = Number(value || 0);
-            return `Rs ${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+            const targetLocName = pLoc || (selectedLocationFilter && selectedLocationFilter !== 'all' ? selectedLocationFilter : 'Pakistan');
+            const locObj = (appLocations || []).find(l => l.country_name.toLowerCase() === String(targetLocName).toLowerCase()) 
+                           || (appLocations && appLocations[0]) 
+                           || { currency_symbol: 'Rs' };
+            const symbol = locObj.currency_symbol || locObj.currency_code || 'Rs';
+            return `${symbol} ${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
         }
 
         // Check for early OAuth redirect target (seller / admin) and preserve URL hash/query
@@ -8624,11 +8688,18 @@
                         matchesSubcat = (pSub === String(subcategoryFilter).toLowerCase());
                     }
 
+                    // Location Filter
+                    let matchesLocation = true;
+                    if (selectedLocationFilter && selectedLocationFilter !== 'all') {
+                        const pLoc = String(p.location || (p.specs && p.specs.location) || 'Pakistan').toLowerCase();
+                        matchesLocation = (pLoc === String(selectedLocationFilter).toLowerCase());
+                    }
+
                     const matchesSearch = (searchQuery === '' ||
                         p.name.toLowerCase().includes(searchQuery) ||
                         p.description.toLowerCase().includes(searchQuery) ||
                         p.category.toLowerCase().includes(searchQuery));
-                    return matchesCat && matchesPrice && matchesSearch && matchesSubcat;
+                    return matchesCat && matchesPrice && matchesSearch && matchesSubcat && matchesLocation;
                 });
 
                 // Apply Sorting
@@ -10983,7 +11054,8 @@
             // Fetch products from database
             await fetchProductsFromSupabase();
 
-            // Fetch dynamic banners & categories from admin database / cache
+            // Fetch dynamic banners, categories & locations from admin database / cache
+            await fetchLocations();
             await fetchBanners();
             await fetchCategories();
 
