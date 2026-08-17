@@ -8723,12 +8723,15 @@
                                         </label>
                                     </div>
                                     <input type="file" id="accountAvatarFile" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)">
-                                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                                        <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                                        <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; font-size: 12.5px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                                            Upload Profile Photo
+                                            Update
                                         </label>
-                                        <a href="#" id="removeAvatarLink" onclick="removeUserAvatar(event)" style="color: #ef4444; font-size: 12px; font-weight: 600; text-decoration: underline; ${account.avatar_url ? '' : 'display:none;'}">Remove</a>
+                                        <button type="button" id="removeAvatarLink" onclick="removeUserAvatar(event)" class="btn" style="cursor: pointer; display: ${account.avatar_url ? 'inline-flex' : 'none'}; align-items: center; gap: 6px; padding: 7px 16px; font-size: 12.5px; font-weight: 600; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 8px; color: #dc2626;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                            Remove
+                                        </button>
                                     </div>
                                     <input type="hidden" id="accountAvatarUrl" value="${escapeHtml(account.avatar_url || '')}">
                                 </div>
@@ -9369,7 +9372,7 @@
                 const preview = document.getElementById('accountAvatarPreview');
                 if (preview) preview.src = e.target.result;
                 const removeBtn = document.getElementById('removeAvatarLink');
-                if (removeBtn) removeBtn.style.display = 'inline';
+                if (removeBtn) removeBtn.style.display = 'inline-flex';
             };
             reader.readAsDataURL(file);
         }
@@ -9452,12 +9455,15 @@
                                 </label>
                             </div>
                             <input type="file" id="accountAvatarFile" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)">
-                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                                <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                                <label for="accountAvatarFile" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; font-size: 12.5px; font-weight: 600; background: var(--secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--primary);">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                                    Upload Profile Photo
+                                    Update
                                 </label>
-                                <a href="#" id="removeAvatarLink" onclick="removeUserAvatar(event)" style="color: #ef4444; font-size: 12px; font-weight: 600; text-decoration: underline; ${account.avatar_url ? '' : 'display:none;'}">Remove</a>
+                                <button type="button" id="removeAvatarLink" onclick="removeUserAvatar(event)" class="btn" style="cursor: pointer; display: ${account.avatar_url ? 'inline-flex' : 'none'}; align-items: center; gap: 6px; padding: 7px 16px; font-size: 12.5px; font-weight: 600; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 8px; color: #dc2626;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    Remove
+                                </button>
                             </div>
                             <input type="hidden" id="accountAvatarUrl" value="${escapeHtml(account.avatar_url || '')}">
                         </div>
