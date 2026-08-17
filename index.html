@@ -8039,9 +8039,36 @@
                 'personal-care-beauty': 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&auto=format&fit=crop&q=60',
                 'sports-outdoors': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&auto=format&fit=crop&q=60',
                 'accessories-jewelry': 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&auto=format&fit=crop&q=60',
-                'stationery-office': 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=500&auto=format&fit=crop&q=60'
+                'stationery-office': 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=500&auto=format&fit=crop&q=60',
+                'toys-games': 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=500&auto=format&fit=crop&q=60',
+                'toys': 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=500&auto=format&fit=crop&q=60',
+                'games': 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=500&auto=format&fit=crop&q=60',
+                'books-media': 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&auto=format&fit=crop&q=60',
+                'groceries-food': 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=60',
+                'automotive': 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=500&auto=format&fit=crop&q=60',
+                'baby-kids': 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500&auto=format&fit=crop&q=60',
+                'health-wellness': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60',
+                'pet-supplies': 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&auto=format&fit=crop&q=60'
             };
             const defaultImg = 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500&auto=format&fit=crop&q=60';
+
+            function getCategoryPhoto(c) {
+                if (c.image_url) return c.image_url;
+                const slug = String(c.slug || c.name || '').toLowerCase();
+
+                if (categoryImagesMap[slug]) return categoryImagesMap[slug];
+
+                if (slug.includes('toy') || slug.includes('game')) return 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=500&auto=format&fit=crop&q=60';
+                if (slug.includes('book') || slug.includes('read')) return 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&auto=format&fit=crop&q=60';
+                if (slug.includes('groc') || slug.includes('food')) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=60';
+                if (slug.includes('auto') || slug.includes('car')) return 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=500&auto=format&fit=crop&q=60';
+                if (slug.includes('baby') || slug.includes('kid')) return 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500&auto=format&fit=crop&q=60';
+                if (slug.includes('pet')) return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&auto=format&fit=crop&q=60';
+                if (slug.includes('health') || slug.includes('well')) return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60';
+                if (slug.includes('station') || slug.includes('office')) return 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=500&auto=format&fit=crop&q=60';
+
+                return defaultImg;
+            }
 
             let html = `
                 <a href="#" class="category-card" data-category="all-products" onclick="goToAllProducts(event)">
@@ -8061,7 +8088,7 @@
 
             if (appCategories && appCategories.length > 0) {
                 html += appCategories.map(c => {
-                    const imgSrc = categoryImagesMap[c.slug] || defaultImg;
+                    const imgSrc = getCategoryPhoto(c);
                     const subText = (c.subcategories && c.subcategories.length > 0) 
                         ? `${c.subcategories.length} Subcategories` 
                         : 'Explore Category';
@@ -8076,7 +8103,7 @@
                                     <span class="category-card-subtitle">${escapeHtml(subText)}</span>
                                 </div>
                                 <span class="category-card-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 1-2 2h14a2 2 0 0 1 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 1 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                                 </span>
                             </div>
                         </a>
