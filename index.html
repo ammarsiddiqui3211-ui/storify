@@ -8267,29 +8267,87 @@
         // ----------------------------------------------------
         // PRODUCT RENDERING LOGIC
         // ----------------------------------------------------
+        let activeSubcategoryFilter = 'all';
+
+        function createHeaderDropdownControls(currentCatKey, currentSubcat = 'all') {
+            const controlsDiv = document.createElement('div');
+            controlsDiv.className = 'header-category-controls';
+            controlsDiv.style.cssText = 'display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto;';
+
+            // Find current selected category object from appCategories
+            const selectedCat = (appCategories || []).find(c => c.slug === currentCatKey || c.id === currentCatKey || c.name === currentCatKey);
+            const subcats = selectedCat ? (selectedCat.subcategories || []) : [];
+
+            // Category select dropdown
+            const catSelect = document.createElement('select');
+            catSelect.className = 'header-cat-select';
+            catSelect.style.cssText = 'padding: 6px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--white); color: var(--text); cursor: pointer; outline: none; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05);';
+
+            let catOptions = `<option value="all" ${(!currentCatKey || currentCatKey === 'all' || currentCatKey === 'all-products') ? 'selected' : ''}>Categories Dropdown</option>`;
+            if (appCategories && appCategories.length > 0) {
+                catOptions += appCategories.map(c => `
+                    <option value="${escapeHtml(c.slug)}" ${(selectedCat && (selectedCat.slug === c.slug || selectedCat.id === c.id)) ? 'selected' : ''}>
+                        ${escapeHtml(c.name)}
+                    </option>
+                `).join('');
+            }
+            catSelect.innerHTML = catOptions;
+
+            catSelect.onchange = function (e) {
+                activeSubcategoryFilter = 'all';
+                filterCategory(this.value, e);
+            };
+
+            controlsDiv.appendChild(catSelect);
+
+            // Subcategory select dropdown
+            const subSelect = document.createElement('select');
+            subSelect.className = 'header-subcat-select';
+            subSelect.style.cssText = 'padding: 6px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: var(--white); color: var(--text); cursor: pointer; outline: none; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05);';
+
+            let subOptions = `<option value="all" ${(!currentSubcat || currentSubcat === 'all') ? 'selected' : ''}>Subcategories Dropdown</option>`;
+            if (subcats.length > 0) {
+                subOptions += subcats.map(sub => `
+                    <option value="${escapeHtml(sub)}" ${(currentSubcat === sub) ? 'selected' : ''}>
+                        ${escapeHtml(sub)}
+                    </option>
+                `).join('');
+            }
+            subSelect.innerHTML = subOptions;
+            if (subcats.length === 0) {
+                subSelect.disabled = true;
+                subSelect.style.opacity = '0.6';
+                subSelect.style.cursor = 'not-allowed';
+            }
+
+            subSelect.onchange = function (e) {
+                activeSubcategoryFilter = this.value;
+                renderProductGrid(currentCatKey, '', 'all', 'default', this.value);
+            };
+
+            controlsDiv.appendChild(subSelect);
+
+            return controlsDiv;
+        }
+
         // Helper function to create a category section
-        function createProductSectionHTML(title, productList, catKey, showViewAll) {
+        function createProductSectionHTML(title, productList, catKey, currentSubcat = 'all') {
             const section = document.createElement('section');
             section.style.marginBottom = '60px';
 
             const header = document.createElement('div');
             header.className = 'section-header';
+            header.style.cssText = 'display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;';
 
             const h2 = document.createElement('h2');
             h2.className = 'section-title';
+            h2.style.margin = '0';
             h2.textContent = title;
             header.appendChild(h2);
 
-            if (showViewAll) {
-                const a = document.createElement('a');
-                a.href = '#';
-                a.className = 'view-all';
-                a.textContent = 'View All →';
-                a.onclick = function (e) {
-                    filterCategory(catKey, e);
-                };
-                header.appendChild(a);
-            }
+            const dropdownControls = createHeaderDropdownControls(catKey, currentSubcat);
+            header.appendChild(dropdownControls);
+
             section.appendChild(header);
 
             const grid = document.createElement('div');
@@ -8338,21 +8396,21 @@
             return section;
         }
 
-        function renderProductGrid(filter = 'all', searchQuery = '', priceFilter = 'all', sortFilter = 'default') {
+        function renderProductGrid(filter = 'all', searchQuery = '', priceFilter = 'all', sortFilter = 'default', subcategoryFilter = activeSubcategoryFilter) {
             const container = document.getElementById('productsContainer');
             if (!container) return;
 
             container.innerHTML = '';
 
-            // If we are in "All" view, not searching, and no price/sort filters are applied, show category sections stacked
-            if ((filter === 'all' || filter === 'all-products') && searchQuery === '' && priceFilter === 'all' && sortFilter === 'default') {
+            // If we are in "All" view, not searching, and no price/sort/subcategory filters are applied, show category sections stacked
+            if ((filter === 'all' || filter === 'all-products') && searchQuery === '' && priceFilter === 'all' && sortFilter === 'default' && subcategoryFilter === 'all') {
                 const renderedKeys = new Set();
-                MASTER_CATEGORIES.forEach(cat => {
-                    const catProducts = products.filter(p => p.categoryKey === cat.key && !p.sold && p.stockStatus !== 'sold_out');
+                (appCategories || []).forEach(cat => {
+                    const catProducts = products.filter(p => (p.categoryKey === cat.slug || p.categoryKey === cat.id) && !p.sold && p.stockStatus !== 'sold_out');
                     if (catProducts.length > 0) {
-                        const section = createProductSectionHTML(cat.name, catProducts, cat.key, catProducts.length > 8);
+                        const section = createProductSectionHTML(cat.name, catProducts, cat.slug, 'all');
                         container.appendChild(section);
-                        renderedKeys.add(cat.key);
+                        renderedKeys.add(cat.slug);
                     }
                 });
 
@@ -8371,7 +8429,7 @@
 
                 Object.keys(categoryMap).forEach(key => {
                     const cat = categoryMap[key];
-                    const section = createProductSectionHTML(cat.name, cat.products, key, cat.products.length > 8);
+                    const section = createProductSectionHTML(cat.name, cat.products, key, 'all');
                     container.appendChild(section);
                 });
             } else {
@@ -8392,7 +8450,7 @@
                     } else if (filter === 'new-arrivals') {
                         matchesCat = true;
                     } else {
-                        matchesCat = (p.categoryKey === filter);
+                        matchesCat = (p.categoryKey === filter || (p.category && p.category.toLowerCase() === filter.toLowerCase()));
                     }
 
                     // Price Range Filter
@@ -8405,11 +8463,18 @@
                         matchesPrice = p.currentPrice > 1500;
                     }
 
+                    // Subcategory Filter
+                    let matchesSubcat = true;
+                    if (subcategoryFilter && subcategoryFilter !== 'all') {
+                        const pSub = String(p.subcategory || (p.specs && p.specs.subcategory) || '').toLowerCase();
+                        matchesSubcat = (pSub === String(subcategoryFilter).toLowerCase());
+                    }
+
                     const matchesSearch = (searchQuery === '' ||
                         p.name.toLowerCase().includes(searchQuery) ||
                         p.description.toLowerCase().includes(searchQuery) ||
                         p.category.toLowerCase().includes(searchQuery));
-                    return matchesCat && matchesPrice && matchesSearch;
+                    return matchesCat && matchesPrice && matchesSearch && matchesSubcat;
                 });
 
                 // Apply Sorting
@@ -8439,12 +8504,11 @@
                 } else if (filter === 'all-products') {
                     title = 'All Products';
                 } else {
-                    // Dynamically resolve category title from products
-                    const cats = getUniqueCategories();
-                    title = cats[filter] || filter.charAt(0).toUpperCase() + filter.slice(1);
+                    const selectedCatObj = (appCategories || []).find(c => c.slug === filter || c.id === filter);
+                    title = selectedCatObj ? selectedCatObj.name : (filter.charAt(0).toUpperCase() + filter.slice(1));
                 }
 
-                const section = createProductSectionHTML(title, filtered, filter, false);
+                const section = createProductSectionHTML(title, filtered, filter, subcategoryFilter);
                 container.appendChild(section);
             }
         }
