@@ -8718,11 +8718,6 @@
                                     <input type="text" id="accountName" name="name" class="form-control" placeholder="Your Full Name" value="${escapeHtml(account.name)}" required>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="accountDescription">Profile Description / Bio</label>
-                                    <textarea id="accountDescription" name="description" class="form-control" style="height: 75px; resize: none;" placeholder="Share a few details about yourself...">${escapeHtml(account.description || '')}</textarea>
-                                </div>
-
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="accountEmail">Email Address *</label>
@@ -9431,11 +9426,6 @@
                             <input type="text" id="accountName" name="name" class="form-control" placeholder="Your Full Name" value="${escapeHtml(account.name)}" required>
                         </div>
 
-                        <div class="form-group">
-                            <label for="accountDescription">Profile Description / Bio</label>
-                            <textarea id="accountDescription" name="description" class="form-control" style="height: 75px; resize: none;" placeholder="Share a few details about yourself...">${escapeHtml(account.description || '')}</textarea>
-                        </div>
-
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="accountEmail">Email Address *</label>
@@ -9702,8 +9692,7 @@
                         address: address,
                         city: city,
                         zip: zip,
-                        avatar_url: avatarUrl,
-                        description: description
+                        avatar_url: avatarUrl
                     }
                 });
 
@@ -9722,8 +9711,7 @@
                         address: address,
                         city: city,
                         zip: zip,
-                        avatar_url: avatarUrl,
-                        description: description
+                        avatar_url: avatarUrl
                     })
                     .eq('id', account.id);
 
