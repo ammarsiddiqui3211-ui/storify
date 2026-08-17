@@ -962,6 +962,7 @@ CREATE POLICY "Allow admin all access to categories" ON public.categories
 -- 13. DYNAMIC LOCATIONS & CURRENCIES TABLE
 -- ----------------------------------------------------
 
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS subcategory text;
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS location text DEFAULT 'Pakistan';
 
 CREATE TABLE IF NOT EXISTS public.locations (
