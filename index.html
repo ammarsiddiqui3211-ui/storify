@@ -5410,20 +5410,40 @@
             opacity: 0.95;
         }
 
+        .mobile-title-br {
+            display: none;
+        }
+
         @media (max-width: 768px) {
+            .mobile-title-br {
+                display: inline;
+            }
+
             .section-header {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                gap: 12px;
-                flex-wrap: wrap;
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+                flex-wrap: nowrap !important;
+                margin-bottom: 20px !important;
+            }
+
+            .section-title {
+                font-size: 22px !important;
+                line-height: 1.25 !important;
+                flex: 1 !important;
+                margin: 0 !important;
             }
 
             .section-header a.view-all {
-                margin-left: auto;
-                font-size: 13.5px;
-                padding: 6px 16px;
+                margin-left: 0 !important;
+                font-size: 13px !important;
+                padding: 6px 14px !important;
+                flex-shrink: 0 !important;
+                white-space: nowrap !important;
+                align-self: flex-start !important;
+                margin-top: 2px !important;
             }
 
             .header-category-controls {
@@ -8589,6 +8609,12 @@
             return controlsDiv;
         }
 
+        function formatCategoryTitle(title) {
+            if (!title) return '';
+            // Wrap long titles cleanly on mobile ("Accessories &" / "Jewelry")
+            return title.replace(/\s+&\s+/g, ' &<br class="mobile-title-br">');
+        }
+
         // Helper function to create a category section
         function createProductSectionHTML(title, productList, catKey, isStackedHome = false, currentSubcat = 'all') {
             const section = document.createElement('section');
@@ -8596,12 +8622,11 @@
 
             const header = document.createElement('div');
             header.className = 'section-header';
-            header.style.cssText = 'display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;';
 
             const h2 = document.createElement('h2');
             h2.className = 'section-title';
             h2.style.margin = '0';
-            h2.textContent = title;
+            h2.innerHTML = formatCategoryTitle(title);
             header.appendChild(h2);
 
             if (isStackedHome) {
