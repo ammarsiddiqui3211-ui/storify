@@ -192,6 +192,13 @@
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.95);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease;
+            will-change: transform;
+        }
+
+        .header.header-hidden {
+            transform: translateY(-100%);
+            box-shadow: none;
         }
 
         .top-bar {
@@ -11255,33 +11262,45 @@
                 });
             });
 
-            // Scroll listener to auto-collapse categories bar on scroll down and expand on returning to top
+            // Smooth, throttled scroll listener for header hide/show using GPU transform (prevents layout shifts & flickering)
             let lastScrollTop = 0;
+            let isTicking = false;
+            const SCROLL_THRESHOLD = 50; // Minimum scroll Y before hiding header
+            const MIN_DELTA = 15;        // Minimum delta to trigger state toggle
+
             window.addEventListener('scroll', () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const page = urlParams.get('page') || 'home';
-                if (page === 'account' || page === 'product' || page === 'wishlist') return;
+                if (!isTicking) {
+                    window.requestAnimationFrame(() => {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const page = urlParams.get('page') || 'home';
+                        const header = document.querySelector('.header');
 
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const categoriesBar = document.querySelector('.categories-bar');
-                if (!categoriesBar) return;
+                        if (header && page !== 'account' && page !== 'product' && page !== 'wishlist') {
+                            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                            const scrollDelta = currentScrollTop - lastScrollTop;
 
-                const delta = scrollTop - lastScrollTop;
-
-                if (scrollTop > 50) {
-                    // Only auto-collapse if scrolling down and not already collapsed
-                    if (delta > 0 && !categoriesBar.classList.contains('hidden-scroll')) {
-                        categoriesBar.classList.add('hidden-scroll');
-                    }
-                } else if (scrollTop <= 10) {
-                    // Auto-expand when returning to the very top
-                    if (categoriesBar.classList.contains('hidden-scroll')) {
-                        categoriesBar.classList.remove('hidden-scroll');
-                    }
+                            if (currentScrollTop > SCROLL_THRESHOLD) {
+                                // Scroll down past threshold -> hide header smoothly via transform
+                                if (scrollDelta > MIN_DELTA && !header.classList.contains('header-hidden')) {
+                                    header.classList.add('header-hidden');
+                                }
+                                // Scroll up past delta -> show header smoothly via transform
+                                else if (scrollDelta < -MIN_DELTA && header.classList.contains('header-hidden')) {
+                                    header.classList.remove('header-hidden');
+                                }
+                            } else {
+                                // Near top of page -> always keep header fully visible
+                                if (header.classList.contains('header-hidden')) {
+                                    header.classList.remove('header-hidden');
+                                }
+                            }
+                            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+                        }
+                        isTicking = false;
+                    });
+                    isTicking = true;
                 }
-
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            });
+            }, { passive: true });
         }
 
         // Initialize application robustly (handles cases where DOM is already parsed/cached)
