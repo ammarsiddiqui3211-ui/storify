@@ -10297,18 +10297,16 @@
                         <h1 class="product-detail-name" style="margin-top:4px;">${p.name}</h1>
                         
                         <div class="product-detail-rating" id="detailRatingSummary" style="display:flex; align-items:center; justify-content:space-between; gap:6px; flex-wrap:nowrap; width:100%;">
-                            <div class="rating-left-group" style="display:inline-flex; align-items:center; gap:6px; flex-wrap:nowrap; flex-shrink:1; min-width:0; overflow:hidden;">
+                            <div class="rating-left-group" style="display:inline-flex; align-items:center; gap:6px; flex-wrap:nowrap; flex-shrink:1; min-width:0;">
                                 <span class="stars">${'★'.repeat(p.rating)}${'☆'.repeat(5 - p.rating)}</span>
-                                <span class="review-count">(${p.reviewCount.toLocaleString()} Customer Reviews)</span>
-                                ${p.verifiedBadge ? `
-                                    <span style="color:var(--text-light); font-size:12px;">•</span>
-                                    <span style="display:inline-flex; align-items:center; gap:4px; font-size:13.5px; color:var(--primary); font-weight:500;">
-                                        <span>Storify</span>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb" stroke="none" style="display:inline-block; vertical-align:middle; color:#fff;" title="Verified Shop"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                                    </span>
-                                ` : ''}
+                                <span class="review-count">(${p.reviewCount.toLocaleString()} Reviews)</span>
                             </div>
-                            <span class="detail-sold-by" style="display:inline-flex; align-items:center; gap:4px; font-size:13.5px; color:#475569; font-weight:500; margin-left:auto; flex-shrink:0; white-space:nowrap;">
+                            <span class="detail-sold-by" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:#475569; font-weight:500; margin-left:auto; flex-shrink:0; white-space:nowrap;">
+                                <span style="display:inline-flex; align-items:center; gap:3px; font-size:13px; color:var(--primary); font-weight:600;">
+                                    <span>Storify</span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb" stroke="none" style="display:inline-block; vertical-align:middle; color:#fff;" title="Verified Shop"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                </span>
+                                <span style="color:#cbd5e1; font-size:11px;">•</span>
                                 <span style="color:#64748b;">Sold by:</span>
                                 <a href="/${slugifyShopName(p.shopName)}" onclick="navigateToStore('${escapeHtml(p.shopName)}', event)" class="seller-store-link">
                                     ${escapeHtml(p.shopName || 'Partner Shop')}
@@ -10923,18 +10921,16 @@
             const detailRatingSummary = document.getElementById('detailRatingSummary');
             if (detailRatingSummary) {
                 detailRatingSummary.innerHTML = `
-                    <div class="rating-left-group" style="display:inline-flex; align-items:center; gap:6px; flex-wrap:nowrap; flex-shrink:1; min-width:0; overflow:hidden;">
+                    <div class="rating-left-group" style="display:inline-flex; align-items:center; gap:6px; flex-wrap:nowrap; flex-shrink:1; min-width:0;">
                         <span class="stars">${'★'.repeat(roundedAvg)}${'☆'.repeat(5 - roundedAvg)}</span>
-                        <span class="review-count">(${totalReviews.toLocaleString()} Customer Reviews)</span>
-                        ${p.verifiedBadge ? `
-                            <span style="color:var(--text-light); font-size:12px;">•</span>
-                            <span style="display:inline-flex; align-items:center; gap:4px; font-size:13.5px; color:var(--primary); font-weight:500;">
-                                <span>Storify</span>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb" stroke="none" style="display:inline-block; vertical-align:middle; color:#fff;" title="Verified Shop"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                            </span>
-                        ` : ''}
+                        <span class="review-count">(${totalReviews.toLocaleString()} Reviews)</span>
                     </div>
-                    <span class="detail-sold-by" style="display:inline-flex; align-items:center; gap:4px; font-size:13.5px; color:#475569; font-weight:500; margin-left:auto; flex-shrink:0; white-space:nowrap;">
+                    <span class="detail-sold-by" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:#475569; font-weight:500; margin-left:auto; flex-shrink:0; white-space:nowrap;">
+                        <span style="display:inline-flex; align-items:center; gap:3px; font-size:13px; color:var(--primary); font-weight:600;">
+                            <span>Storify</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb" stroke="none" style="display:inline-block; vertical-align:middle; color:#fff;" title="Verified Shop"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        </span>
+                        <span style="color:#cbd5e1; font-size:11px;">•</span>
                         <span style="color:#64748b;">Sold by:</span>
                         <a href="/${slugifyShopName(p.shopName)}" onclick="navigateToStore('${escapeHtml(p.shopName)}', event)" class="seller-store-link">
                             ${escapeHtml(p.shopName || 'Partner Shop')}
