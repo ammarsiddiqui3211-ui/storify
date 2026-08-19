@@ -5446,20 +5446,45 @@
                 margin-top: 2px !important;
             }
 
-            .header-category-controls {
-                margin-left: 0 !important;
-                width: 100%;
-                justify-content: flex-start;
-                gap: 8px;
-                flex-wrap: wrap;
+            .section-header.has-dropdowns {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+                width: 100% !important;
+                margin-bottom: 24px !important;
             }
 
-            select.view-all {
-                max-width: 155px;
-                padding: 6px 24px 6px 12px !important;
-                font-size: 12.5px;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+            .section-header.has-dropdowns .section-title {
+                width: 100% !important;
+                font-size: 24px !important;
+                line-height: 1.2 !important;
+                margin: 0 0 2px 0 !important;
+            }
+
+            .section-header.has-dropdowns .header-category-controls {
+                width: 100% !important;
+                margin-left: 0 !important;
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 8px !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .section-header.has-dropdowns .header-category-controls select,
+            .section-header.has-dropdowns .header-category-controls select.view-all {
+                flex: 1 1 0% !important;
+                width: 50% !important;
+                max-width: 50% !important;
+                min-width: 0 !important;
+                padding: 8px 22px 8px 10px !important;
+                font-size: 12.5px !important;
+                white-space: nowrap !important;
+                text-overflow: ellipsis !important;
+                overflow: hidden !important;
+                box-sizing: border-box !important;
             }
 
             .graphic-categories-list {
@@ -8642,6 +8667,7 @@
                 };
                 header.appendChild(a);
             } else {
+                header.classList.add('has-dropdowns');
                 const dropdownControls = createHeaderDropdownControls(catKey, currentSubcat);
                 header.appendChild(dropdownControls);
             }
