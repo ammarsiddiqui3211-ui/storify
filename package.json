@@ -1,0 +1,29 @@
+{
+  "name": "storify-marketplace",
+  "version": "1.0.0",
+  "description": "Storify Marketplace - Dual Web & Android Application",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build.js",
+    "sync": "npm run build && cap sync android",
+    "open:android": "cap open android"
+  },
+  "keywords": [
+    "storify",
+    "marketplace",
+    "pwa",
+    "capacitor",
+    "android"
+  ],
+  "author": "Storify Marketplace",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "^6.0.2",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/status-bar": "^6.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "appId": "services.storify.shop",
+  "appName": "Storify Marketplace",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#1a1a2e",
+      "overlaysWebView": false
+    }
+  }
+}

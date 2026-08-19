@@ -9,3 +9,11 @@ supabase/.temp/
 scratch_diff.txt
 scratch_diff_utf8.txt
 client_secret_*.json
+
+# Node & Build artifacts
+node_modules/
+www/
+android/.gradle/
+android/app/build/
+android/build/
+android/captures/
