@@ -1,8 +1,10 @@
 {
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/seller", "destination": "/seller.html" },
     { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/diagnostics", "destination": "/diagnostics.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/diagnostics", "destination": "/diagnostics.html" }
   ]
 }
