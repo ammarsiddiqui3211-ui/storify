@@ -5902,67 +5902,24 @@
                             </div>
                         </div>
                         <div class="sfp-group mobile-only-selectors">
-                            <div class="sfp-group-label">Region &amp; Language</div>
-                            <div class="mobile-selectors-container"
-                                style="padding: 10px 0 0 0; display: flex; gap: 10px;">
-                                <!-- Mobile Country Dropdown -->
-                                <div class="header-dropdown country-dropdown" id="mobileCountryDropdown"
-                                    style="flex: 1; position: relative;">
-                                    <div class="dropdown-trigger"
-                                        onclick="toggleHeaderDropdown('mobileCountryDropdown', event)"
-                                        style="width: 100%; justify-content: space-between;">
-                                        <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-map-pin"
-                                                style="vertical-align: middle; margin-right: 6px; color: var(--accent);">
+                            <div class="sfp-group-label">Delivery Location</div>
+                            <div class="mobile-selectors-container" style="padding: 10px 0 0 0;">
+                                <!-- Mobile Location Dropdown -->
+                                <div class="header-dropdown country-dropdown" id="mobileCountryDropdown" style="width: 100%; position: relative;">
+                                    <div class="dropdown-trigger" onclick="toggleHeaderDropdown('mobileCountryDropdown', event)" style="width: 100%; justify-content: space-between;">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" style="vertical-align: middle; margin-right: 6px; color: var(--accent);">
                                                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                                 <circle cx="12" cy="10" r="3" />
-                                            </svg> Pakistan</span>
-                                            </svg> <span id="mobileCountryLabel">Select Location</span></span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                            stroke-linecap="round" stroke-linejoin="round">
+                                            </svg>
+                                            <span id="mobileCountryLabel">Select Location</span>
+                                        </span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="m6 9 6 6 6-6" />
                                         </svg>
                                     </div>
                                     <div class="dropdown-menu" id="mobileHeaderLocationDropdownMenu" style="width: 100%; min-width: unset;">
-                                        <div class="dropdown-header"
-                                            style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
-                                            Delivery Location</div>
-                                    </div>
-                                </div>
-
-                                <!-- Mobile Language Dropdown -->
-                                <div class="header-dropdown language-dropdown" id="mobileLanguageDropdown"
-                                    style="flex: 1; position: relative;">
-                                    <div class="dropdown-trigger"
-                                        onclick="toggleHeaderDropdown('mobileLanguageDropdown', event)"
-                                        style="width: 100%; justify-content: space-between;">
-                                        <span><img src="https://flagcdn.com/w20/us.png" alt="US"
-                                                style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
-                                            English</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="m6 9 6 6 6-6" />
-                                        </svg>
-                                    </div>
-                                    <div class="dropdown-menu"
-                                        style="width: 100%; min-width: unset; left: auto; right: 0;">
-                                        <div class="dropdown-header"
-                                            style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
-                                            Change Language</div>
-                                        <a href="#" onclick="selectLanguage('en', 'English', event)" class="active">
-                                            <img src="https://flagcdn.com/w20/us.png" alt="US"
-                                                style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
-                                            English
-                                        </a>
-                                        <a href="#" onclick="selectLanguage('ur', 'Urdu', event)">
-                                            <img src="https://flagcdn.com/w20/pk.png" alt="PK"
-                                                style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
-                                            اردو
-                                        </a>
+                                        <div class="dropdown-header" style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Delivery Location</div>
                                     </div>
                                 </div>
                             </div>
