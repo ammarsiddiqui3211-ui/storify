@@ -7558,7 +7558,8 @@
                 displayView('categories');
             } else if (page === 'checkout') {
                 closeCartDrawer();
-                if (cart.length === 0) {
+                const hasCheckoutItems = window.directCheckoutItem || (cart && cart.length > 0);
+                if (!hasCheckoutItems) {
                     showToast("Cart is empty");
                     navigateToPage('home', {}, true);
                 } else {
@@ -10520,6 +10521,39 @@
             if (qtyInput) qtyInput.value = 1;
         }
 
+        window.directCheckoutItem = null;
+
+        function buyNowDetail(productId) {
+            const p = products.find(prod => prod.id === productId);
+            if (!p || p.sold) return;
+
+            const qtyInput = document.getElementById('detail-qty');
+            const qty = qtyInput ? parseInt(qtyInput.value) : 1;
+
+            const activeColor = document.querySelector('.color-swatch.active');
+            const color = activeColor ? activeColor.getAttribute('data-color') : '';
+
+            const activeSize = document.querySelector('.size-chip.active');
+            const size = activeSize ? activeSize.getAttribute('data-size') : '';
+
+            window.directCheckoutItem = {
+                id: p.id,
+                name: p.name,
+                price: p.currentPrice,
+                image: p.image || '',
+                quantity: qty,
+                color: color,
+                size: size,
+                seller_id: p.seller_id,
+                shopName: p.shopName,
+                shipping_fee: p.shipping_fee || 250
+            };
+
+            if (qtyInput) qtyInput.value = 1;
+
+            navigateToPage('checkout');
+        }
+
         // ----------------------------------------------------
         // CHECKOUT AND EMAIL NOTIFICATION
         // ----------------------------------------------------
@@ -10527,14 +10561,16 @@
             const view = document.getElementById('checkout-view');
             if (!view) return;
 
+            const checkoutItems = window.directCheckoutItem ? [window.directCheckoutItem] : cart;
+
             let subtotal = 0;
-            cart.forEach(item => {
+            checkoutItems.forEach(item => {
                 subtotal += item.price * item.quantity;
             });
 
             // Calculate shipping dynamically per seller (max package rate per seller)
             const sellerShippingMap = {};
-            cart.forEach(item => {
+            checkoutItems.forEach(item => {
                 const sId = item.seller_id || 'unknown';
                 const fee = Number(item.shipping_fee || 250);
                 if (!sellerShippingMap[sId] || fee > sellerShippingMap[sId]) {
@@ -10616,17 +10652,17 @@
                         </div>
                         
                         <div class="summary-items-list">
-                            ${cart.map(item => {
+                            ${checkoutItems.map(item => {
                 const summaryImage = item.image || (products.find(p => p.id === item.id) || {}).image || '';
                 return `
                                     <div class="summary-item">
                                         <div class="summary-item-left">
-                                            <div class="summary-item-thumb" style="background: ${item.gradient};">
-                                                ${summaryImage ? `<img src="${summaryImage}" alt="${item.name}">` : ''}
+                                            <div class="summary-item-thumb" style="background: ${item.gradient || 'transparent'};">
+                                                ${summaryImage ? `<img src="${summaryImage}" alt="${escapeHtml(item.name)}">` : ''}
                                             </div>
                                             <div>
-                                                <div class="summary-item-name">${item.name}</div>
-                                                <div class="summary-item-qty">Qty: ${item.quantity} ${item.color || item.size ? `(${[item.color ? 'Color' : '', item.size ? item.size : ''].filter(Boolean).join(', ')})` : ''}</div>
+                                                <div class="summary-item-name">${escapeHtml(item.name)}</div>
+                                                <div class="summary-item-qty">Qty: ${item.quantity} ${item.color || item.size ? `(${[item.color ? 'Color: ' + item.color : '', item.size ? 'Size: ' + item.size : ''].filter(Boolean).join(', ')})` : ''}</div>
                                             </div>
                                         </div>
                                         <div class="summary-item-price">${formatPrice(item.price * item.quantity)}</div>
@@ -10712,14 +10748,16 @@
             btn.innerHTML = `<span class="spinner"></span> Sinking Order...`;
             btn.classList.add('loading');
 
+            const checkoutItems = window.directCheckoutItem ? [window.directCheckoutItem] : cart;
+
             let subtotal = 0;
-            cart.forEach(item => {
+            checkoutItems.forEach(item => {
                 subtotal += item.price * item.quantity;
             });
 
             // Calculate shipping dynamically per seller (max package rate per seller)
             const sellerShippingMap = {};
-            cart.forEach(item => {
+            checkoutItems.forEach(item => {
                 const sId = item.seller_id || 'unknown';
                 const fee = Number(item.shipping_fee || 250);
                 if (!sellerShippingMap[sId] || fee > sellerShippingMap[sId]) {
@@ -10756,7 +10794,7 @@
                 btn.innerHTML = `<span class="spinner"></span> Sinking Order Items...`;
 
                 // 2. Insert individual line items
-                const orderItems = cart.map(item => ({
+                const orderItems = checkoutItems.map(item => ({
                     order_id: dbOrder.id,
                     product_id: item.id,
                     quantity: item.quantity,
@@ -10821,6 +10859,14 @@
 
                 // 4. Redirect to Safepay sandbox checkout screen
                 const safepayRedirectUrl = `https://sandbox.api.getsafepay.com/checkout/pay?env=sandbox&beacon=${trackerToken}&order_id=${orderRef}&source=custom&redirect_url=${encodeURIComponent(window.location.origin + window.location.pathname + '?page=success&ref=' + orderRef)}&cancel_url=${encodeURIComponent(window.location.origin + window.location.pathname + '?page=account')}`;
+
+                if (window.directCheckoutItem) {
+                    window.directCheckoutItem = null;
+                } else {
+                    cart = [];
+                    saveCart();
+                    updateCartUI();
+                }
 
                 showToast("Redirecting to Safepay secure payment...");
                 window.location.href = safepayRedirectUrl;
