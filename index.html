@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Storify Marketplace | Pakistan's Trusted Online Marketplace | Buy & Sell Online</title>
     <meta name="description"
         content="Shop electronics, fashion, beauty, home appliances, groceries, and thousands of products from trusted sellers across Pakistan. Become a seller and grow your business with Storify Marketplace.">
@@ -110,7 +111,8 @@
             --shadow-strong: rgba(30, 41, 59, 0.12);
         }
 
-        html, body {
+        html,
+        body {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
@@ -2651,7 +2653,8 @@
             color: var(--text-light);
         }
 
-        .desktop-bullet, .desktop-bullet-2 {
+        .desktop-bullet,
+        .desktop-bullet-2 {
             display: inline-block;
         }
 
@@ -2683,13 +2686,13 @@
         }
 
         .product-options {
-            margin-bottom: 24px;
-            padding: 18px 20px;
+            margin-bottom: 20px;
+            padding: 16px 20px;
             background: var(--secondary);
             border-radius: 16px;
             border: 1px solid var(--border);
             width: 100%;
-            max-width: 410px;
+            max-width: 100%;
             margin-left: 0;
             margin-right: 0;
             min-width: 0;
@@ -2814,30 +2817,56 @@
             margin: 0;
         }
 
-        .add-to-cart-large {
-            flex: 1 1 180px;
+        .add-to-cart-large,
+        .buy-now-large {
+            flex: 1 1 140px;
+            max-width: 175px;
             min-width: 0;
-            background: var(--primary);
-            color: var(--white);
             border: none;
             min-height: 48px;
-            padding: 12px 22px;
+            height: 48px;
+            padding: 12px 18px;
             border-radius: 10px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .add-to-cart-large {
+            background: var(--primary);
+            color: var(--white);
         }
 
         .add-to-cart-large:hover {
             background: var(--accent);
             transform: translateY(-2px);
             box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        .buy-now-large {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+        }
+
+        .buy-now-large:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .buy-now-large:disabled,
+        .add-to-cart-large:disabled {
+            background: #cbd5e1 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         .product-specs {
@@ -4705,7 +4734,8 @@
                 color: var(--text-light);
             }
 
-            .desktop-bullet, .desktop-bullet-2 {
+            .desktop-bullet,
+            .desktop-bullet-2 {
                 display: none !important;
             }
 
@@ -4758,7 +4788,8 @@
                 flex: 0 0 138px;
             }
 
-            .add-to-cart-large {
+            .add-to-cart-large,
+            .buy-now-large {
                 flex: 1 1 auto;
                 width: auto;
                 min-height: 44px;
@@ -5927,45 +5958,69 @@
                         </div>
                         <div class="sfp-group mobile-only-selectors">
                             <div class="sfp-group-label">Region &amp; Language</div>
-                            <div class="mobile-selectors-container" style="padding: 10px 0 0 0; display: flex; gap: 10px;">
+                            <div class="mobile-selectors-container"
+                                style="padding: 10px 0 0 0; display: flex; gap: 10px;">
                                 <!-- Mobile Location Dropdown -->
-                                <div class="header-dropdown country-dropdown" id="mobileCountryDropdown" style="flex: 1; position: relative;">
-                                    <div class="dropdown-trigger" onclick="toggleHeaderDropdown('mobileCountryDropdown', event)" style="width: 100%; justify-content: space-between;">
+                                <div class="header-dropdown country-dropdown" id="mobileCountryDropdown"
+                                    style="flex: 1; position: relative;">
+                                    <div class="dropdown-trigger"
+                                        onclick="toggleHeaderDropdown('mobileCountryDropdown', event)"
+                                        style="width: 100%; justify-content: space-between;">
                                         <span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" style="vertical-align: middle; margin-right: 6px; color: var(--accent);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-map-pin"
+                                                style="vertical-align: middle; margin-right: 6px; color: var(--accent);">
                                                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                                 <circle cx="12" cy="10" r="3" />
                                             </svg>
                                             <span id="mobileCountryLabel">Select Location</span>
                                         </span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                            stroke-linecap="round" stroke-linejoin="round">
                                             <path d="m6 9 6 6 6-6" />
                                         </svg>
                                     </div>
-                                    <div class="dropdown-menu" id="mobileHeaderLocationDropdownMenu" style="width: 100%; min-width: unset;">
-                                        <div class="dropdown-header" style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Delivery Location</div>
+                                    <div class="dropdown-menu" id="mobileHeaderLocationDropdownMenu"
+                                        style="width: 100%; min-width: unset;">
+                                        <div class="dropdown-header"
+                                            style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
+                                            Delivery Location</div>
                                     </div>
                                 </div>
 
                                 <!-- Mobile Language Dropdown -->
-                                <div class="header-dropdown language-dropdown" id="mobileLanguageDropdown" style="flex: 1; position: relative;">
-                                    <div class="dropdown-trigger" onclick="toggleHeaderDropdown('mobileLanguageDropdown', event)" style="width: 100%; justify-content: space-between;">
+                                <div class="header-dropdown language-dropdown" id="mobileLanguageDropdown"
+                                    style="flex: 1; position: relative;">
+                                    <div class="dropdown-trigger"
+                                        onclick="toggleHeaderDropdown('mobileLanguageDropdown', event)"
+                                        style="width: 100%; justify-content: space-between;">
                                         <span id="mobileLanguageTriggerSpan">
-                                            <img src="https://flagcdn.com/w20/us.png" alt="US" style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
+                                            <img src="https://flagcdn.com/w20/us.png" alt="US"
+                                                style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
                                             English
                                         </span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                            stroke-linecap="round" stroke-linejoin="round">
                                             <path d="m6 9 6 6 6-6" />
                                         </svg>
                                     </div>
-                                    <div class="dropdown-menu" style="width: 100%; min-width: unset; left: auto; right: 0;">
-                                        <div class="dropdown-header" style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Change Language</div>
+                                    <div class="dropdown-menu"
+                                        style="width: 100%; min-width: unset; left: auto; right: 0;">
+                                        <div class="dropdown-header"
+                                            style="font-size: 11px; font-weight: 700; color: var(--text-light); padding: 4px 12px 8px; border-bottom: 1px solid var(--border); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
+                                            Change Language</div>
                                         <a href="#" onclick="selectLanguage('en', 'English', event)" class="active">
-                                            <img src="https://flagcdn.com/w20/us.png" alt="US" style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
+                                            <img src="https://flagcdn.com/w20/us.png" alt="US"
+                                                style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
                                             English
                                         </a>
                                         <a href="#" onclick="selectLanguage('ur', 'Urdu', event)">
-                                            <img src="https://flagcdn.com/w20/pk.png" alt="PK" style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
+                                            <img src="https://flagcdn.com/w20/pk.png" alt="PK"
+                                                style="width: 18px; height: 13px; object-fit: cover; border-radius: 2px; vertical-align: middle; margin-right: 6px;">
                                             اردو
                                         </a>
                                     </div>
@@ -6427,7 +6482,7 @@
                         return;
                     }
                 }
-            } catch (err) {}
+            } catch (err) { }
 
             const cached = localStorage.getItem('storify_locations');
             if (cached) {
@@ -6435,7 +6490,7 @@
                     appLocations = JSON.parse(cached).filter(l => l.is_active !== false);
                     renderHeaderLocations();
                     return;
-                } catch (e) {}
+                } catch (e) { }
             }
 
             appLocations = [];
@@ -6526,9 +6581,9 @@
             const amount = Number(value || 0);
             const defaultLoc = (appLocations && appLocations.length > 0) ? appLocations[0].country_name : '';
             const targetLocName = pLoc || (selectedLocationFilter && selectedLocationFilter !== 'all' ? selectedLocationFilter : defaultLoc);
-            const locObj = (appLocations || []).find(l => targetLocName && l.country_name.toLowerCase() === String(targetLocName).toLowerCase()) 
-                           || (appLocations && appLocations[0]) 
-                           || { currency_symbol: '' };
+            const locObj = (appLocations || []).find(l => targetLocName && l.country_name.toLowerCase() === String(targetLocName).toLowerCase())
+                || (appLocations && appLocations[0])
+                || { currency_symbol: '' };
             const symbol = locObj.currency_symbol || locObj.currency_code || '';
             const prefix = symbol ? `${symbol} ` : '';
             return `${prefix}${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
@@ -8213,8 +8268,8 @@
             if (appCategories && appCategories.length > 0) {
                 html += appCategories.map(c => {
                     const imgSrc = getCategoryPhoto(c);
-                    const subText = (c.subcategories && c.subcategories.length > 0) 
-                        ? `${c.subcategories.length} Subcategories` 
+                    const subText = (c.subcategories && c.subcategories.length > 0)
+                        ? `${c.subcategories.length} Subcategories`
                         : 'Explore Category';
 
                     return `
@@ -10231,7 +10286,7 @@
             let colorOptionsHTML = '';
             if (p.colors && p.colors.length > 0) {
                 colorOptionsHTML = `
-                    <div class="option-group">
+                    <div class="option-group" style="flex: 1; min-width: 120px; margin-bottom: 0;">
                         <div class="option-title">Select Color</div>
                         <div class="color-swatches">
                             ${p.colors.map((c, i) => `
@@ -10245,7 +10300,7 @@
             let sizeOptionsHTML = '';
             if (p.sizes && p.sizes.length > 0) {
                 sizeOptionsHTML = `
-                    <div class="option-group">
+                    <div class="option-group" style="flex: 1; min-width: 120px; margin-bottom: 0;">
                         <div class="option-title">Select Edition / Size</div>
                         <div class="size-chips">
                             ${p.sizes.map((s, i) => `
@@ -10331,21 +10386,30 @@
                         </div>
                         
                         <div class="product-options" style="width: 100%; margin-top: 0;">
-                            ${colorOptionsHTML}
-                            ${sizeOptionsHTML}
+                            ${(colorOptionsHTML || sizeOptionsHTML) ? `
+                                <div class="options-selectors-row" style="display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; width: 100%; margin-bottom: 12px;">
+                                    ${colorOptionsHTML}
+                                    ${sizeOptionsHTML}
+                                </div>
+                            ` : ''}
                             
                             <div class="option-group">
-                                <div class="option-title">Quantity</div>
-                                <div class="purchase-controls">
-                                    <div class="qty-wrapper">
+                                <div class="option-title">Quantity &amp; Purchase</div>
+                                <div class="purchase-controls" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%;">
+                                    <div class="qty-wrapper" style="flex-shrink: 0;">
                                         <button class="qty-btn" onclick="adjustDetailQty(-1)">-</button>
                                         <input type="number" class="qty-input" id="detail-qty" value="1" min="1" max="10" readonly>
                                         <button class="qty-btn" onclick="adjustDetailQty(1)">+</button>
                                     </div>
                                     
                                     <button class="add-to-cart-large" onclick="addDetailToCart(${p.id})" ${p.sold ? 'disabled' : ''}>
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                                         ${p.sold ? 'Sold Out' : 'Add to Cart'}
+                                    </button>
+
+                                    <button class="buy-now-large" onclick="buyNowDetail(${p.id})" ${p.sold ? 'disabled' : ''}>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                        ${p.sold ? 'Sold Out' : 'Buy Now'}
                                     </button>
                                 </div>
                             </div>
