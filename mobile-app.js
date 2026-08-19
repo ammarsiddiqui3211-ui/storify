@@ -1,5 +1,5 @@
 /**
- * Storify Marketplace - Mobile Native Integration & Responsive Support
+ * Storify Marketplace - Mobile Native Integration
  * Handles Capacitor native device features (Status bar, Hardware Back Button, Safe Area)
  * with graceful web fallbacks.
  */
@@ -62,33 +62,10 @@
     }
   }
 
-  // Mobile Bottom Navigation Bar Active State Sync
-  function initMobileBottomNav() {
-    const bottomNavItems = document.querySelectorAll('.mobile-bottom-nav-item');
-    if (!bottomNavItems.length) return;
-
-    const currentPath = window.location.pathname.toLowerCase();
-    
-    bottomNavItems.forEach((item) => {
-      const targetPage = item.getAttribute('data-page');
-      if (targetPage === 'home' && (currentPath.endsWith('index.html') || currentPath === '/' || currentPath.endsWith('/'))) {
-        item.classList.add('active');
-      } else if (targetPage === 'seller' && currentPath.includes('seller.html')) {
-        item.classList.add('active');
-      } else if (targetPage === 'admin' && currentPath.includes('admin.html')) {
-        item.classList.add('active');
-      }
-    });
-  }
-
   // Initialize on DOM load
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initNativeApp();
-      initMobileBottomNav();
-    });
+    document.addEventListener('DOMContentLoaded', initNativeApp);
   } else {
     initNativeApp();
-    initMobileBottomNav();
   }
 })();
