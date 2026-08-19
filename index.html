@@ -8900,10 +8900,19 @@
                         matchesLocation = (pLoc === String(selectedLocationFilter).toLowerCase());
                     }
 
-                    const matchesSearch = (searchQuery === '' ||
-                        p.name.toLowerCase().includes(searchQuery) ||
-                        p.description.toLowerCase().includes(searchQuery) ||
-                        p.category.toLowerCase().includes(searchQuery));
+                    const q = String(searchQuery || '').toLowerCase().trim();
+                    const pName = String(p.name || '').toLowerCase();
+                    const pDesc = String(p.description || '').toLowerCase();
+                    const pCat = String(p.category || '').toLowerCase();
+                    const pShop = String(p.shopName || '').toLowerCase();
+                    const pBrand = String(p.brand || (p.specs && p.specs.brand) || '').toLowerCase();
+
+                    const matchesSearch = (q === '' ||
+                        pName.includes(q) ||
+                        pDesc.includes(q) ||
+                        pCat.includes(q) ||
+                        pShop.includes(q) ||
+                        pBrand.includes(q));
                     return matchesCat && matchesPrice && matchesSearch && matchesSubcat && matchesLocation;
                 });
 
@@ -11365,12 +11374,16 @@
                 }, { passive: true });
             }
 
-            // Search Bar binding
-            const searchInput = document.querySelector('.search-input');
-            const searchBtn = document.querySelector('.search-btn');
+            // Search Bar binding (binds all desktop and mobile search elements)
+            const searchInputs = document.querySelectorAll('.search-input');
+            const searchBtns = document.querySelectorAll('.search-btn');
 
-            function handleSearch() {
-                const query = searchInput ? searchInput.value.trim() : '';
+            function performGlobalSearch(queryVal) {
+                const firstInput = document.querySelector('.search-input');
+                const query = (queryVal !== undefined ? queryVal : (firstInput ? firstInput.value : '')).trim();
+                searchInputs.forEach(input => {
+                    if (input.value !== query) input.value = query;
+                });
                 if (query) {
                     showView('home', null, null, null, query);
                 } else {
@@ -11378,14 +11391,28 @@
                 }
             }
 
-            if (searchBtn) {
-                searchBtn.addEventListener('click', handleSearch);
-            }
-            if (searchInput) {
-                searchInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') handleSearch();
+            searchBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    performGlobalSearch();
                 });
-            }
+            });
+
+            searchInputs.forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        performGlobalSearch(input.value);
+                    }
+                });
+                let searchTimeout;
+                input.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performGlobalSearch(input.value);
+                    }, 400);
+                });
+            });
 
             // Bind all Logo elements to return home
             document.querySelectorAll('.logo').forEach(logo => {
