@@ -8611,8 +8611,11 @@
 
         function formatCategoryTitle(title) {
             if (!title) return '';
-            // Wrap long titles cleanly on mobile ("Accessories &" / "Jewelry")
-            return title.replace(/\s+&\s+/g, ' &<br class="mobile-title-br">');
+            // Only add line breaks to long category titles (18+ chars like "Accessories & Jewelry") that interrupt the View All button
+            if (title.length >= 18 && title.includes(' & ')) {
+                return title.replace(/\s+&\s+/g, ' &<br class="mobile-title-br">');
+            }
+            return title;
         }
 
         // Helper function to create a category section
